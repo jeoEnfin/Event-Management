@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import Booth4 from '../booths/Booth4'
 import { ResponsiveWidthComponent } from '../../utils/validations'
 import Poster1 from '../poster/Poster1'
+import EventWrapper from '../common/EventWrapper'
 
 const screenWidth: any = Dimensions.get("window").width;
 
@@ -20,7 +21,8 @@ const Event2 = (props: Props) => {
   const url:any = props.poster_url;
   const navigation: any = useNavigation()
   return (
-    <View style={{ flex: 1, justifyContent: 'space-between' }}>
+    <EventWrapper>
+      <View style={{height: '100%',width: '100%',justifyContent: 'space-between'}}>
       <Image source={require('../../assets/events/eventpage2.png')} style={{ width: '100%', height: '100%', position: 'absolute' }} />
       <TouchableOpacity style={styles.stage} onPress={() => navigation.navigate('Test3')}></TouchableOpacity>
       <Poster1
@@ -42,7 +44,8 @@ const Event2 = (props: Props) => {
           audi_backgroundColor='#225691'
         />
       </View>
-    </View>
+      </View>
+    </EventWrapper>
   )
 }
 

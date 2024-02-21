@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Signup from '../pages/auth/Signup';
 import LoginScreen from '../pages/auth/Login';
 import { useSelector } from 'react-redux';
 import TwoFactorAuth from '../pages/auth/TwoFactorAuth';
+import Welcome from '../pages/auth/Welcome';
 
 
 type Props = {}
@@ -20,6 +20,7 @@ const AuthStack = (props: Props) => {
     <Stack.Navigator screenOptions={{ orientation: 'portrait', headerShown: false }}>
       {token === null ?
         <>
+          <Stack.Screen name='Welcome' component={Welcome}/>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Signup" component={Signup} />
         </> :

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Booth4 from '../booths/Booth4';
 import { COLORS } from '../../constants';
 import Poster1 from '../poster/Poster1';
+import EventWrapper from '../common/EventWrapper';
 
 
 type Props = {
@@ -18,7 +19,8 @@ const Event3 = (props: Props) => {
     const url:any = props.poster_url;
 
     return (
-        <View style={{ flex: 1,justifyContent: 'space-between' }}>
+        <EventWrapper>
+        <View style={{height: '100%',width: '100%',justifyContent: 'space-between'}}>
             <Image source={require('../../assets/events/eventpage3.jpg')} style={{ width: '100%', height: '100%', position: 'absolute' }} />
             <Poster1
              poster_1={url}
@@ -40,6 +42,7 @@ const Event3 = (props: Props) => {
                 />
             </View>
         </View>
+        </EventWrapper>
     )
 }
 

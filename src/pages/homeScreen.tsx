@@ -5,8 +5,6 @@ import { useNavigation } from '@react-navigation/native'
 import { OTSession, OTPublisher, OTSubscriber } from 'opentok-react-native';
 import { COLORS } from '../constants';
 
-
-
 type Props = {
     route: any
 }

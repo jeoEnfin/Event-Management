@@ -8,6 +8,8 @@ import MessagingModal from '../MessagingModal'
 import Booth3 from '../booths/Booth3'
 import Booth4 from '../booths/Booth4'
 import { ResponsiveWidthComponent } from '../../utils/validations'
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view'
+import EventWrapper from '../common/EventWrapper'
 
 const screenWidth:any = Dimensions.get("window").width;
 
@@ -40,7 +42,7 @@ const Event1 = (props: Props) => {
     }
 
     return (
-        <View style={{ flex: 1 }}>
+       <EventWrapper backgroundColor={COLORS.background2}>
             <Image source={require('../../assets/events/eventpage.png')} style={{ width: '100%', height: '100%', position: 'absolute' }} />
             <View style={[styles.top_button_container, { width: Width }]}>
                 <View style={styles.top_button_body}>
@@ -81,7 +83,7 @@ const Event1 = (props: Props) => {
                 onRequestClose={() => setMessageModal(false)}
                 closePress={() => setMessageModal(false)}
             />
-        </View>
+           </EventWrapper>
     )
 }
 
