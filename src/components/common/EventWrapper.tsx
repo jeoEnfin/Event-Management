@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { ReactNode } from 'react'
+import {StyleSheet, View} from 'react-native';
+import React, {ReactNode} from 'react';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 
 type Props = {

@@ -12,21 +12,34 @@ type Props = {
     onPressShare?: () => void;
     home?: boolean;
     share?: boolean;
+    back?: boolean;
 }
 
 const TopBar = (props: Props) => {
     const navigation: any = useNavigation()
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor={COLORS.btnBackground} />
-            <Text style={styles.title_text}>{props.title}</Text>
+            <StatusBar backgroundColor={COLORS.background} />
+            <View style={styles.title_container}>
+                {props.back && (
+                    <RoundButton
+                    iconName='arrow-back'
+                    iconSize={26}
+                    color={COLORS.lightWhite}
+                    backgroundColor={COLORS.background}
+                    hapticFeedback={true}
+                    onPress={() => { navigation.goBack() }}
+                />
+                )}
+                {props.title && (<Text style={styles.title_text}>{props.title}</Text>)}
+            </View>
             <View style={styles.button_container}>
                 {props.scanner && (
                     <RoundButton
                         iconName='scan'
                         iconSize={28}
                         color={COLORS.lightWhite}
-                        backgroundColor={COLORS.btnBackground}
+                        backgroundColor={COLORS.background}
                         hapticFeedback={true}
                         onPress={() => { navigation.navigate('Scan') }}
                     />)}
@@ -35,7 +48,7 @@ const TopBar = (props: Props) => {
                         iconName='share-social'
                         iconSize={28}
                         color={COLORS.lightWhite}
-                        backgroundColor={COLORS.btnBackground}
+                        backgroundColor={COLORS.background}
                         hapticFeedback={true}
                         onPress={props.onPressShare}
                     />)}
@@ -44,16 +57,16 @@ const TopBar = (props: Props) => {
                         iconName='menu'
                         iconSize={28}
                         color={COLORS.lightWhite}
-                        backgroundColor={COLORS.btnBackground}
+                        backgroundColor={COLORS.background}
                         hapticFeedback={true}
                         onPress={props.onPressMenu}
                     />)}
                 {props.home && (
                     <RoundButton
                         iconName='home'
-                        iconSize={28}
+                        iconSize={26}
                         color={COLORS.lightWhite}
-                        backgroundColor={COLORS.btnBackground}
+                        backgroundColor={COLORS.background}
                         hapticFeedback={true}
                         onPress={() => { navigation.navigate('Join') }}
                     />)}
@@ -66,29 +79,30 @@ export default TopBar
 
 const styles = StyleSheet.create({
     container: {
-        height: 80,
-        backgroundColor: COLORS.btnBackground,
-        borderBottomWidth: 1,
-        borderLeftWidth: 1,
-        borderRightWidth: 1,
-        borderColor: COLORS.baseWhite,
+        height: 60,
+        backgroundColor: COLORS.background,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
         elevation: 10,
-        width: '100%'
+        width: '100%',
     },
     title_text: {
         fontWeight: 'bold',
         fontSize: TXT_SIZE.XXL,
         color: COLORS.baseWhite,
-        marginLeft: 5
+        marginLeft: 5,
+        marginBottom: 10,
+        textTransform: 'capitalize'
     },
     button_container: {
         flexDirection: 'row',
         alignItems: 'center'
+    },
+    title_container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: -10
     }
 })

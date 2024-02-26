@@ -1,16 +1,14 @@
-import { ActivityIndicator, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 
-import MainStack from './MainStack'
+import MainStack from './MainStack';
 import { useDispatch, useSelector } from 'react-redux';
 import AuthStack from './AuthStack';
 import { Init } from '../store/actions';
 import { COLORS } from '../constants';
 
-
 type Props = {
-
 }
 
 const RootNavigation = (props: Props) => {

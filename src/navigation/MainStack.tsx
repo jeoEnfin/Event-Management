@@ -12,6 +12,8 @@ import Test3screen from '../pages/test/test3screen';
 import DemoEvent from '../pages/events/DemoEvent';
 import BoothScreen from '../pages/booth/BoothScreen';
 import Test2Screen from '../pages/test/test2Screen';
+import Hall_1 from '../pages/halls/Hall_1';
+import { COLORS } from '../constants';
 
 
 type Props = {}
@@ -21,7 +23,7 @@ const Stack = createNativeStackNavigator();
 const MainStack = (props: Props) => {
 
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false}}>
+        <Stack.Navigator screenOptions={{ statusBarColor: COLORS.background ,headerShown: false}}>
             <Stack.Screen name='HomeTab' component={TabNav} options={{ orientation: 'portrait' }} />
             <Stack.Screen name='Scan' component={ScanScreen} options={{ orientation: 'portrait' }} />
             <Stack.Screen name='ScanReader' component={ScanReader} options={{ orientation: 'portrait' }} />
@@ -31,6 +33,7 @@ const MainStack = (props: Props) => {
             <Stack.Screen name="Test3" component={Test3screen} options={{ orientation: 'landscape', statusBarHidden: true }} />
             <Stack.Screen name="Event" component={DemoEvent} options={{ orientation: 'landscape', statusBarHidden: true }} />
             <Stack.Screen name="Booth" component={BoothScreen} options={{ orientation: 'landscape', statusBarHidden: true }} />
+            <Stack.Screen name="Hall_1" component={Hall_1} options={{orientation: 'portrait'}}/>
         </Stack.Navigator>
     )
 }

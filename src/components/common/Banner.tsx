@@ -2,6 +2,7 @@ import { Image, StyleSheet, Text, View, Dimensions, FlatList } from 'react-nativ
 import React, { useEffect, useRef } from 'react'
 import { BANNER_DATA } from '../../constants/demoData';
 
+
 const screenWidth = Dimensions.get("window").width;
 
 type Props = {
@@ -16,20 +17,20 @@ type ItemProps = {
 
 const Banner = (props: Props) => {
 
-    const flatListRef:any = useRef(null);
-    const scrollInterval:any = useRef(null);
+    const flatListRef: any = useRef(null);
+    const scrollInterval: any = useRef(null);
 
     useEffect(() => {
-      startAutoScroll();
-      return () => clearInterval(scrollInterval.current);
+        startAutoScroll();
+        return () => clearInterval(scrollInterval.current);
     }, []);
-  
+
     const startAutoScroll = () => {
-      scrollInterval.current = setInterval(() => {
-        if (flatListRef.current) {
-          flatListRef.current.scrollToEnd({ animated: true });
-        }
-      }, 3000);
+        scrollInterval.current = setInterval(() => {
+            if (flatListRef.current) {
+                flatListRef.current.scrollToEnd({ animated: true });
+            }
+        }, 3000);
     };
 
     const Item = ({ id, url }: ItemProps) => {
@@ -54,7 +55,7 @@ const Banner = (props: Props) => {
     return (
         <View style={{
             width: screenWidth,
-            height: '35%',
+            height: 250,
         }}>
             <FlatList
                 ref={flatListRef}
@@ -69,6 +70,7 @@ const Banner = (props: Props) => {
                 keyExtractor={(item: any) => item.banner_id}
                 style={{ width: screenWidth }}
             />
+
         </View>
     )
 }

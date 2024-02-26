@@ -42,13 +42,13 @@ const Booth4 = (props: Props) => {
         }
     },[screenHeight,screenWidth])
 
-    const audi_url_validator = (value:string)=>{
-        if(value === null || value === undefined){
+    const audi_url_validator = (value:any)=>{
+        if(value.audi_url === null || value.audi_url === undefined){
             Alert.alert('Its not available now !!', 'video url not available', [
                 {text: 'OK',style: 'cancel'},
               ]);
         } else {
-            navigation.navigate('Test2',{url:value})
+            navigation.navigate('Hall_1',{url:value.audi_url ,title:value.audi_title,data: value,halls_data: props.audi_Data})
         }
     }
 
@@ -68,7 +68,7 @@ const Booth4 = (props: Props) => {
             <TouchableOpacity
                 key={id}
                 style={[styles.booth_container]}
-                onPress={() => audi_url_validator(data.audi_url)}>
+                onPress={() => audi_url_validator(data)}>
                 <Text style={[styles.btn_txt, { color: props.audi_textColor,fontWeight: '700' }]}>{title.toUpperCase()}</Text>
             </TouchableOpacity>
         )

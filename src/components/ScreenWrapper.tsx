@@ -9,7 +9,7 @@ type Props = {
 const ScreenWrapper: React.FC<Props> = ({ children }) => {
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor={COLORS.btnBackground} />
+            <StatusBar backgroundColor={COLORS.background} />
             {children}
         </View>
     )

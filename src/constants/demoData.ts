@@ -6,6 +6,7 @@ export const DATA = [
         timeFrom: '2024-01-02T12:38:00Z',
         timeTo: '2024-01-02T12:38:00Z',
         screen: '1',
+        p_img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbytcTMn-PJN2DiVxVhG4wy5YbWN_OWxhNKw&usqp=CAU',
         img: 'https://static.vecteezy.com/system/resources/previews/026/620/622/non_2x/elegant-christmas-banner-christmas-panoramic-banner-with-yellow-ribbon-intertwined-with-christmas-text-lettering-christmas-poster-greeting-cards-header-or-profile-cover-illustration-vector.jpg',
         event: {
             event_title: 'Event 1',
@@ -14,12 +15,14 @@ export const DATA = [
         audi: [{
             audi_id: '1',
             audi_title: 'audi 1',
-            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b'
+            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
         },
         {
             audi_id: '2',
             audi_title: 'audi 2',
-            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b'
+            audi_url: 'https://www.youtube.com/embed/Rwe5Aw3KPHY',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
         }
         ],
         booth:
@@ -76,6 +79,7 @@ export const DATA = [
         timeFrom: '2024-01-02T12:38:00Z',
         timeTo: '2024-01-02T12:38:00Z',
         screen: '2',
+        p_img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVBkr3pOd3AGtLH43qw4CYRTw_tRf0hSE7DPBf8jwIzXlWbcf95Z1v2vjtwpJvn66m4E&usqp=CAU',
         img: 'https://sp-ao.shortpixel.ai/client/to_auto,q_lossy,ret_img,w_736,h_386/https://louisem.com/wp-content/uploads/2016/09/facebook-event-cover-photo.jpg',
         event: {
             event_title: 'Event 2',
@@ -84,12 +88,14 @@ export const DATA = [
         audi: [{
             audi_id: '1',
             audi_title: 'audi 1',
-            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b'
+            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
         },
         {
             audi_id: '2',
             audi_title: 'audi 2',
-            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b'
+            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
         }
         ],
         booth:
@@ -139,6 +145,7 @@ export const DATA = [
         timeFrom: '2024-01-02T12:38:00Z',
         timeTo: '2024-01-02T12:38:00Z',
         screen: '3',
+        p_img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTIyH5fEu9aY_-fjHlVZvzYho7tax0itcEx8nTSSX3QzQ1BguScbMvIjGuBTL6BDCeCuY&usqp=CAU',
         img: 'https://marketplace.canva.com/EAE-FddHnS4/1/0/1600w/canva-blue-%26-red-gradient-modern-business-conference-poster-landscape-DdRjIQt6aRQ.jpg',
         event: {
             event_title: 'Event 2',
@@ -147,12 +154,14 @@ export const DATA = [
         audi: [{
             audi_id: '1',
             audi_title: 'audi 1',
-            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b'
+            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
         },
         {
             audi_id: '2',
             audi_title: 'audi 2',
-            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b'
+            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
         }
         ],
         booth:
@@ -209,6 +218,7 @@ export const DATA = [
         timeFrom: '2024-01-02T12:38:00Z',
         timeTo: '2024-01-02T12:38:00Z',
         screen: '1',
+        p_img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3L8Z-ruPmv4NP3aJ2gWzgSuu1I1jj3BhCC9qn1wpSA96u6jHRGL9R7b2BdO2-w_PGD6E&usqp=CAU',
         img: 'https://d1csarkz8obe9u.cloudfront.net/posterpreviews/nightclub-dance-party-landscape-flyer-template-f69a412a8dd4e6f0bb393b01e1327395_screen.jpg?ts=1561377260',
         event: {
             event_title: 'Event 2',
@@ -217,13 +227,34 @@ export const DATA = [
         audi: [{
             audi_id: '1',
             audi_title: 'audi 1',
-            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b'
+            audi_url: 'https://www.youtube.com/embed/BJ3Yv572V1A?autoplay=1',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
         },
         {
             audi_id: '2',
             audi_title: 'audi 2',
-            // audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b'
-        }],
+            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
+        },
+        {
+            audi_id: '3',
+            audi_title: 'audi 3',
+            audi_url: 'https://player.vimeo.com/video/891579431?h=50f91bde9b',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
+        },
+        {
+            audi_id: '4',
+            audi_title: 'audi 4',
+            audi_url: 'https://www.youtube.com/embed/BJ3Yv572V1A?autoplay=1',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
+        },
+        {
+            audi_id: '5',
+            audi_title: 'audi 5',
+            audi_url: 'https://www.youtube.com/embed/BJ3Yv572V1A?autoplay=1',
+            audi_description: 'Join us for a thrilling journey under the stars! This Stargazing Night offers a unique opportunity to explore the wonders of the Milky Way from the top of the Sun Sky Observatory.',
+        }
+    ],
         booth:
             [
                 {
