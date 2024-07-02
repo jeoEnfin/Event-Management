@@ -70,9 +70,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   input: {
-    width: 40,
-    height: 40,
-    borderColor: COLORS.baseWhite,
+    width: 45,
+    height: 50,
+    borderColor: COLORS.default.dark,
+    color: COLORS.text.main,
     borderWidth: 1,
     borderRadius: 5,
     textAlign: 'center',

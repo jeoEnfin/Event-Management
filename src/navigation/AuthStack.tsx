@@ -5,6 +5,8 @@ import LoginScreen from '../pages/auth/Login';
 import { useSelector } from 'react-redux';
 import TwoFactorAuth from '../pages/auth/TwoFactorAuth';
 import Welcome from '../pages/auth/Welcome';
+import ForgotPassword from '../pages/auth/ForgotPassword';
+import ResetPassword from '../pages/auth/ResetPassword';
 
 
 type Props = {}
@@ -20,9 +22,11 @@ const AuthStack = (props: Props) => {
     <Stack.Navigator screenOptions={{ orientation: 'portrait', headerShown: false }}>
       {token === null ?
         <>
-          <Stack.Screen name='Welcome' component={Welcome}/>
+          {/* <Stack.Screen name='Welcome' component={Welcome}/> */}
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Signup" component={Signup} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="ResetPassword" component={ResetPassword} />
         </> :
         <Stack.Screen name="TFA" component={TwoFactorAuth} />}
     </Stack.Navigator>

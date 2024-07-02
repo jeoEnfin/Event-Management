@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
 import React, { useState,useCallback } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { COLORS } from '../constants';
+import { COLORS } from '../../constants';
+
 
 type Props = {
     iconName?: string;
@@ -20,6 +21,7 @@ type Props = {
 const InputText = (props: Props) => {
 
     const [text, setText] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
 
     const handleTextChange = useCallback(
         (newText: string) => {
@@ -32,7 +34,7 @@ const InputText = (props: Props) => {
       );
 
     return (
-        <View style={[styles.txtField,props.error ? {borderColor: COLORS.redButton} : {borderColor: COLORS.background }]}>
+        <View style={[styles.txtField,props.error ? {borderColor: COLORS.redButton} : {borderColor: COLORS.background } ]}>
             <TextInput
                 style={styles.txtFieldText}
                 placeholder={props.placeholder}
@@ -43,6 +45,8 @@ const InputText = (props: Props) => {
                 value={props.value}
                 onChangeText={handleTextChange}
                 keyboardType={props.keyboardType}
+                onFocus={() => setIsFocused(true)} 
+                onBlur={() => setIsFocused(false)}
             />
             {props.iconName &&
             <TouchableOpacity style={{position: 'absolute',left: '90%',opacity: props.textSecure ?  0.5 : 1}} onPressIn={props.showText} onPressOut={props.hideText}>
@@ -57,7 +61,7 @@ export default InputText
 const styles = StyleSheet.create({
     txtField: {
         borderWidth: 2,
-        borderRadius: 10,
+        borderRadius: 5,
         padding: 10,
         margin: 5,
         flexDirection: 'row',
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     txtFieldText: {
-        color: COLORS.background,
+        color: COLORS.default.dark,
         height: 40,
         width: '100%'
     }

@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { COLORS } from '../../constants';
-import InputText from '../../components/InputText';
 import { useNavigation } from '@react-navigation/native';
+import InputText from '../../components/common/InputText';
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height

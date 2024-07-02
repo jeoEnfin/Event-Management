@@ -1,9 +1,8 @@
-import { StyleSheet, Text, View, Dimensions, TextInput, TouchableOpacity,Platform, Alert } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TextInput, TouchableOpacity, Platform, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLORS } from '../../constants'
 import RoundButton from '../../components/RoundButton';
 import { useNavigation } from '@react-navigation/native';
-import InputText from '../../components/InputText';
 import { isValidEmail, isValidPassword } from '../../utils/validations';
 
 
@@ -11,6 +10,12 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import googleConfig from '../../utils/services/GoogleSigninConfig';
 import { useDispatch } from 'react-redux';
 import { Login } from '../../store/actions';
+import Button from '../../components/common/Button';
+import CheckboxWithLabel from '../../components/common/CheckboxWithLabel';
+import InputText from '../../components/common/InputText';
+import AuthContainer from './common/AuthContainer';
+import AuthHeader from './common/AuthHeader';
+import CustomIconButton from '../../components/common/CustomIconButton';
 
 
 
@@ -29,13 +34,13 @@ const LoginScreen = (props: Props) => {
     const [error, setError] = useState<boolean>(false);
     const [errorEmail, setErrorEmail] = useState<boolean>(false);
     const [errorPassword, setErrorPassword] = useState<boolean>(false);
-    const platformName = Platform.OS; 
+    const platformName = Platform.OS;
 
-    
+
 
     useEffect(() => {
-      googleConfig();
-      }, []);
+        googleConfig();
+    }, []);
 
     const handleEmailChange = (newEmail: string) => {
         const isEmailValid = isValidEmail(newEmail);
@@ -63,7 +68,7 @@ const LoginScreen = (props: Props) => {
     };
 
     const validation = () => {
-        if (username.length === 0 || password.length === 0){
+        if (username.length === 0 || password.length === 0) {
             setErrorEmail(true);
             setErrorPassword(true)
             setError(true);
@@ -93,11 +98,11 @@ const LoginScreen = (props: Props) => {
             // navigation.navigate('TFA', { username: email , password: password})
             setUsername('');
             setPassword('');
-            
+
         } else {
             Alert.alert('Invalid Credentials', 'username or password is invalid', [
-                {text: 'OK', onPress: () => console.log('OK Pressed')},
-              ]);
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
             setError(true)
         }
     }
@@ -113,13 +118,14 @@ const LoginScreen = (props: Props) => {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.headBody}>
-                <Text style={styles.headTxt}>Login.</Text>
-            </View>
-            <View style={styles.body}>
+        <AuthContainer>
+            <AuthHeader
+                title='Welcome Back'
+                subTitle='Login to your Account'
+            />
+            <View style={{ marginTop: 10, gap: 6 }}>
                 <InputText
-                    placeholder='email'
+                    placeholder='Email'
                     autoComplete='email'
                     textSecure={false}
                     showText={() => { }}
@@ -129,7 +135,7 @@ const LoginScreen = (props: Props) => {
                     error={errorEmail}
                 />
                 <InputText
-                    placeholder='password'
+                    placeholder='Password'
                     iconName='eye-outline'
                     autoComplete='new-password'
                     textSecure={isTextSecure}
@@ -141,71 +147,40 @@ const LoginScreen = (props: Props) => {
                     error={errorPassword}
                 />
                 {error && <Text style={styles.errorTxt}>Enter valid details</Text>}
-                <TouchableOpacity style={styles.btn} onPress={() => {handleLogin()}}>
-                    <Text style={styles.btnTxt}>Login</Text>
-                </TouchableOpacity>
-                <View style={styles.forgotBody}>
-                    <TouchableOpacity>
-                        <Text style={styles.fgtTxt}>Forgot password</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.socialBtn}>
-                    
-                    <RoundButton
-                        iconName='logo-google'
-                        iconSize={28}
-                        color={COLORS.baseWhite}
-                        backgroundColor={COLORS.background}
-                        hapticFeedback={true}
-                        onPress={() => {googleLoginHandler()}}
-                    />
-                    {platformName === 'ios' && <RoundButton
-                        iconName='logo-apple'
-                        iconSize={28}
-                        color={COLORS.baseWhite}
-                        backgroundColor={COLORS.background}
-                        hapticFeedback={true}
-                        onPress={() => { }}
-                    />}
-                </View>
-                <View style={styles.signupBody}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                        <Text style={styles.signupTxt}>Don't have an account ? <Text style={{color:'blue'}}>Signup</Text></Text>
-                    </TouchableOpacity>
-                </View>
             </View>
-        </View>
+            <View style={styles.forgotBody}>
+                <CheckboxWithLabel
+                    label='Remember me'
+                />
+                <TouchableOpacity onPress={() => { navigation.navigate('ForgotPassword') }}>
+                    <Text style={styles.fgtTxt}>Forgot password?</Text>
+                </TouchableOpacity>
+            </View>
+            <Button label='Login' buttonClick={handleLogin} />
+            <View style={styles.signupBody}>
+                <Text style={styles.signupTxt}>or continue with</Text>
+            </View>
+            <View style={styles.socialBtn}>
+                <CustomIconButton
+                    imageUrl='https://static.vecteezy.com/system/resources/thumbnails/022/484/503/small_2x/google-lens-icon-logo-symbol-free-png.png'
+                    onClick={() => googleLoginHandler()}
+                />
+                <CustomIconButton
+                    imageUrl='https://i.pinimg.com/736x/42/75/49/427549f6f22470ff93ca714479d180c2.jpg'
+                    // onClick={() => googleLoginHandler()}
+                />
+                <CustomIconButton
+                    imageUrl='https://i.pinimg.com/736x/ca/61/15/ca6115500b30a04913546177d69126f3.jpg'
+                    // onClick={() => googleLoginHandler()}
+                />
+            </View>
+        </AuthContainer>
     )
 }
 
 export default LoginScreen
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: COLORS.background,
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    body: {
-        backgroundColor: COLORS.baseWhite,
-        width: screenWidth - 50,
-        borderTopRightRadius: 25,
-        borderBottomLeftRadius: 25,
-        padding: 15,
-        justifyContent: 'center',
-        elevation: 15
-    },
-    headTxt: {
-        fontSize: 35,
-        color: COLORS.baseWhite,
-        fontWeight: 'bold',
-        marginBottom: 10
-    },
-    headBody: {
-        alignItems: 'flex-start',
-        width: screenWidth - 50,
-    },
     txtField: {
         borderColor: '#8213d6',
         borderWidth: 2,
@@ -214,39 +189,31 @@ const styles = StyleSheet.create({
         margin: 5,
         color: COLORS.background2
     },
-    btn: {
-        borderRadius: 10,
-        padding: 10,
-        margin: 5,
-        backgroundColor: COLORS.background,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    btnTxt: {
-        color: COLORS.baseWhite,
-        fontSize: 20,
-        fontWeight: 'bold'
-    },
     forgotBody: {
-        alignItems: 'flex-end',
+        alignItems: 'center',
         margin: 5,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 20
     },
     fgtTxt: {
-        color: COLORS.background2,
-        fontSize: 12
+        color: COLORS.secondary.main,
+        fontWeight: '600',
+        textDecorationLine: 'underline'
     },
     socialBtn: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 15
+        marginVertical: 15,
+        gap: 15
     },
     signupBody: {
         alignItems: 'center',
-        marginTop: 15
+        marginVertical: 20
     },
     signupTxt: {
-        color: COLORS.background2
+        color: COLORS.text.main
     },
     errorTxt: {
         color: COLORS.redButton,
