@@ -4,11 +4,12 @@ import { COLORS } from '../../constants'
 import { useNavigation } from '@react-navigation/native'
 import RoundButton from '../../components/RoundButton'
 import OTPInput from '../../components/OTPInput'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Logout, Otp } from '../../store/actions'
 import AuthContainer from './common/AuthContainer'
 import AuthHeader from './common/AuthHeader'
 import Button from '../../components/common/Button'
+import { CiTruncate } from '../../utils/common'
 
 type Props = {
     route: any;
@@ -16,16 +17,19 @@ type Props = {
 
 const TwoFactorAuth = ({ route }: Props) => {
     const navigation: any = useNavigation()
+    const user = useSelector((state: any) => state.AuthReducers.authUsername)
     const [otp, setOtp] = useState('')
+    const [errorTxt, setErrorTxt] = useState<string>('')
 
     const dispatch = useDispatch();
 
     const handleOTP = () => {
-        if (otp !== null) {
+        if (otp !== '') {
             dispatch(Otp(otp))
+            setErrorTxt('')
         }
         else {
-            console.log('opt error')
+            setErrorTxt('Token must be enter')
         }
     }
 
@@ -33,13 +37,14 @@ const TwoFactorAuth = ({ route }: Props) => {
         <AuthContainer>
             <AuthHeader
                 title='OTP Authentication'
-                subTitle='OTP set to sample@example.com.'
+                subTitle={`OTP set to ${CiTruncate(user, 15)}`}
                 linkButtonLabel='Change'
                 isLinkButton
                 linkButtonClick={()=>{ dispatch(Logout())}}
             />
             <View style={styles.otpBody}>
                 <OTPInput length={6} onComplete={(data) => { setOtp(data) }} />
+                {errorTxt && <Text style={styles.errorTxt}>{errorTxt}</Text>}
             </View>
             <View style={styles.infoTxtBody}>
                 <Text style={styles.infoTxt}>Resend OTP in 60 sec</Text>
@@ -64,5 +69,12 @@ const styles = StyleSheet.create({
     },
     infoTxt: {
         color: COLORS.text.main
+    },
+    errorTxt: {
+        color: COLORS.redButton,
+        marginLeft: 10,
+        fontSize: 12,
+        fontWeight: '500',
+        marginTop: 10,
     }
 })

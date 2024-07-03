@@ -1,14 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const Login = (username: string, password: string) => {
-    let token = null;
-    if (username === 'jeothankachan98@gmail.com' && password === 'Abcd1234@')
-    {
-        token = username + password;
-    } 
+export const Login = (username: string, token: string, tenant: string) => {
     return ({
         type: 'LOGIN',
-        payload: token
+        payload: {token,username, tenant}
     })
 }
 

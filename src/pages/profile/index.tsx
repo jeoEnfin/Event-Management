@@ -22,7 +22,7 @@ const Profile = (props: Props) => {
 
     return (
         <ScreenWrapper>
-            <TopBar title='Profile' menu onPressMenu={() => setIsVisible(!isVisible)} share />
+            <TopBar title='Profile' profile onPressMenu={() => setIsVisible(!isVisible)} share />
             <ScrollView style={{ width: '100%' }}>
                 <View style={{ alignItems: 'center' }}>
                     <ProfileCard

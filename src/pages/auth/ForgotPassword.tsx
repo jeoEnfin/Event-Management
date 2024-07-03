@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import { Alert, Platform, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import AuthContainer from './common/AuthContainer'
 import AuthHeader from './common/AuthHeader'
@@ -7,15 +7,17 @@ import { isValidEmail } from '../../utils/validations'
 import { COLORS } from '../../constants'
 import Button from '../../components/common/Button'
 import { useNavigation } from '@react-navigation/native'
+import { ForgotPasswordAPI } from './apis/ForgotPasswordApi'
 
 type Props = {}
 
 const ForgotPassword = (props: Props) => {
     const navigation: any = useNavigation()
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState<string>('');
     const [isTextSecure, setIsTextSecure] = useState<boolean>(true);
     const [error, setError] = useState<boolean>(false);
     const [errorEmail, setErrorEmail] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>('');
     const platformName = Platform.OS;
 
 
@@ -25,7 +27,9 @@ const ForgotPassword = (props: Props) => {
             setUsername(newEmail.toLowerCase())
             setErrorEmail(false)
             setError(false)
+            setErrorMessage('')
         } else {
+            setErrorMessage('Enter valid email address')
             setErrorEmail(true);
             setError(true);
         }
@@ -35,21 +39,48 @@ const ForgotPassword = (props: Props) => {
         if (username.length === 0) {
             setErrorEmail(true);
             setError(true);
+            setErrorMessage('Email must be enter')
         }
         else if (username.length === 0) {
             setError(true);
+            setErrorMessage('Email must be enter')
         }
         else if (errorEmail === true) {
             setError(true)
+            setErrorMessage('Email must be enter')
         }
         else {
             setError(false)
         }
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         validation();
-        navigation.navigate('ResetPassword')
+        if (username) {
+            const data = {
+                email: username
+            }
+            try {
+                const forgotPasswordResponse = await ForgotPasswordAPI({ data })
+                console.log(forgotPasswordResponse.data.data)
+                if(forgotPasswordResponse.data.data){
+                    Alert.alert(forgotPasswordResponse.data.data, '', [
+                        { text: 'OK', onPress: () => { } },
+                    ]);
+                    setTimeout(() => {
+                        navigation.navigate('Login') 
+                    },3000)
+                }
+            } catch (e: any) {
+                setError(true)
+                if (e.response.data.message) {
+                    setErrorMessage(e.response.data.message)
+                }
+                else {
+                    setErrorMessage('Something went wrong')
+                }
+            }
+        }
     }
 
     return (
@@ -69,7 +100,7 @@ const ForgotPassword = (props: Props) => {
                     //value={email}
                     error={errorEmail}
                 />
-                {error && <Text style={styles.errorTxt}>Enter valid details</Text>}
+                {error && <Text style={styles.errorTxt}>{errorMessage}</Text>}
             </View>
             <View style={styles.infoTxtBody}>
                 <Text style={styles.infoTxt}>A link send to you mail to reset password.</Text>
@@ -79,10 +110,10 @@ const ForgotPassword = (props: Props) => {
                 label='Reset'
             />
             <View style={styles.infoTxtBody}>
-                <Text style={styles.infoTxt}>Remember it ? <Text 
-                style={{color: COLORS.secondary.main , fontWeight: '600'}}
-                onPress={()=>{navigation.navigate('Login')}}
-                
+                <Text style={styles.infoTxt}>Remember it ? <Text
+                    style={{ color: COLORS.secondary.main, fontWeight: '600' }}
+                    onPress={() => { navigation.navigate('Login') }}
+
                 >Login</Text></Text>
             </View>
         </AuthContainer>

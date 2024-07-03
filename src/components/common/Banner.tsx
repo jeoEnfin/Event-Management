@@ -1,40 +1,21 @@
-import { Image, StyleSheet, Text, View, Dimensions, FlatList } from 'react-native'
-import React, { useEffect, useRef } from 'react'
-import { BANNER_DATA } from '../../constants/demoData';
+import { StyleSheet, Text, View, Dimensions, ImageBackground, TouchableOpacity, Image } from 'react-native'
+import React from 'react'
 
+import { COLORS } from '../../constants';
 
 const screenWidth = Dimensions.get("window").width;
 
 type Props = {
-    event_url?: string;
-    banner_Data?: any;
-}
 
-type ItemProps = {
-    id: number;
-    url: string;
 }
 
 const Banner = (props: Props) => {
 
-    const flatListRef: any = useRef(null);
-    const scrollInterval: any = useRef(null);
-
-    useEffect(() => {
-        startAutoScroll();
-        return () => clearInterval(scrollInterval.current);
-    }, []);
-
-    const startAutoScroll = () => {
-        scrollInterval.current = setInterval(() => {
-            if (flatListRef.current) {
-                flatListRef.current.scrollToEnd({ animated: true });
-            }
-        }, 3000);
-    };
-
-    const Item = ({ id, url }: ItemProps) => {
-        return (
+    return (
+        <View style={{
+            width: screenWidth,
+            height: 240,
+        }}>
             <View
                 style={{
                     width: screenWidth,
@@ -43,33 +24,26 @@ const Banner = (props: Props) => {
                     padding: 5
                 }}>
                 <Image
-                    style={{ width: '100%', height: '100%', borderRadius: 10 }}
+                    style={{ width: '100%', height: '100%' }}
                     resizeMode='stretch'
-                    source={{ uri: url }}
+                    source={require('../../assets/ci/banner.png')}
                     alt='No image'
                 />
+                <Image
+                    style={styles.shade}
+                    resizeMode='stretch'
+                    source={require('../../assets/ci/bannerShade.png')}
+                    alt='No image'
+                />
+                    <View style={styles.body}>
+                        <Text style={styles.text1}>THE BEST INTERPRETING</Text>
+                        <Text style={styles.text1}>AGENCEY FOR YOUR</Text>
+                        <Image source={require('../../assets/ci/eventLogo.png')} style={styles.text2} resizeMode='contain' />
+                        <TouchableOpacity style={styles.btnBody}>
+                            <Text style={styles.btnText}>Talk to us</Text>
+                        </TouchableOpacity>
+                    </View>
             </View>
-        )
-    }
-
-    return (
-        <View style={{
-            width: screenWidth,
-            height: 250,
-        }}>
-            <FlatList
-                ref={flatListRef}
-                data={BANNER_DATA}
-                renderItem={({ item }) =>
-                    <Item
-                        id={item.banner_id}
-                        url={item.banner_url}
-                    />
-                }
-                horizontal={true}
-                keyExtractor={(item: any) => item.banner_id}
-                style={{ width: screenWidth }}
-            />
 
         </View>
     )
@@ -77,4 +51,46 @@ const Banner = (props: Props) => {
 
 export default Banner
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    body: {
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        margin: 10,
+        padding: 15,
+        gap: 4
+    },
+    text1: {
+        color: COLORS.text.primary,
+        fontSize: 18,
+        fontWeight: '400'
+    },
+    text2: {
+      height: 24,
+      width: 76
+    },
+    btnText: {
+        color: COLORS.text.primary,
+        fontWeight: '600'
+    },
+    btnBody: {
+        borderRadius: 8,
+        borderWidth: 1.5,
+        borderColor: COLORS.text.primary,
+        height: 39,
+        width: 90,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+    },
+    subBody: {
+        backgroundColor: COLORS.default.dark,
+    },
+    shade: {
+        width: '100%', 
+        height: 220,
+        position: 'absolute',
+        left: 5,
+        top: 5
+    }
+})

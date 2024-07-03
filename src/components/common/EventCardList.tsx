@@ -42,7 +42,7 @@ const EventCardList = (props: Props) => {
             <Text style={{
                 fontWeight: 'bold',
                 fontSize: TXT_SIZE.XL,
-                color: COLORS.baseWhite,
+                color: COLORS.text.main,
                 marginLeft: 10,
                 marginBottom: 5
             }}>{props.title}</Text>

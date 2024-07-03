@@ -16,6 +16,8 @@ import InputText from '../../components/common/InputText';
 import AuthContainer from './common/AuthContainer';
 import AuthHeader from './common/AuthHeader';
 import CustomIconButton from '../../components/common/CustomIconButton';
+import { AuthLoginAPI } from './apis/AuthLogin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -35,6 +37,8 @@ const LoginScreen = (props: Props) => {
     const [errorEmail, setErrorEmail] = useState<boolean>(false);
     const [errorPassword, setErrorPassword] = useState<boolean>(false);
     const platformName = Platform.OS;
+    const [errorTxt, setErrorTxt] = useState<string>('')
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
 
 
@@ -48,20 +52,24 @@ const LoginScreen = (props: Props) => {
             setUsername(newEmail.toLowerCase())
             setErrorEmail(false)
             setError(false)
+            setErrorTxt('')
         } else {
+            setErrorTxt('Enter a valid email address')
             setErrorEmail(true);
             setError(true);
         }
     };
 
     const handlePasswordChange = (newPassword: string) => {
-        const isPasswordValid = isValidPassword(newPassword);
+        const isPasswordValid = newPassword.length > 0;
         if (isPasswordValid) {
             setPassword(newPassword);
             setErrorPassword(false)
             setError(false)
+            setErrorTxt('')
         }
         else {
+            setErrorTxt('Password must be enter')
             setErrorPassword(true);
             setError(true)
         }
@@ -89,16 +97,37 @@ const LoginScreen = (props: Props) => {
         }
     }
 
-    const handleLogin = () => {
-        //console.log('check1',username,password);
+    const handleLogin = async () => {
         validation();
-        if (username != null && password != null) {
-            console.log('check2')
-            dispatch(Login(username, password))
-            // navigation.navigate('TFA', { username: email , password: password})
-            setUsername('');
-            setPassword('');
-
+       
+        if (username != '' && password != '') {
+            setIsLoading(true);
+            const data = {
+                email: username,
+                password: password
+            }
+            try {
+                const userData = await AuthLoginAPI({ data });
+                const access_token = userData?.data?.data?.access_token;
+                const tenant = userData?.data?.data?.tenant;
+                const _user = userData?.data?.data?.user;
+                if(tenant){
+                    AsyncStorage.setItem('tenant_id', tenant)
+                }
+                dispatch(Login(username, access_token, tenant))
+                setError(false)
+                setIsLoading(false);
+            } catch (error: any) {
+                setIsLoading(false);
+                if (error?.response?.data?.message) {
+                    setError(true)
+                    setErrorTxt(error?.response?.data?.message)
+                } else {
+                    Alert.alert('Some thing went wrong', '', [
+                        { text: 'OK', onPress: () => { } },
+                    ]);
+                }
+            }
         } else {
             Alert.alert('Invalid Credentials', 'username or password is invalid', [
                 { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -117,6 +146,10 @@ const LoginScreen = (props: Props) => {
         }
     }
 
+    const ForgotPasswordRoute = () =>{
+        navigation.navigate('ForgotPassword');
+    }
+
     return (
         <AuthContainer>
             <AuthHeader
@@ -131,7 +164,6 @@ const LoginScreen = (props: Props) => {
                     showText={() => { }}
                     inputMode={'email'}
                     onDataChanged={handleEmailChange}
-                    //value={email}
                     error={errorEmail}
                 />
                 <InputText
@@ -143,20 +175,19 @@ const LoginScreen = (props: Props) => {
                     hideText={() => { setIsTextSecure(!isTextSecure) }}
                     onDataChanged={handlePasswordChange}
                     keyboardType={'default'}
-                    //value={password}
                     error={errorPassword}
                 />
-                {error && <Text style={styles.errorTxt}>Enter valid details</Text>}
+                {error && <Text style={styles.errorTxt}>{errorTxt}</Text>}
             </View>
             <View style={styles.forgotBody}>
                 <CheckboxWithLabel
                     label='Remember me'
                 />
-                <TouchableOpacity onPress={() => { navigation.navigate('ForgotPassword') }}>
+                <TouchableOpacity onPress={() => {ForgotPasswordRoute()}}>
                     <Text style={styles.fgtTxt}>Forgot password?</Text>
                 </TouchableOpacity>
             </View>
-            <Button label='Login' buttonClick={handleLogin} />
+            <Button label='Login' buttonClick={handleLogin} loading={isLoading}/>
             <View style={styles.signupBody}>
                 <Text style={styles.signupTxt}>or continue with</Text>
             </View>
@@ -167,11 +198,11 @@ const LoginScreen = (props: Props) => {
                 />
                 <CustomIconButton
                     imageUrl='https://i.pinimg.com/736x/42/75/49/427549f6f22470ff93ca714479d180c2.jpg'
-                    // onClick={() => googleLoginHandler()}
+                // onClick={() => googleLoginHandler()}
                 />
                 <CustomIconButton
                     imageUrl='https://i.pinimg.com/736x/ca/61/15/ca6115500b30a04913546177d69126f3.jpg'
-                    // onClick={() => googleLoginHandler()}
+                // onClick={() => googleLoginHandler()}
                 />
             </View>
         </AuthContainer>
@@ -219,6 +250,6 @@ const styles = StyleSheet.create({
         color: COLORS.redButton,
         marginLeft: 10,
         fontSize: 12,
-        fontWeight: '500'
+        fontWeight: '500',
     }
 })

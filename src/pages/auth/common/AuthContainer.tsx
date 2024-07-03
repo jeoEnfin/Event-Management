@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
 import React, { ReactNode } from 'react'
 import { COLORS } from '../../../constants';
 
@@ -11,11 +11,11 @@ type Props = {
 
 const AuthContainer = ({ children }: Props) => {
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView style={styles.container}>
             <View style={styles.body}>
                 {children}
             </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 

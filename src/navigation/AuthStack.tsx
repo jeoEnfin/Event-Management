@@ -1,6 +1,5 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Signup from '../pages/auth/Signup';
 import LoginScreen from '../pages/auth/Login';
 import { useSelector } from 'react-redux';
 import TwoFactorAuth from '../pages/auth/TwoFactorAuth';
@@ -24,7 +23,6 @@ const AuthStack = (props: Props) => {
         <>
           {/* <Stack.Screen name='Welcome' component={Welcome}/> */}
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
         </> :

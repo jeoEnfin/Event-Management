@@ -4,10 +4,9 @@ import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../constants';
 
-
-import JoinScreen from '../pages/joinScreen';
 import EventList from '../pages/events/EventList';
 import Profile from '../pages/profile';
+import HomeScreen from '../pages/main/HomeScreen';
 
 type Props = {}
 
@@ -24,7 +23,7 @@ const TabNav = (props: Props) => {
 
           if (route.name === 'Join') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'List') {
+          } else if (route.name === 'Events') {
             iconName = focused ? 'list' : 'list-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
@@ -32,16 +31,16 @@ const TabNav = (props: Props) => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: COLORS.btnBackground2,
-        tabBarInactiveTintColor: COLORS.lightWhite,
-        tabBarActiveBackgroundColor: COLORS.background,
-        tabBarInactiveBackgroundColor: COLORS.background,
+        tabBarActiveTintColor: COLORS.secondary.main,
+        tabBarInactiveTintColor: COLORS._background.secondary,
+        tabBarActiveBackgroundColor: COLORS._background.primary,
+        tabBarInactiveBackgroundColor: COLORS._background.primary,
         headerShown: false,
       })
     }
     >
-      <Tab.Screen name="Join" component={JoinScreen} />
-      <Tab.Screen name="List" component={EventList} />
+      <Tab.Screen name="Join" component={HomeScreen} />
+      <Tab.Screen name="Events" component={EventList} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   )

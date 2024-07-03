@@ -9,7 +9,7 @@ type Props = {
 const ScreenWrapper: React.FC<Props> = ({ children }) => {
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor={COLORS.background} />
+            <StatusBar backgroundColor={COLORS._background.primary} barStyle={'dark-content'} />
             {children}
         </View>
     )
@@ -20,7 +20,7 @@ export default ScreenWrapper
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS._background.primary,
         alignItems: 'center',
         width: '100%',
     }

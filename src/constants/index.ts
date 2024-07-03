@@ -16,7 +16,8 @@ export const COLORS = {
     },
     _background: {
         main: "#f1f5f9",
-        primary: "#FFFFFF"
+        primary: "#FFFFFF",
+        secondary: '#cbcfd6'
     },
     default: {
         light: "#FFFFFF",
@@ -24,6 +25,7 @@ export const COLORS = {
     },
     text: {
         main: "#000000",
+        primary: "#FFFFFF",
         error: '#EF4444'
     }
 }
