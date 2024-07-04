@@ -18,6 +18,7 @@ type Props = {
 const TwoFactorAuth = ({ route }: Props) => {
     const navigation: any = useNavigation()
     const user = useSelector((state: any) => state.AuthReducers.authUsername)
+    const token = useSelector((state: any) => state.AuthReducers.authToken)
     const [otp, setOtp] = useState('')
     const [errorTxt, setErrorTxt] = useState<string>('')
 
@@ -43,7 +44,7 @@ const TwoFactorAuth = ({ route }: Props) => {
                 linkButtonClick={()=>{ dispatch(Logout())}}
             />
             <View style={styles.otpBody}>
-                <OTPInput length={6} onComplete={(data) => { setOtp(data) }} />
+                <OTPInput length={6} onComplete={(data) => setOtp(data)} />
                 {errorTxt && <Text style={styles.errorTxt}>{errorTxt}</Text>}
             </View>
             <View style={styles.infoTxtBody}>

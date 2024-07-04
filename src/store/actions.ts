@@ -20,12 +20,11 @@ export const Init = () => {
  
 }}
 
-export const Otp = (otp: string) => {
+export const Otp = (otp: any) => {
   return async (dispatch: any) =>{
   let AUTH_OTP = null;
   if ( otp === '111111'){
     AUTH_OTP = otp + '1234'
-    await AsyncStorage.setItem('token', AUTH_OTP);
     console.log('token stored')
   }
   dispatch ({

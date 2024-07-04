@@ -2,22 +2,79 @@ import { ImageBackground, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { COLORS } from '../../constants'
+import { calculateTimeDifference, calculateTimeDifferenceForTwoDates, CiTruncate, isDateNotPassed } from '../../utils/common'
+import { format } from 'date-fns'
 
 type Props = {
-    url?: string;
-    onPress?: () => void;
+  url?: string;
+  onPress?: () => void;
+  isWatched?: boolean;
+  buttonPress?: () => void;
+  isPaid?: boolean;
+  price?: string;
+  eventType?: string;
+  startDate?: string;
+  endDate?: string;
+  regStartDate?: string;
+  regEndDate?: string;
+  eventTitle?: string;
+  createrName?: string;
 }
 
-const EventSmallCard = (props: Props) => {
+const EventSmallCard = ({
+  url,
+  onPress,
+  isWatched = true,
+  buttonPress,
+  isPaid = true,
+  price,
+  eventType = 'Online',
+  startDate ,
+  endDate ,
+  regStartDate,
+  regEndDate,
+  eventTitle,
+  createrName
+}: Props) => {
+
+  const isRegisterStart =  isDateNotPassed(regStartDate|| '');
+
   return (
-    <TouchableOpacity 
-    onPress={props.onPress}
-    style={styles.container}>
-        <ImageBackground 
-        source={{uri: props.url}}
-        style={{height: '100%', width: '100%'}}
-        >
-        </ImageBackground>
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.container}>
+      <ImageBackground
+        source={{ uri: url }}
+        style={{ height: 143, width: '100%' }}
+        resizeMode='cover'
+      >
+        <View style={styles.header}>
+          <View style={styles.typeBody}>
+            <Text style={styles.typeStyle}>{eventType}</Text>
+          </View>
+          {isWatched && <View style={styles.infoBody}>
+            <Text style={styles.infoStyle}>Event {endDate && calculateTimeDifference(endDate)}</Text>
+          </View>}
+        </View>
+      {!isWatched && <View style={styles.footer}>
+          <View style={styles.regInfoBody}>
+            <Text style={styles.regInfo}>Registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate , regEndDate)}</Text>
+          </View>
+        </View>}
+      </ImageBackground>
+      <View style={styles.detailBody}>
+        <View style={{ gap: 4 }}>
+          <Text style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
+          <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>
+          <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>
+        </View>
+        {!isWatched && <View style={styles.priceBody}>
+          {isPaid && <Text style={styles.priceTxt}>$ {price}/-</Text>}
+          {isRegisterStart &&<TouchableOpacity style={styles.btnBody} onPress={buttonPress}>
+            <Text style={styles.btnText}>{isPaid ? 'Register' : 'Join'}</Text>
+          </TouchableOpacity>}
+        </View>}
+      </View>
     </TouchableOpacity>
   )
 }
@@ -25,15 +82,122 @@ const EventSmallCard = (props: Props) => {
 export default EventSmallCard
 
 const styles = StyleSheet.create({
-    container: {
-        width: 145,
-        height: 220,
-        backgroundColor: COLORS.btnBackground,
-        borderRadius: 10,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        margin: 2,
-        elevation: 2,
-        overflow: 'hidden',
-    },
+  container: {
+    width: 220,
+    height: 'auto',
+    backgroundColor: COLORS._background.primary,
+    borderRadius: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: 7,
+    elevation: 2,
+    overflow: 'hidden',
+  },
+  btnText: {
+    color: COLORS.secondary.main,
+    fontWeight: '600'
+  },
+  btnBody: {
+    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: COLORS.secondary.main,
+    height: 39,
+    width: 90,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  detailBody: {
+    padding: 10,
+    width: '100%',
+    marginVertical: 5
+  },
+  priceBody: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 7
+  },
+  priceTxt: {
+    color: COLORS.text.main,
+    fontSize: 20,
+    fontWeight: '600',
+    marginTop: 7
+  },
+  titleTxt: {
+    color: COLORS.text.main,
+    fontSize: 16,
+    fontWeight: '700'
+  },
+  createdTxt: {
+    color: COLORS.text.main,
+    fontSize: 12,
+    fontWeight: '500'
+  },
+  dateBody: {
+    color: COLORS.text.main,
+    fontSize: 12,
+    fontWeight: '400'
+  },
+  dateTxt: {
+    color: COLORS.text.main,
+    fontSize: 13,
+    fontWeight: '600'
+  },
+  typeStyle: {
+    color: COLORS.text.primary,
+    fontSize: 10,
+    fontWeight: '600'
+  },
+  infoStyle: {
+    color: COLORS.text.primary,
+    fontSize: 10,
+    fontWeight: '600',
+    marginHorizontal: 5
+  },
+  typeBody: {
+    backgroundColor: COLORS.default.dark,
+    height: 19,
+    minWidth: 45,
+    maxWidth: 45,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 5,
+    left: 5
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+  },
+  infoBody: {
+    backgroundColor: COLORS.info.main,
+    height: 21,
+    maxWidth: '70%',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 5,
+    right: 5
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: '18%'
+  },
+  regInfoBody: {
+    height: 21,
+    backgroundColor: COLORS.secondary.main,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  regInfo: {
+    color: COLORS.text.primary,
+    fontSize: 10,
+    fontWeight: '600',
+    marginHorizontal: 7
+  }
 })

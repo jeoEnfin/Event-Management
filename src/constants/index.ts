@@ -27,6 +27,9 @@ export const COLORS = {
         main: "#000000",
         primary: "#FFFFFF",
         error: '#EF4444'
+    },
+    info: {
+        main: '#FE6092'
     }
 }
 

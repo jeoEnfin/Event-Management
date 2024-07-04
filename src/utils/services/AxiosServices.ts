@@ -7,6 +7,7 @@ const axiosClient = axios.create({
   headers: {
     "Content-Type": "application/json",
     "x-tenant-id": 'dell',
+    "context": 'admin'
   },
 });
 

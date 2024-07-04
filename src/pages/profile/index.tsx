@@ -22,18 +22,13 @@ const Profile = (props: Props) => {
 
     return (
         <ScreenWrapper>
-            <TopBar title='Profile' profile onPressMenu={() => setIsVisible(!isVisible)} share />
+            <TopBar profile onPressMenu={() => setIsVisible(!isVisible)} notification />
             <ScrollView style={{ width: '100%' }}>
                 <View style={{ alignItems: 'center' }}>
                     <ProfileCard
                         username='jeo123'
                         name='jeo thanakachan'
                         discription='nothing'
-                    />
-                    <ReportCard
-                        events={1300}
-                        participant={1000}
-                        created={5}
                     />
                 </View>
             </ScrollView>

@@ -111,6 +111,9 @@ const LoginScreen = (props: Props) => {
                 const access_token = userData?.data?.data?.access_token;
                 const tenant = userData?.data?.data?.tenant;
                 const _user = userData?.data?.data?.user;
+                if(access_token){
+                    AsyncStorage.setItem('token', access_token);
+                }
                 if(tenant){
                     AsyncStorage.setItem('tenant_id', tenant)
                 }

@@ -6,6 +6,7 @@ import EventCardList from '../../components/common/EventCardList'
 import { DATA } from '../../constants/demoData'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import TopBar from '../../components/TopBar'
+import { ExpoListingAPI } from './apis/ExpoListApi'
 
 type Props = {
 
@@ -18,43 +19,40 @@ const HomeScreen = (props: Props) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch('https://reqres.in/api/users?page=1');
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
-        }
-        const jsonData = await response.json();
-        setData(jsonData.data);
-        console.log(jsonData.data)
-      } catch (error: any) {
-        setError(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ExpoListingAPI();
+      setData(response?.data?.data?.data)
+    } catch (error: any) {
+      console.log(error.response.data)
+    } 
+  };
 
   const ItemData = [
     <Banner />,
     <EventCardList
-      title='New Event Releases'
-      data={DATA} />,
+      title='Continue Watching'
+      data={data} 
+      isWatched={true}
+      />,
     <EventCardList
-      title='Continue Watching Events'
-      data={DATA} />,
+      title='New Events'
+      data={data} 
+      isWatched={false}
+      />,
     <EventCardList
-      title='Past Events'
+      title='Events Nearby'
       data={DATA} />,
   ]
 
 
   return (
     <ScreenWrapper>
-      <TopBar title='Join ' profile notification search/>
+      <TopBar title='Join ' profile notification search onPressNotification={fetchData}/>
       <FlatList
         showsVerticalScrollIndicator={false}
         data={ItemData}

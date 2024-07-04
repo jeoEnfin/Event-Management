@@ -7,6 +7,7 @@ import { COLORS } from '../constants';
 import EventList from '../pages/events/EventList';
 import Profile from '../pages/profile';
 import HomeScreen from '../pages/main/HomeScreen';
+import EventScreen from '../pages/main/EventScreen';
 
 type Props = {}
 
@@ -40,7 +41,7 @@ const TabNav = (props: Props) => {
     }
     >
       <Tab.Screen name="Join" component={HomeScreen} />
-      <Tab.Screen name="Events" component={EventList} />
+      <Tab.Screen name="Events" component={EventScreen} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   )

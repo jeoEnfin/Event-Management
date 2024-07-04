@@ -7,11 +7,11 @@ import { useNavigation } from '@react-navigation/native';
 type Props = {
     title: string;
     data: any;
+    isWatched?: boolean;
 }
 
 type ItemProps = {
     id: string;
-    img_url: string;
     data: any;
 }
 
@@ -19,20 +19,28 @@ type ItemProps = {
 const EventCardList = (props: Props) => {
     const navigation: any = useNavigation()
 
-    const Item = ({ id, img_url, data }: ItemProps) => {
+    const Item = ({ id,data }: ItemProps) => {
         return (
             <EventSmallCard
                 key={id}
-                url={img_url}
-                onPress={() => navigation.navigate('Event',
-                    {
-                        event: data.screen,
-                        boothData: data.booth,
-                        event_details: data.event,
-                        audiData: data.audi,
-                        data: data,
-                        poster: data.img
-                    })}
+                url={'https://www.shutterstock.com/image-photo/speaker-giving-talk-on-corporate-600nw-481869205.jpg'}
+                eventType={data.expType}
+                startDate={data.expStartDate}
+                endDate={data.expEndDate}
+                eventTitle={data.expName}
+                isWatched={props.isWatched}
+                isPaid={data.expIsPaid}
+                regStartDate={data.expRegistrationStartDate}
+                regEndDate={data.expRegistrationEndDate}
+                // onPress={() => navigation.navigate('Event',
+                //     {
+                //         event: data.screen,
+                //         boothData: data.booth,
+                //         event_details: data.event,
+                //         audiData: data.audi,
+                //         data: data,
+                //         poster: data.img
+                //     })}
             />
         )
     }
@@ -50,8 +58,7 @@ const EventCardList = (props: Props) => {
                 data={props.data}
                 renderItem={({ item }) =>
                     <Item
-                        id={item.title}
-                        img_url={item.p_img}
+                        id={item.id}
                         data={item}
                     />
                 }
