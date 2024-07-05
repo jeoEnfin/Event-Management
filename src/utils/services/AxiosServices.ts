@@ -7,7 +7,6 @@ const axiosClient = axios.create({
   headers: {
     "Content-Type": "application/json",
     "x-tenant-id": 'dell',
-    "context": 'admin'
   },
 });
 
@@ -16,6 +15,7 @@ axiosClient.interceptors.request.use(
     let token = await AsyncStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      config.headers['context'] = 'admin';
     }
     let tenantId = await AsyncStorage.getItem("tenant_id");
     if (tenantId) {

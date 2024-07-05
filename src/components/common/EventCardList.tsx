@@ -19,11 +19,11 @@ type ItemProps = {
 const EventCardList = (props: Props) => {
     const navigation: any = useNavigation()
 
-    const Item = ({ id,data }: ItemProps) => {
+    const Item = ({ id, data }: ItemProps) => {
         return (
             <EventSmallCard
                 key={id}
-                url={'https://www.shutterstock.com/image-photo/speaker-giving-talk-on-corporate-600nw-481869205.jpg'}
+                url={data.expImage}
                 eventType={data.expType}
                 startDate={data.expStartDate}
                 endDate={data.expEndDate}
@@ -32,21 +32,14 @@ const EventCardList = (props: Props) => {
                 isPaid={data.expIsPaid}
                 regStartDate={data.expRegistrationStartDate}
                 regEndDate={data.expRegistrationEndDate}
-                // onPress={() => navigation.navigate('Event',
-                //     {
-                //         event: data.screen,
-                //         boothData: data.booth,
-                //         event_details: data.event,
-                //         audiData: data.audi,
-                //         data: data,
-                //         poster: data.img
-                //     })}
+                onPress={() => navigation.navigate('EventDetails',{ event: data.id })}
+                buttonPress={() => navigation.navigate('EventDetails',{ event: data.id })}
             />
         )
     }
 
     return (
-        <View style={{marginTop: 10}}>
+        <View style={{ marginTop: 10 }}>
             <Text style={{
                 fontWeight: 'bold',
                 fontSize: TXT_SIZE.XL,
@@ -58,6 +51,7 @@ const EventCardList = (props: Props) => {
                 data={props.data}
                 renderItem={({ item }) =>
                     <Item
+                        key={item.id}
                         id={item.id}
                         data={item}
                     />
@@ -66,7 +60,7 @@ const EventCardList = (props: Props) => {
                 keyExtractor={(item: any) => item.title}
                 style={{ margin: 3 }}
                 showsHorizontalScrollIndicator={false}
-                
+
             />
         </View>
     )

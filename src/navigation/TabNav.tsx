@@ -1,13 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../constants';
 
-import EventList from '../pages/events/EventList';
 import Profile from '../pages/profile';
 import HomeScreen from '../pages/main/HomeScreen';
 import EventScreen from '../pages/main/EventScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import EventDetailsScreen from '../pages/main/EventDetailsScreen';
+import Notification from '../pages/notification/Notification';
+import SearchScreen from '../pages/search/SearchScreen';
+import HomeStack from './HomeStack';
+import EventStack from './EventStack';
 
 type Props = {}
 
@@ -22,7 +26,7 @@ const TabNav = (props: Props) => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: any;
 
-          if (route.name === 'Join') {
+          if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Events') {
             iconName = focused ? 'list' : 'list-outline';
@@ -40,8 +44,8 @@ const TabNav = (props: Props) => {
       })
     }
     >
-      <Tab.Screen name="Join" component={HomeScreen} />
-      <Tab.Screen name="Events" component={EventScreen} />
+      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Events" component={EventStack} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   )

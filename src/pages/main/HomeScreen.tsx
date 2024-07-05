@@ -24,8 +24,9 @@ const HomeScreen = (props: Props) => {
 
   const fetchData = async () => {
     setIsLoading(true);
+    const url = '?page=1&limit=10'
     try {
-      const response = await ExpoListingAPI();
+      const response = await ExpoListingAPI({url});
       setData(response?.data?.data?.data)
     } catch (error: any) {
       console.log(error.response.data)
@@ -44,15 +45,19 @@ const HomeScreen = (props: Props) => {
       data={data} 
       isWatched={false}
       />,
-    <EventCardList
-      title='Events Nearby'
-      data={DATA} />,
+    // <EventCardList
+    //   title='Events Nearby'
+    //   data={DATA} />,
   ]
 
 
   return (
     <ScreenWrapper>
-      <TopBar title='Join ' profile notification search onPressNotification={fetchData}/>
+      <TopBar title='Join '
+       profile 
+       notification 
+       search
+       />
       <FlatList
         showsVerticalScrollIndicator={false}
         data={ItemData}

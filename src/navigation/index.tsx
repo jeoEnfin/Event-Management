@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AuthStack from './AuthStack';
 import { Init } from '../store/actions';
 import { COLORS } from '../constants';
+import TabNav from './TabNav';
 
 type Props = {
 }
@@ -36,7 +37,7 @@ const RootNavigation = (props: Props) => {
         <NavigationContainer>
             {otp === null ?
                 <AuthStack /> :
-                <MainStack />
+                <TabNav />
             }
         </NavigationContainer>
     )

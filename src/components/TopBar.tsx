@@ -9,7 +9,6 @@ type Props = {
     title?: string;
     scanner?: boolean;
     notification?: boolean;
-    onPressNotification?: () => void; 
     onPressMenu?: () => void;
     onPressShare?: () => void;
     profile?: boolean;
@@ -48,7 +47,7 @@ const TopBar = (props: Props) => {
                         color={COLORS.text.main}
                         backgroundColor={COLORS._background.primary}
                         hapticFeedback={true}
-                        onPress={() => {}}
+                        onPress={()=>{navigation.navigate('Search')}}
                     />)}
                 {props.scanner && (
                     <RoundButton
@@ -75,7 +74,7 @@ const TopBar = (props: Props) => {
                         color={COLORS.text.main}
                         backgroundColor={COLORS._background.primary}
                         hapticFeedback={true}
-                        onPress={props.onPressNotification}
+                        onPress={()=>{navigation.navigate('Notification')}}
                     />)}
                 {props.profile && (
                     <RoundButton

@@ -1,8 +1,8 @@
 import axiosClient from "../../../utils/services/AxiosServices";
 
-export const ExpoListingAPI = async () => {
+export const ExpoListingAPI = async ({url}:any) => {
 	return axiosClient.request({
-		url: `expo?page=1&limit=10`,
+		url: `expo${url}`,
 		method: 'get',
 	});
 };

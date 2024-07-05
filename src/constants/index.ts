@@ -26,7 +26,9 @@ export const COLORS = {
     text: {
         main: "#000000",
         primary: "#FFFFFF",
-        error: '#EF4444'
+        error: '#EF4444',
+        disable: '#cbcfd6',
+        secondary: 'gray'
     },
     info: {
         main: '#FE6092'
