@@ -1,7 +1,7 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import EventSmallCard from './EventSmallCard';
-import { COLORS, TXT_SIZE } from '../../constants';
+import EventSmallCard from '../cards/EventSmallCard';
+import { COLORS, DUMMY_DATA, TXT_SIZE } from '../../constants';
 import { useNavigation } from '@react-navigation/native';
 
 type Props = {
@@ -16,7 +16,7 @@ type ItemProps = {
 }
 
 
-const EventCardList = (props: Props) => {
+const EventCardList = ({title,data,isWatched}: Props) => {
     const navigation: any = useNavigation()
 
     const Item = ({ id, data }: ItemProps) => {
@@ -28,7 +28,7 @@ const EventCardList = (props: Props) => {
                 startDate={data.expStartDate}
                 endDate={data.expEndDate}
                 eventTitle={data.expName}
-                isWatched={props.isWatched}
+                isWatched={isWatched}
                 isPaid={data.expIsPaid}
                 regStartDate={data.expRegistrationStartDate}
                 regEndDate={data.expRegistrationEndDate}
@@ -46,9 +46,9 @@ const EventCardList = (props: Props) => {
                 color: COLORS.text.main,
                 marginLeft: 10,
                 marginBottom: 5
-            }}>{props.title}</Text>
+            }}>{title}</Text>
             <FlatList
-                data={props.data}
+                data={data}
                 renderItem={({ item }) =>
                     <Item
                         key={item.id}

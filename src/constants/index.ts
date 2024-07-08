@@ -28,7 +28,8 @@ export const COLORS = {
         primary: "#FFFFFF",
         error: '#EF4444',
         disable: '#cbcfd6',
-        secondary: 'gray'
+        secondary: 'gray',
+        default: '#333333'
     },
     info: {
         main: '#FE6092'
@@ -45,3 +46,17 @@ export const TXT_SIZE = {
     XXS: 10
 }
 
+export const DUMMY_DATA = [
+    {
+        id: '01'
+    },
+    {
+        id: '02'
+    },
+    {
+        id: '03'
+    },
+    {
+        id: '04'
+    }
+]

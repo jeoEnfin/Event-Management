@@ -14,7 +14,7 @@ type Props = {
 
 const RootNavigation = (props: Props) => {
     const [loading,setLoading] = useState<boolean>(true)
-    const otp = useSelector((state: any) => state.AuthReducers.authOTP)
+    const token = useSelector((state: any) => state.AuthReducers.authToken)
     const dispatch:any = useDispatch()
     const init = async () =>{
         await dispatch(Init());
@@ -35,7 +35,7 @@ const RootNavigation = (props: Props) => {
 
     return (
         <NavigationContainer>
-            {otp === null ?
+            {token === null ?
                 <AuthStack /> :
                 <TabNav />
             }

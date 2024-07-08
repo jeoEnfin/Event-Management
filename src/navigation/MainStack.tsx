@@ -22,11 +22,11 @@ const MainStack = (props: Props) => {
     return (
         <Stack.Navigator screenOptions={{ statusBarColor: COLORS.background ,headerShown: false}}>
             <Stack.Screen name='HomeTab' component={TabNav} options={{ orientation: 'portrait' }} />
-            <Stack.Screen name='Scan' component={ScanScreen} options={{ orientation: 'portrait' }} />
+            {/* <Stack.Screen name='Scan' component={ScanScreen} options={{ orientation: 'portrait' }} />
             <Stack.Screen name='ScanReader' component={ScanReader} options={{ orientation: 'portrait' }} />
             <Stack.Screen name="Event" component={DemoEvent} options={{ orientation: 'landscape', statusBarHidden: true }} />
             <Stack.Screen name="Booth" component={BoothScreen} options={{ orientation: 'landscape', statusBarHidden: true }} />
-            <Stack.Screen name="Hall_1" component={Hall_1} options={{orientation: 'portrait'}}/>
+            <Stack.Screen name="Hall_1" component={Hall_1} options={{orientation: 'portrait'}}/> */}
         </Stack.Navigator>
     )
 }

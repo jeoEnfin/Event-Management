@@ -28,7 +28,7 @@ const EventSmallCard = ({
   buttonPress,
   isPaid = true,
   price,
-  eventType = 'Online',
+  eventType,
   startDate ,
   endDate ,
   regStartDate,
@@ -44,32 +44,32 @@ const EventSmallCard = ({
       onPress={onPress}
       style={styles.container}>
       <ImageBackground
-        source={{ uri: url }}
+        source={{ uri: url ? url : 'https://www.shutterstock.com/image-photo/speaker-giving-talk-on-corporate-600nw-481869205.jpg' }}
         style={{ height: 143, width: '100%' }}
         resizeMode='cover'
       >
         <View style={styles.header}>
           <View style={styles.typeBody}>
-            <Text style={styles.typeStyle}>{eventType}</Text>
+            {eventType && <Text style={styles.typeStyle}>{eventType}</Text>}
           </View>
           {isWatched && <View style={styles.infoBody}>
-            <Text style={styles.infoStyle}>Event {endDate && calculateTimeDifference(endDate)}</Text>
+            {endDate &&<Text style={styles.infoStyle}>Event {endDate && calculateTimeDifference(endDate)}</Text>}
           </View>}
         </View>
       {!isWatched && <View style={styles.footer}>
           <View style={styles.regInfoBody}>
-            <Text style={styles.regInfo}>Registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate , regEndDate)}</Text>
+            { regEndDate && regStartDate && <Text style={styles.regInfo}>Registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate , regEndDate)}</Text>}
           </View>
         </View>}
       </ImageBackground>
       <View style={styles.detailBody}>
         <View style={{ gap: 4 }}>
           <Text style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
-          <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>
-          <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>
+          {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>}
+          {startDate && endDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>}
         </View>
         {!isWatched && <View style={styles.priceBody}>
-          {isPaid && <Text style={styles.priceTxt}>$ {price}/-</Text>}
+          {isPaid && price && <Text style={styles.priceTxt}>$ {price}/-</Text>}
           {isRegisterStart &&<TouchableOpacity style={styles.btnBody} onPress={buttonPress}>
             <Text style={styles.btnText}>{isPaid ? 'Register' : 'Join'}</Text>
           </TouchableOpacity>}
@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
   typeStyle: {
     color: COLORS.text.primary,
     fontSize: 10,
-    fontWeight: '600'
+    fontWeight: '600',
+    marginHorizontal: 5
   },
   infoStyle: {
     color: COLORS.text.primary,
@@ -158,8 +159,7 @@ const styles = StyleSheet.create({
   typeBody: {
     backgroundColor: COLORS.default.dark,
     height: 19,
-    minWidth: 45,
-    maxWidth: 45,
+    maxWidth: '25%',
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',

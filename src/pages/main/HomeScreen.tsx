@@ -45,9 +45,9 @@ const HomeScreen = (props: Props) => {
       data={data} 
       isWatched={false}
       />,
-    // <EventCardList
-    //   title='Events Nearby'
-    //   data={DATA} />,
+    <EventCardList
+      title='Events Nearby'
+      data={DATA} />,
   ]
 
 

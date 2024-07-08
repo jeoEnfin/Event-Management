@@ -1,6 +1,6 @@
-import { differenceInDays, differenceInHours, differenceInMinutes, isAfter, isBefore } from 'date-fns';
+import { differenceInDays, differenceInHours, differenceInMinutes, eachDayOfInterval, format, isAfter, isBefore, parseISO } from 'date-fns';
 
-export function CiTruncate(str:string, num_chars:number) { 
+export function CiTruncate(str: string, num_chars: number) {
     if (str.length > num_chars) {
         return str.slice(0, num_chars - 1) + '...';
     }
@@ -28,7 +28,7 @@ export const calculateTimeDifference = (futureDate: any) => {
     }
 };
 
-export const calculateTimeDifferenceForTwoDates = (firstDate:string, secondDate:string) => {
+export const calculateTimeDifferenceForTwoDates = (firstDate: string, secondDate: string) => {
     const now = new Date();
     const startDate = new Date(firstDate);
     const endDate = new Date(secondDate);
@@ -66,7 +66,42 @@ export const calculateTimeDifferenceForTwoDates = (firstDate:string, secondDate:
     }
 };
 
-export const isDateNotPassed = (date:string) => {
+export const isDateNotPassed = (date: string) => {
     const now = new Date();
     return !isBefore(new Date(date), now);
 };
+
+interface DateWithId {
+    id: string;
+    date: string;
+}
+export function getDatesInRange(startDate: string, endDate: string): DateWithId[] {
+    const dates = eachDayOfInterval({ start: startDate, end: endDate });
+
+    return dates.map((date, index) => ({
+        id: `${date}`,
+        date: format(date, 'EEE dd MMM'),
+    }));
+}
+
+export function getTimeDifference(startDate: string, endDate: string) {
+    const start = parseISO(startDate);
+  const end = parseISO(endDate);
+  
+  const diffInMinutes = differenceInMinutes(end, start);
+  const hours = Math.floor(diffInMinutes / 60);
+  const minutes = diffInMinutes % 60;
+
+  let result = '';
+
+  if (hours > 0) {
+    result += `${hours} hour${hours > 1 ? 's' : ''}`;
+  }
+
+  if (minutes > 0) {
+    if (result) result += ' ';
+    result += `${minutes} minute${minutes > 1 ? 's' : ''}`;
+  }
+
+  return result || '0 minutes';
+}
