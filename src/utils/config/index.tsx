@@ -1,6 +1,7 @@
 export const config = {
     URL_PROTOCOL: 'https:',
     URL_HOST: 'stackoverflow.com',
+    SERVER_URL: 'http://192.168.1.57:3001',
     USER_NAME: 'jeothankachan98@gmail.com',
     PASSWORD: 'Abcd1234@',
     API_KEY: '47828021',

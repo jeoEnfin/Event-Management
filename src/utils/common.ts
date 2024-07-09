@@ -1,4 +1,4 @@
-import { differenceInDays, differenceInHours, differenceInMinutes, eachDayOfInterval, format, isAfter, isBefore, parseISO } from 'date-fns';
+import { differenceInDays, differenceInHours, differenceInMinutes, eachDayOfInterval, endOfDay, format, isAfter, isBefore, isWithinInterval, parseISO, startOfDay } from 'date-fns';
 
 export function CiTruncate(str: string, num_chars: number) {
     if (str.length > num_chars) {
@@ -105,3 +105,36 @@ export function getTimeDifference(startDate: string, endDate: string) {
 
   return result || '0 minutes';
 }
+
+export const getCurrentDateSchedules = (schedules:any) => {
+    const today = new Date();
+    const start = startOfDay(today);
+    const end = endOfDay(today);
+  
+    const filteredData = schedules.filter((item:any) => {
+      const startDate = parseISO(item.schStartDateTime);
+      const endDate = parseISO(item.schEndDateTime);
+      return isWithinInterval(startDate, { start, end }) || isWithinInterval(endDate, { start, end });
+    });
+  
+    const groupedByHall = filteredData.reduce((acc:any, schedule:any) => {
+      if (!acc[schedule.hallName]) {
+        acc[schedule.hallName] = [];
+      }
+      acc[schedule.hallName].push(schedule);
+      return acc;
+    }, {});
+  
+    return Object.entries(groupedByHall).map(([hallName, schedules]) => ({ hallName, schedules }));
+  };
+
+  export function isDateInFuture(startDate: string) {
+    // Get the current date
+    const currentDate = new Date();
+  
+    // Parse the startDate string to a Date object using date-fns
+    const dateToCheck = parseISO(startDate);
+  
+    // Compare the dates using date-fns
+    return isAfter(dateToCheck, currentDate);
+  }

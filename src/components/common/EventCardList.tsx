@@ -15,12 +15,12 @@ type ItemProps = {
     data: any;
 }
 
-
 const EventCardList = ({title,data,isWatched}: Props) => {
     const navigation: any = useNavigation()
 
     const Item = ({ id, data }: ItemProps) => {
         return (
+            <View style={{width: 220}}>
             <EventSmallCard
                 key={id}
                 url={data.expImage}
@@ -32,9 +32,10 @@ const EventCardList = ({title,data,isWatched}: Props) => {
                 isPaid={data.expIsPaid}
                 regStartDate={data.expRegistrationStartDate}
                 regEndDate={data.expRegistrationEndDate}
+                createrName={data.creator}
                 onPress={() => navigation.navigate('EventDetails',{ event: data.id })}
                 buttonPress={() => navigation.navigate('EventDetails',{ event: data.id })}
-            />
+            /></View>
         )
     }
 
@@ -57,7 +58,7 @@ const EventCardList = ({title,data,isWatched}: Props) => {
                     />
                 }
                 horizontal={true}
-                keyExtractor={(item: any) => item.title}
+                keyExtractor={(item: any) => item.id}
                 style={{ margin: 3 }}
                 showsHorizontalScrollIndicator={false}
 

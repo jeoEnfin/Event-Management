@@ -55,6 +55,7 @@ const AgendaList = ({
 
     return (
         <View style={{ width: '100%' ,marginTop: 10}}>
+            <View>
             <Text style={{
                 fontWeight: '600',
                 fontSize: TXT_SIZE.L,
@@ -66,6 +67,7 @@ const AgendaList = ({
                 tabs={_days}
                 onDateClick={(val) => handleShedule(val)}
             />}
+            </View>
             {schedules && 
             <ScheduleList schedules={_schedules ? _schedules : schedules} />}
         </View>

@@ -22,6 +22,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: COLORS._background.primary,
         alignItems: 'center',
-        width: '100%',
+        width: '100%'
     }
 })

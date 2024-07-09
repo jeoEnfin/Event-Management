@@ -11,32 +11,14 @@ type Props = {
 }
 
 const Button = (props: Props) => {
-  const scale = useRef(new Animated.Value(1)).current;
-
-  const options = {
-    enableVibrateFallback: true,
-    ignoreAndroidSystemSettings: false,
-  };
-
-  const onPressIn = () => {
-    if(props.hapticFeedback==true) {
-      ReactNativeHapticFeedback.trigger("impactHeavy", options);}
-    Animated.spring(scale, { toValue: 1.3, useNativeDriver: true }).start();
-  };
-
-  const onPressOut = () => {
-    Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start();
-  };
-
-
+  
   return (
     <TouchableOpacity
       onPress={props.onPress}
-      onPressIn={onPressIn}
-      onPressOut={onPressOut} >
-      <Animated.View style={[styles.container, { transform: [{ scale }], backgroundColor: props.backgroundColor }]}>
+     >
+      <View style={[styles.container, {backgroundColor: props.backgroundColor }]}>
        <Text style={styles.txt}>{props.title}</Text>
-      </Animated.View>
+      </View>
     </TouchableOpacity>
   )
 }
@@ -50,11 +32,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 5,
-    borderWidth: 0.5,
-    borderColor: COLORS.baseWhite,
+    // borderWidth: 0.5,
+    // borderColor: COLORS.baseWhite,
   },
   txt: {
-    color: COLORS.text_color,
+    color: COLORS.text.main,
     fontSize: TXT_SIZE.M,
     fontWeight: '700',
   }

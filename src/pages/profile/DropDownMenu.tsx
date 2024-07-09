@@ -21,22 +21,25 @@ const DropDownMenu = (props: Props) => {
                 <View style={styles.container}>
                     <Button
                         title='Edit'
-                        backgroundColor={COLORS.btnBackground}
+                        backgroundColor={COLORS._background.main}
                         hapticFeedback={true}
                     />
+                    <View style={{ width: '80%', height: 1, backgroundColor: COLORS.default.dark }}></View>
                     <Button
                         title='About'
-                        backgroundColor={COLORS.btnBackground}
+                        backgroundColor={COLORS._background.main}
                         hapticFeedback={true}
                     />
+                    <View style={{ width: '80%', height: 1, backgroundColor: COLORS.default.dark }}></View>
                     <Button
                         title='Change password'
-                        backgroundColor={COLORS.btnBackground}
+                        backgroundColor={COLORS._background.main}
                         hapticFeedback={true}
                     />
+                    <View style={{ width: '80%', height: 1, backgroundColor: COLORS.default.dark }}></View>
                     <Button
                         title='Logout'
-                        backgroundColor={COLORS.btnBackground}
+                        backgroundColor={COLORS._background.main}
                         hapticFeedback={true}
                         onPress={props.logoutPress}
                     />
@@ -51,6 +54,7 @@ export default DropDownMenu
 const styles = StyleSheet.create({
     container: {
         width: '100%',
+        alignItems: 'center',
     },
     mainContainer: {
         backgroundColor: COLORS.background

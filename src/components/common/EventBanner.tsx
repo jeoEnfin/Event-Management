@@ -18,12 +18,12 @@ const screenWidth = Dimensions.get("window").width;
 const EventBanner = (props: Props) => {
   return (
     <View style={{
-        width: screenWidth,
+        width: '100%',
         height: 240,
     }}>
         <View
             style={{
-                width: screenWidth,
+                width: '100%',
                 borderRadius: 10,
                 overflow: 'hidden',
                 padding: 5,

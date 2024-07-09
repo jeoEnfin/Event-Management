@@ -1,4 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthLoginAPI } from "../pages/auth/apis/AuthLogin";
+import { AutoLoginAPI } from "../pages/auth/apis/AutoLogin";
 
 export const Login = (username: string, token: string, tenant: string) => {
     return ({
@@ -11,11 +13,16 @@ export const Init = () => {
   return async (dispatch: any) =>{
   let token =  await AsyncStorage.getItem('token');
   if (token !== null){
-    console.log('token fetch')
-    dispatch ({
-      type: 'OTP',
-      payload: token
-    })
+    let data = await AutoLoginAPI();
+    const user = data?.data?.data?.user?.data;
+    if(user){
+      dispatch ({
+        type: 'LOGIN',
+        payload: token
+      })
+    } else {
+     Logout();
+    }
   }
  
 }}

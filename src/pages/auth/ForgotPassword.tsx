@@ -18,6 +18,7 @@ const ForgotPassword = (props: Props) => {
     const [error, setError] = useState<boolean>(false);
     const [errorEmail, setErrorEmail] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>('');
+    const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
     const platformName = Platform.OS;
 
 
@@ -27,9 +28,9 @@ const ForgotPassword = (props: Props) => {
             setUsername(newEmail.toLowerCase())
             setErrorEmail(false)
             setError(false)
-            setErrorMessage('')
+            setEmailErrorMessage('')
         } else {
-            setErrorMessage('Enter valid email address')
+            setEmailErrorMessage('Enter valid email address')
             setErrorEmail(true);
             setError(true);
         }
@@ -39,15 +40,15 @@ const ForgotPassword = (props: Props) => {
         if (username.length === 0) {
             setErrorEmail(true);
             setError(true);
-            setErrorMessage('Email must be enter')
+            setEmailErrorMessage('Email must be enter')
         }
         else if (username.length === 0) {
             setError(true);
-            setErrorMessage('Email must be enter')
+            setEmailErrorMessage('Email must be enter')
         }
         else if (errorEmail === true) {
             setError(true)
-            setErrorMessage('Email must be enter')
+            setEmailErrorMessage('Email must be enter')
         }
         else {
             setError(false)
@@ -99,6 +100,7 @@ const ForgotPassword = (props: Props) => {
                     onDataChanged={handleEmailChange}
                     //value={email}
                     error={errorEmail}
+                    errorTxt={emailErrorMessage}
                 />
                 {error && <Text style={styles.errorTxt}>{errorMessage}</Text>}
             </View>

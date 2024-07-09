@@ -16,6 +16,7 @@ type Props = {
     keyboardType?: any;
     value?: any;
     error?: boolean;
+    errorTxt?: string;
 }
 
 const InputText = (props: Props) => {
@@ -34,6 +35,7 @@ const InputText = (props: Props) => {
       );
 
     return (
+        <View style={styles.txtBody}>
         <View style={[styles.txtField,props.error ? {borderColor: COLORS.redButton} : {borderColor: COLORS.background } ]}>
             <TextInput
                 style={styles.txtFieldText}
@@ -49,9 +51,11 @@ const InputText = (props: Props) => {
                 onBlur={() => setIsFocused(false)}
             />
             {props.iconName &&
-            <TouchableOpacity style={{position: 'absolute',left: '90%',opacity: props.textSecure ?  0.5 : 1}} onPressIn={props.showText} onPressOut={props.hideText}>
-                <Ionicons name={props.textSecure ? 'eye-off-outline': 'eye-outline'} size={30} color={COLORS.background2} />
+            <TouchableOpacity style={{position: 'absolute',left: '90%',opacity: props.textSecure ?  0.5 : 1}} onPress={props.showText} >
+                <Ionicons name={props.textSecure ? 'eye-off-outline': 'eye-outline'} size={28} color={COLORS.background2} />
             </TouchableOpacity>}
+        </View>
+        {props.errorTxt && <Text style={styles.errorTxt}>{props.errorTxt}</Text>}
         </View>
     )
 }
@@ -63,7 +67,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 5,
         padding: 10,
-        margin: 5,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
@@ -72,5 +75,15 @@ const styles = StyleSheet.create({
         color: COLORS.default.dark,
         height: 40,
         width: '100%'
+    },
+    txtBody: {
+        margin: 5,
+    },
+    errorTxt: {
+        fontSize: 12,
+        paddingLeft: 2,
+        color: COLORS.text.error,
+        fontWeight: '500',
+        marginTop: 2
     }
 })

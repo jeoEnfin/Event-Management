@@ -38,7 +38,10 @@ const LoginScreen = (props: Props) => {
     const [errorPassword, setErrorPassword] = useState<boolean>(false);
     const platformName = Platform.OS;
     const [errorTxt, setErrorTxt] = useState<string>('')
+    const [emailErrorTxt, setEmailErrorTxt] = useState<string>('')
+    const [passwordErrorTxt, setPasswordErrorTxt] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [rememberCheck, setRememberCheck] = useState<boolean>(false);
 
 
 
@@ -52,9 +55,9 @@ const LoginScreen = (props: Props) => {
             setUsername(newEmail.toLowerCase())
             setErrorEmail(false)
             setError(false)
-            setErrorTxt('')
+            setEmailErrorTxt('')
         } else {
-            setErrorTxt('Enter a valid email address')
+            setEmailErrorTxt('Enter a valid email address')
             setErrorEmail(true);
             setError(true);
         }
@@ -66,10 +69,10 @@ const LoginScreen = (props: Props) => {
             setPassword(newPassword);
             setErrorPassword(false)
             setError(false)
-            setErrorTxt('')
+            setPasswordErrorTxt('')
         }
         else {
-            setErrorTxt('Password must be enter')
+            setPasswordErrorTxt('Password must be enter')
             setErrorPassword(true);
             setError(true)
         }
@@ -149,6 +152,10 @@ const LoginScreen = (props: Props) => {
         }
     }
 
+    const showPassword = () =>{
+        setIsTextSecure(!isTextSecure)
+    }
+   
     const ForgotPasswordRoute = () =>{
         navigation.navigate('ForgotPassword');
     }
@@ -168,23 +175,27 @@ const LoginScreen = (props: Props) => {
                     inputMode={'email'}
                     onDataChanged={handleEmailChange}
                     error={errorEmail}
+                    errorTxt={emailErrorTxt}
                 />
                 <InputText
                     placeholder='Password'
                     iconName='eye-outline'
                     autoComplete='new-password'
                     textSecure={isTextSecure}
-                    showText={() => { setIsTextSecure(!isTextSecure) }}
-                    hideText={() => { setIsTextSecure(!isTextSecure) }}
+                    showText={showPassword}
+                    // hideText={hidePassword}
                     onDataChanged={handlePasswordChange}
                     keyboardType={'default'}
                     error={errorPassword}
+                    errorTxt={passwordErrorTxt}
                 />
                 {error && <Text style={styles.errorTxt}>{errorTxt}</Text>}
             </View>
             <View style={styles.forgotBody}>
                 <CheckboxWithLabel
                     label='Remember me'
+                    isChecked={rememberCheck}
+                    onPress={()=>{setRememberCheck(!rememberCheck)}}
                 />
                 <TouchableOpacity onPress={() => {ForgotPasswordRoute()}}>
                     <Text style={styles.fgtTxt}>Forgot password?</Text>

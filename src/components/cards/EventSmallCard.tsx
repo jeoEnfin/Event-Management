@@ -63,16 +63,16 @@ const EventSmallCard = ({
         </View>}
       </ImageBackground>
       <View style={styles.detailBody}>
-        <View style={{ gap: 4 }}>
-          <Text style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
+        <View style={{ gap: 4, height: 85,justifyContent: 'space-between' }}>
+          <Text numberOfLines={2} style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
           {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>}
           {startDate && endDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>}
         </View>
         {!isWatched && <View style={styles.priceBody}>
           {isPaid && price && <Text style={styles.priceTxt}>$ {price}/-</Text>}
-          {isRegisterStart &&<TouchableOpacity style={styles.btnBody} onPress={buttonPress}>
+          <TouchableOpacity disabled={true} style={styles.btnBody} onPress={buttonPress}>
             <Text style={styles.btnText}>{isPaid ? 'Register' : 'Join'}</Text>
-          </TouchableOpacity>}
+          </TouchableOpacity>
         </View>}
       </View>
     </TouchableOpacity>
@@ -83,13 +83,13 @@ export default EventSmallCard
 
 const styles = StyleSheet.create({
   container: {
-    width: 220,
+    width: 'auto',
     height: 'auto',
     backgroundColor: COLORS._background.primary,
     borderRadius: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
-    margin: 7,
+    margin: 4,
     elevation: 2,
     overflow: 'hidden',
   },
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   detailBody: {
     padding: 10,
     width: '100%',
-    marginVertical: 5
+    marginVertical: 5,
   },
   priceBody: {
     flexDirection: 'row',
