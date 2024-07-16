@@ -7,6 +7,7 @@ import Notification from '../pages/notification/Notification';
 import SearchScreen from '../pages/search/SearchScreen';
 import EventDetailsScreen from '../pages/main/EventDetailsScreen';
 import OfflineLobby from '../pages/main/OfflineLobby';
+import Payment from '../pages/payment';
 
 const HomeStack = () => {
     const Stack = createNativeStackNavigator();
@@ -15,8 +16,6 @@ const HomeStack = () => {
             <Stack.Screen name='EventHome' component={HomeScreen} />
             <Stack.Screen name="Notification" component={Notification} options={{ orientation: 'portrait', headerShown: true}} />
             <Stack.Screen name="Search" component={SearchScreen} options={{ orientation: 'portrait', headerShown: true, headerTitle: '' }} />
-            <Stack.Screen name='EventDetails' component={EventDetailsScreen} />
-            <Stack.Screen name='OfflineLobby' component={OfflineLobby} />
         </Stack.Navigator>
     )
 }

@@ -5,16 +5,16 @@ export const style = StyleSheet.create({
     txt_1: {
         fontWeight: 'bold',
         fontSize: TXT_SIZE.XXL,
-        color: COLORS.text_color
+        color: COLORS.text.main
     },
     txt_2: {
-        fontWeight: '500',
+        fontWeight: '400',
         fontSize: TXT_SIZE.M,
-        color: COLORS.text_color
+        color: COLORS.text.secondary
     },
     txt_3: {
         fontWeight: '300',
         fontSize: TXT_SIZE.S,
-        color: COLORS.text_color
+        color: COLORS.text.main
     }
 })

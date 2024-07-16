@@ -2,6 +2,7 @@ import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import React from 'react'
 import { COLORS } from '../../constants';
 import { format } from 'date-fns';
+import { config } from '../../utils/config';
 
 type Props = {
     imgUrl: string;
@@ -32,7 +33,7 @@ const EventBanner = (props: Props) => {
             <Image
                 style={{ width: '100%', height: '100%',borderRadius: 10}}
                 resizeMode='stretch'
-                source={{ uri: props.imgUrl }}
+                source={{ uri: props.imgUrl === 'default.jpg' ?  `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg`: props.imgUrl}}
                 alt='No image'
             />
             <Image

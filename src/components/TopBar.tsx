@@ -15,6 +15,8 @@ type Props = {
     share?: boolean;
     back?: boolean;
     search?: boolean;
+    menu?: boolean;
+    menuClick?: () => void;
 }
 
 const TopBar = (props: Props) => {
@@ -85,6 +87,15 @@ const TopBar = (props: Props) => {
                         onPress={props.onPressMenu}
                         border
                     />)}
+                 {props.menu && (
+                    <RoundButton
+                        iconName="menu"
+                        iconSize={28}
+                        color={COLORS.text.main}
+                        backgroundColor={COLORS._background.primary}
+                        hapticFeedback={true}
+                        onPress={props.menuClick}
+                    />)}    
             </View>
         </View>
     )

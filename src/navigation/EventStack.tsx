@@ -10,8 +10,6 @@ export default function EventStack() {
     return (
         <Stack.Navigator screenOptions={{ statusBarColor: COLORS.background, headerShown: false }}>
             <Stack.Screen name='Event' component={EventScreen} />
-            <Stack.Screen name='EventDetails' component={EventDetailsScreen} />
-            <Stack.Screen name='OfflineLobby' component={OfflineLobby} />
         </Stack.Navigator>
     )
 }

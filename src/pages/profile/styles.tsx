@@ -4,22 +4,23 @@ import { COLORS } from "../../constants"
 export const styles = StyleSheet.create({
     container: {
         width: '100%',
-        margin: 10,
+        marginTop: 30,
         alignItems: 'center',
     },
     imgContainer: {
         width: '100%',
         height: '100%',
-        borderRadius: 65
+        borderRadius: 70
     },
     imgIcon: {
-        width: 130,
-        height: 130,
+        width: 140,
+        height: 140,
     },
     details: {
-        alignItems: 'flex-start',
+        alignItems: 'center',
         width: '90%',
-        marginTop: 10
+        marginTop: 10,
+        gap: 10
     },
     report_container: {
         width: '95%',

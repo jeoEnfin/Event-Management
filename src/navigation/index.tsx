@@ -37,7 +37,7 @@ const RootNavigation = (props: Props) => {
         <NavigationContainer>
             {token === null ?
                 <AuthStack /> :
-                <TabNav />
+                <MainStack />
             }
         </NavigationContainer>
     )

@@ -6,25 +6,27 @@ import RoundButton from '../../components/RoundButton';
 import { COLORS } from '../../constants';
 
 type Props = {
-    username?: string;
+    email?: string;
     name?: string;
-    discription?: string;
+    imageUrl?: string;
 }
 
 const ProfileCard = (props: Props) => {
     return (
         <View style={styles.container}>
             <View style={styles.imgIcon}>
-                <Image resizeMode='cover' source={require('../../assets/profileIcons/img_avatar1.png')}
-                    style={styles.imgContainer}
-                />
+                {props.imageUrl ?
+                    <Image resizeMode='cover' source={{uri: props.imageUrl}}
+                        style={styles.imgContainer}
+                    />
+                    :
+                    <Image resizeMode='cover' source={require('../../assets/profileIcons/img_avatar1.png')}
+                        style={styles.imgContainer}
+                    />}
             </View>
             <View style={styles.details}>
-                <Text style={style.txt_1}>{props.name?.toUpperCase()}</Text>
-                <Text style={style.txt_2}>{props.username}</Text>
-                <Text
-                    numberOfLines={2} ellipsizeMode="tail"
-                    style={style.txt_2}>{props.discription}</Text>
+                <Text style={style.txt_1}>{props.name}</Text>
+                <Text style={style.txt_2}>{props.email}</Text>
             </View>
         </View>
     )

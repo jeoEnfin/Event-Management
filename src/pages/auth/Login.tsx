@@ -18,6 +18,7 @@ import AuthHeader from './common/AuthHeader';
 import CustomIconButton from '../../components/common/CustomIconButton';
 import { AuthLoginAPI } from './apis/AuthLogin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorageUtil from '../../utils/services/LocalCache';
 
 
 
@@ -85,7 +86,7 @@ const LoginScreen = (props: Props) => {
             setError(true);
         }
         else if (username.length === 0) {
-            setErrorPassword(true)
+            setErrorEmail(true)
             setError(true);
         }
         else if (password.length === 0) {
@@ -119,6 +120,12 @@ const LoginScreen = (props: Props) => {
                 }
                 if(tenant){
                     AsyncStorage.setItem('tenant_id', tenant)
+                }
+                if(rememberCheck){
+                    await AsyncStorageUtil.saveData('user_credentials', data)
+                }
+                if(_user){
+                    await AsyncStorageUtil.saveData('user_details', _user)
                 }
                 dispatch(Login(username, access_token, tenant))
                 setError(false)

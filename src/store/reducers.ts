@@ -1,5 +1,5 @@
 const initialState = {
-    authToken: 1234,
+    authToken: null,
     authOTP: null,
     authUsername: null,
     authTenent: null,

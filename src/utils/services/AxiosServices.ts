@@ -7,7 +7,7 @@ const axiosClient = axios.create({
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
-    "x-tenant-id": 'dell',
+    "x-tenant-id": 'ci_tenant',
   },
 });
 

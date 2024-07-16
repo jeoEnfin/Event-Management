@@ -6,6 +6,7 @@ import { ExpoListingAPI } from './apis/ExpoListApi';
 import { useNavigation } from '@react-navigation/native';
 import EventSmallCard from '../../components/cards/EventSmallCard';
 import { COLORS } from '../../constants';
+import { isAfter, parseISO } from 'date-fns';
 
 type Props = {};
 
@@ -21,6 +22,7 @@ const EventScreen = (props: Props) => {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [isEndReached, setIsEndReached] = useState<boolean>(false);
+  const [activeExpos, setActiveExpos] = useState(null);
 
   useEffect(() => {
     if (page === 1) {
@@ -32,13 +34,25 @@ const EventScreen = (props: Props) => {
 
   }, [page]);
 
+  useEffect(() => {
+    filterActiveExpos();
+  }, [data])
+
+  const filterActiveExpos = () => {
+    const currentDate = new Date();
+    const _activeExpos: any = data.filter((expo: any) =>
+      isAfter(parseISO(expo.expEndDate), currentDate)
+    );
+    setActiveExpos(_activeExpos);
+  };
+
   const getData = async () => {
     if (isLoading || isEndReached) return;
 
     setIsLoading(true);
     try {
       const response = await ExpoListingAPI({ url: `?page=${page}&limit=10` });
-      const _data = response?.data?.data?.data;
+      const _data = response?.data?.data?.allExpo;
       if (_data && _data.length > 0) {
         setData(prevData => [...prevData, ..._data]);
       } else {
@@ -66,7 +80,7 @@ const EventScreen = (props: Props) => {
 
   const Item = ({ id, data }: ItemProps) => {
     return (
-      <View style={{ width: '50%',marginVertical: 4 }}>
+      <View style={{ width: '50%', marginVertical: 4 }}>
         <EventSmallCard
           key={id}
           url={data.expImage}
@@ -78,7 +92,9 @@ const EventScreen = (props: Props) => {
           isPaid={data.expIsPaid}
           regStartDate={data.expRegistrationStartDate}
           regEndDate={data.expRegistrationEndDate}
-          createrName={data.creator}
+          createrName={data.expCreator}
+          price={data.expPrice}
+          isRegistrationEnabled={data.expIsRegistrationEnabled}
           onPress={() => navigation.navigate('EventDetails', { event: data.id })}
           buttonPress={() => navigation.navigate('EventDetails', { event: data.id })}
         />
@@ -91,7 +107,7 @@ const EventScreen = (props: Props) => {
       <TopBar profile notification search />
       {data && (
         <FlatList
-          data={data}
+          data={activeExpos}
           renderItem={({ item }) => (
             <Item
               key={item.id}

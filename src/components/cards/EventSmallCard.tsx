@@ -1,9 +1,11 @@
-import { ImageBackground, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { ActivityIndicator, Image, ImageBackground, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { COLORS } from '../../constants'
 import { calculateTimeDifference, calculateTimeDifferenceForTwoDates, CiTruncate, isDateNotPassed } from '../../utils/common'
 import { format } from 'date-fns'
+import { config } from '../../utils/config'
+
 
 type Props = {
   url?: string;
@@ -19,6 +21,7 @@ type Props = {
   regEndDate?: string;
   eventTitle?: string;
   createrName?: string;
+  isRegistrationEnabled?: boolean;
 }
 
 const EventSmallCard = ({
@@ -29,49 +32,65 @@ const EventSmallCard = ({
   isPaid = true,
   price,
   eventType,
-  startDate ,
-  endDate ,
+  startDate,
+  endDate,
   regStartDate,
   regEndDate,
   eventTitle,
-  createrName
+  createrName,
+  isRegistrationEnabled
 }: Props) => {
 
-  const isRegisterStart =  isDateNotPassed(regStartDate|| '');
+  const isRegisterStart = isDateNotPassed(regStartDate || '');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   return (
     <TouchableOpacity
       onPress={onPress}
       style={styles.container}>
-      <ImageBackground
-        source={{ uri: url ? url : 'https://www.shutterstock.com/image-photo/speaker-giving-talk-on-corporate-600nw-481869205.jpg' }}
+      <View
         style={{ height: 143, width: '100%' }}
-        resizeMode='cover'
-      >
+      >{loading && (
+        <View style={styles.previewContainer}>
+          <Image source={require('../../assets/errors/plainBackground.jpg')} style={styles.preview} />
+          <ActivityIndicator style={styles.loader} size="large" color={COLORS.secondary.main} />
+        </View>
+      )}
+        <Image
+          style={styles.image}
+          source={{ uri: url === 'default.jpg' ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg`: url }}
+          onLoadEnd={() => setLoading(false)}
+          onError={() => {
+            console.info('error')
+            setLoading(false);
+            setError(true);
+          }}
+        />
         <View style={styles.header}>
           <View style={styles.typeBody}>
             {eventType && <Text style={styles.typeStyle}>{eventType}</Text>}
           </View>
           {isWatched && <View style={styles.infoBody}>
-            {endDate &&<Text style={styles.infoStyle}>Event {endDate && calculateTimeDifference(endDate)}</Text>}
+            {endDate && <Text style={styles.infoStyle}>Event {endDate && calculateTimeDifference(endDate)}</Text>}
           </View>}
         </View>
-      {!isWatched && <View style={styles.footer}>
+        {!isWatched && <View style={styles.footer}>
           <View style={styles.regInfoBody}>
-            { regEndDate && regStartDate && <Text style={styles.regInfo}>Registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate , regEndDate)}</Text>}
+            {regEndDate && regStartDate && <Text style={styles.regInfo}>Registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate, regEndDate)}</Text>}
           </View>
         </View>}
-      </ImageBackground>
+      </View>
       <View style={styles.detailBody}>
-        <View style={{ gap: 4, height: 85,justifyContent: 'space-between' }}>
+        <View style={{ gap: 4, height: 85, justifyContent: 'space-between' }}>
           <Text numberOfLines={2} style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
           {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>}
           {startDate && endDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>}
         </View>
         {!isWatched && <View style={styles.priceBody}>
-          {isPaid && price && <Text style={styles.priceTxt}>$ {price}/-</Text>}
+          {(isPaid && price) ? <Text style={styles.priceTxt}>$ {price}/-</Text>:<Text style={styles.priceTxt}>FREE</Text>}
           <TouchableOpacity disabled={true} style={styles.btnBody} onPress={buttonPress}>
-            <Text style={styles.btnText}>{isPaid ? 'Register' : 'Join'}</Text>
+            <Text style={styles.btnText}>{isRegistrationEnabled ? 'Register': 'Join'}</Text>
           </TouchableOpacity>
         </View>}
       </View>
@@ -199,5 +218,31 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '600',
     marginHorizontal: 7
-  }
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    position: 'absolute'
+  },
+  previewContainer: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  preview: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    position: 'absolute',
+  },
+  loader: {
+    position: 'absolute',
+  },
+  errorImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    position: 'absolute',
+  },
 })

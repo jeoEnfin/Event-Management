@@ -54,16 +54,21 @@ const EventDetailsScreen = ({ route }: Props) => {
     };
 
     const handleJoin = async () => {
-        if (data.expExpoMode === 'Public') {
-            let dateValid = isDateInFuture(data.expStartDate)
-            if (dateValid) {
-                Alert.alert('Event Not Started', 'The event has not started yet. Please check back later.', [
-                    { text: 'OK'},
-                ]);
-            } else {
-                navigation.navigate('OfflineLobby', { event: data.id })
-            }
+        // if (data.expExpoMode === 'Public') {
+        //     let dateValid = isDateInFuture(data.expStartDate)
+        //     if (dateValid) {
+        //         Alert.alert('Event Not Started', 'The event has not started yet. Please check back later.', [
+        //             { text: 'OK'},
+        //         ]);
+        //     } else {
+        //         navigation.navigate('OfflineLobby', { event: data.id })
+        //     }
+        // }
+
+        if (data.expIsRegistrationEnabled) {
+            navigation.navigate('payment')
         }
+        // navigation.navigate('payment')
     };
 
     const ItemData = []
@@ -75,8 +80,10 @@ const EventDetailsScreen = ({ route }: Props) => {
                 imgUrl={data.expImage}
                 startDate={data.expStartDate}
                 endDate={data.expEndDate}
-                buttonLabel='Join'
-                subTitle='Lucus'
+                buttonLabel={data.expIsRegistrationEnabled ?
+                    (data.expPrice ? `$ ${data.expPrice} /- ` : 'Register')
+                    : 'Join'}
+                subTitle={data.creator}
                 onPressButton={handleJoin}
             />
         );
@@ -105,7 +112,7 @@ const EventDetailsScreen = ({ route }: Props) => {
         <ScreenWrapper>
             <TopBar notification profile />
             {!isLoading ?
-                <View style={{ width: '100%'}}>
+                <View style={{ width: '100%' }}>
                     {data &&
                         <FlatList
                             showsVerticalScrollIndicator={false}

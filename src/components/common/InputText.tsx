@@ -9,7 +9,7 @@ type Props = {
     placeholder: string;
     autoComplete: any;
     textSecure: boolean;
-    showText: ()=>void;
+    showText?: ()=>void;
     hideText?: ()=>void;
     inputMode?: any;
     onDataChanged?: (data: any) => void;
