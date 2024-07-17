@@ -12,8 +12,7 @@ export const Login = (username: string, token: string, tenant: string) => {
 
 export const Init = () => {
   return async (dispatch: any) => {
-    let token = await AsyncStorage.getItem('token');
-    if (token) {
+    let token = await AsyncStorageUtil.getData
       try {
         let data = await AutoLoginAPI();
         console.log(data, 'hit inside');
@@ -24,14 +23,14 @@ export const Init = () => {
         })}
       } catch (error) {
         console.log(error)
-        let credentials = await AsyncStorage.getItem('user_credentials');
+        let credentials = await AsyncStorageUtil.getData('user_credentials');
         console.log(credentials);
         if (credentials) {
           try {
             const user = await AuthLoginAPI({ credentials });
             const access_token = user?.data?.data?.access_token;
             if (access_token) {
-              AsyncStorage.setItem('token', access_token);
+              AsyncStorageUtil.saveData('token', access_token);
             }
             dispatch({
               type: 'LOGIN',
@@ -39,14 +38,14 @@ export const Init = () => {
             })
           } catch (error) {
             console.log(error)
-            await AsyncStorage.clear();
+            await AsyncStorageUtil.clearAllData();
             dispatch({
               type: 'LOGOUT',
               payload: null
             })
           }
         } else {
-          await AsyncStorage.clear();
+          await AsyncStorageUtil.clearAllData();
           dispatch({
             type: 'LOGOUT',
             payload: null
@@ -55,14 +54,6 @@ export const Init = () => {
 
       }
     }
-    else {
-      await AsyncStorage.clear();
-      dispatch({
-        type: 'LOGOUT',
-        payload: null
-      })
-    }
-  }
 }
 
 export const Otp = (otp: any) => {
@@ -81,7 +72,7 @@ export const Otp = (otp: any) => {
 
 export const Logout = () => {
   return async (dispatch: any) => {
-    await AsyncStorage.clear();
+    await AsyncStorageUtil.clearAllData();
     dispatch({
       type: 'LOGOUT',
       payload: null

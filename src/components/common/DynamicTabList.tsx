@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 import TabItem from './TabItem';
+import { isToday } from 'date-fns';
 
 
 interface Tab {
@@ -19,7 +20,10 @@ const DynamicTabList = ({ tabs, onDateClick }: TabType) => {
 
     useEffect(() => {
         if (tabs.length !== 0) {
-            if (tabs[0].id) {
+            const todayTab = tabs.find(tab => isToday(new Date(tab.id)));
+            if (todayTab) {
+                setSelectedTab(todayTab.id);
+            } else {
                 setSelectedTab(tabs[0].id);
             }
         }

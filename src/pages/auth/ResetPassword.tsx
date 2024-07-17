@@ -35,7 +35,7 @@ const ResetPassword = (props: Props) => {
 
     const handleConformPasswordChange = (newPassword: string) => {
         const isConfirmPasword = password === newPassword;
-        if(isConfirmPasword){
+        if (isConfirmPasword) {
             setConfirmPassword(newPassword);
             setErrorConfirmPassword(false)
             setError(false)
@@ -47,7 +47,7 @@ const ResetPassword = (props: Props) => {
     };
 
     const validation = () => {
-        if (password.length === 0 || confirmPassword.length === 0 ) {
+        if (password.length === 0 || confirmPassword.length === 0) {
             setErrorPassword(true);
             setErrorConfirmPassword(true)
             setError(true);
@@ -58,7 +58,7 @@ const ResetPassword = (props: Props) => {
         else if (errorPassword === true) {
             setError(true)
         }
-        else if (errorConfirmPassword === true){
+        else if (errorConfirmPassword === true) {
             setError(true)
         }
         else {
@@ -66,56 +66,60 @@ const ResetPassword = (props: Props) => {
         }
     }
 
-    const handleSubmit =()=>{
+    const handleSubmit = () => {
         validation();
-        if(!error){
+        if (!error) {
             navigation.navigate('Login')
         }
     }
 
     return (
         <AuthContainer>
-            <AuthHeader
-                title='Reset Password?'
-                subTitle='Create a new password for your account'
-            />
-            <View style={{marginVertical: 25,gap: 7}}>
-                <InputText
-                    placeholder='New Password'
-                    iconName='eye-outline'
-                    autoComplete='new-password'
-                    textSecure={isTextSecure}
-                    showText={() => { setIsTextSecure(!isTextSecure) }}
-                    hideText={() => { setIsTextSecure(!isTextSecure) }}
-                    onDataChanged={handlePasswordChange}
-                    keyboardType={'default'}
-                    //value={password}
-                    error={errorPassword}
-                />
-                <InputText
-                    placeholder='Confirm Password'
-                    // iconName='eye-outline'
-                    autoComplete='new-password'
-                    textSecure={true}
-                    showText={() => {}}
-                    // hideText={() => { setIsTextSecure(!isTextSecure) }}
-                    onDataChanged={handleConformPasswordChange}
-                    keyboardType={'default'}
-                    //value={password}
-                    error={errorConfirmPassword}
-                />
-                {error && <Text style={styles.errorTxt}>Enter valid details</Text>}
-            </View>
-            <Button 
-            label='Reset'
-            buttonClick={handleSubmit}
-            />
-            <View style={styles.infoTxtBody}>
-                <Text style={styles.infoTxt}>Remember it ? <Text 
-                style={{color: COLORS.secondary.main , fontWeight: '600'}}
-                onPress={()=>{navigation.navigate('Login')}}
-                
-                >Login</Text></Text>
+            <View style={{ flex: 1, justifyContent: 'space-between', height: '100%' }}>
+                <View>
+                    <AuthHeader
+                        title='Reset Password?'
+                        subTitle='Create a new password for your account'
+                    />
+                    <View style={{ marginVertical: 25, gap: 7 }}>
+                        <InputText
+                            placeholder='New Password'
+                            iconName='eye-outline'
+                            autoComplete='new-password'
+                            textSecure={isTextSecure}
+                            showText={() => { setIsTextSecure(!isTextSecure) }}
+                            hideText={() => { setIsTextSecure(!isTextSecure) }}
+                            onDataChanged={handlePasswordChange}
+                            keyboardType={'default'}
+                            //value={password}
+                            error={errorPassword}
+                        />
+                        <InputText
+                            placeholder='Confirm Password'
+                            // iconName='eye-outline'
+                            autoComplete='new-password'
+                            textSecure={true}
+                            showText={() => { }}
+                            // hideText={() => { setIsTextSecure(!isTextSecure) }}
+                            onDataChanged={handleConformPasswordChange}
+                            keyboardType={'default'}
+                            //value={password}
+                            error={errorConfirmPassword}
+                        />
+                        {error && <Text style={styles.errorTxt}>Enter valid details</Text>}
+                    </View>
+                </View>
+                <View>
+                    <Button
+                        label='Reset'
+                        buttonClick={handleSubmit}
+                    />
+                    <View style={styles.infoTxtBody}>
+                        <Text style={styles.infoTxt}>Remember it ? <Text
+                            style={{ color: COLORS.secondary.main, fontWeight: '600' }}
+                            onPress={() => { navigation.navigate('Login') }}>Login</Text></Text>
+                    </View>
+                </View>
             </View>
         </AuthContainer>
     )

@@ -100,7 +100,8 @@ const styles = StyleSheet.create({
         height: 220,
         position: 'absolute',
         left: 5,
-        top: 5
+        top: 5,
+        borderRadius: 10
     },
     dateTxt: {
         color: COLORS.text.primary,

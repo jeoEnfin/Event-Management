@@ -1,7 +1,10 @@
-import React from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
-import InputText from '../../components/common/InputText';
-import AuthContainer from '../auth/common/AuthContainer';
+import React, { useState } from 'react';
+import { View, Text, ScrollView } from 'react-native';
+import CustomTextField from '../../components/common/CustomTextField';
+import CustomSelector from '../../components/common/CustomSelector';
+import { COLORS } from '../../constants';
+import Button from '../../components/common/Button';
+import CustomFileUpload from '../../components/common/CustomFileUpload';
 
 
 interface FormDataItem {
@@ -20,7 +23,7 @@ interface FormDataItem {
     pFDefault?: number;
     pFColumType?: string;
     pFValidation: {
-        type?: string;
+        type?: any;
         regexPattern?: string;
         errorMessage?: string;
     }
@@ -31,38 +34,69 @@ interface Props {
 }
 
 const FormData: React.FC<Props> = ({ data }) => {
+    const [formValues, setFormValues] = useState<Record<string, any>>({});
+
+    const handleInputChange = (id: string, value: string) => {
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [id]: value,
+        }));
+    };
+
+    const handleSelectChange = (id: string, value: string) => {
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [id]: value,
+        }));
+    };
+
+    const handleFileUpload = (id: string) => {
+        // Handle file upload logic here if needed
+        console.log('File uploaded for field:', id);
+    };
+
+    const handleSubmit = () => {
+        console.log('Form submitted with values:', formValues);
+    };
+
     const renderFormFields = () => {
         return data.map((field) => {
             switch (field.pFType) {
                 case 'input':
                     return (
                         <View key={field._id} style={{ marginBottom: 10 }}>
-                            <InputText
+                            <CustomTextField
+                                label={field.pFLabel}
                                 placeholder={field.pFPlaceholder || ''}
-                                autoComplete={field.pFValidation.type || ''}
-                                textSecure={false}
-                                errorTxt={field.pFHelperText}
+                                validationType={field?.pFValidation?.type || 'text'}
+                                customErrorText={field.pFHelperText}
+                                value={formValues[field._id] || ''}
+                                onChangeText={(text) => handleInputChange(field._id, text)}
                             />
                         </View>
                     );
                 case 'select':
                     return (
                         <View key={field._id} style={{ marginBottom: 10 }}>
-                            <Text>{field.pFLabel}</Text>
-                            {/* <Picker>
-                {field.pFData &&
-                  Object.keys(field.pFData).map((key) => (
-                    <Picker.Item key={key} label={field.pFData[key]} value={key} />
-                  ))}
-              </Picker> */}
-                            <Text style={{ color: 'gray', fontSize: 12 }}>{field.pFHelperText}</Text>
+                            <CustomSelector
+                                label={field.pFLabel}
+                                placeholder={field.pFPlaceholder}
+                                options={Object.values(field.pFData) || []}
+                                selectedValue={formValues[field._id] || ''}
+                                onValueChange={(value: any) => handleSelectChange(field._id, value)}
+                            />
                         </View>
                     );
                 case 'file':
                     return (
                         <View key={field._id} style={{ marginBottom: 10 }}>
-                            <Text>{field.pFLabel}</Text>
-                            <Button title="Upload File" onPress={() => { }} />
+                            <CustomFileUpload
+                                label={field.pFLabel}
+                                onFileSelect={() => { }}
+                                maxSizeInMB={field?.pFUploadParams?.maxFileSize}
+                                allowedTypes={field?.pFUploadParams?.fileType}
+                                multiple={field?.pFUploadParams?.multiFile}
+                            />
                         </View>
                     );
                 default:
@@ -72,11 +106,21 @@ const FormData: React.FC<Props> = ({ data }) => {
     };
 
     return (
-            <View style={{ padding: 20 }}>
-                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 20 }}>Registration</Text>
+        <View style={{ padding: 20 }}>
+            <ScrollView >
+                <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: COLORS.text.main }}>Registration</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '400', marginBottom: 20, color: COLORS.text.main }}>Please fill out the registration form below</Text>
+                </View>
                 {renderFormFields()}
-                <Button title="Submit" onPress={() => { }} />
-            </View>
+                <View style={{ width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
+                    <View></View>
+                    <View style={{ width: '50%' }}>
+                        <Button label="Submit" buttonClick={handleSubmit} />
+                    </View>
+                </View>
+            </ScrollView>
+        </View>
     );
 };
 

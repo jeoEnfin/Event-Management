@@ -4,7 +4,7 @@ import { COLORS } from '../../constants';
 
 type Props = {
     label: string;
-    buttonClick: ()=>void;
+    buttonClick?: ()=>void;
     loading?: boolean;
 }
 

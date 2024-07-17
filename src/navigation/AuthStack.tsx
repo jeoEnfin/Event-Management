@@ -21,7 +21,7 @@ const AuthStack = (props: Props) => {
     <Stack.Navigator screenOptions={{ orientation: 'portrait', headerShown: false }}>
       {token === null ?
         <>
-          {/* <Stack.Screen name='Welcome' component={Welcome}/> */}
+          <Stack.Screen name='Welcome' component={Welcome}/>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="ResetPassword" component={ResetPassword} />

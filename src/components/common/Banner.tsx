@@ -29,16 +29,16 @@ const Banner = (props: Props) => {
                     style={{ width: '100%', height: '100%', borderRadius: 10 }}
                     resizeMode='stretch'
                     // source={require('../../assets/ci/banner.png')}
-                    source={{ uri: `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/banner/default.jpg` }}
+                    source={{ uri: `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/banner/default.png` }}
                     alt='No image'
                     defaultSource={require('../../assets/ci/banner.png')}
                 />
-                <Image
+                {/* <Image
                     style={styles.shade}
                     resizeMode='stretch'
                     source={require('../../assets/ci/bannerShade.png')}
                     alt='No image'
-                />
+                /> */}
                 {/* <View style={styles.body}>
                         <Text style={styles.text1}>THE BEST INTERPRETING</Text>
                         <Text style={styles.text1}>AGENCEY FOR YOUR</Text>

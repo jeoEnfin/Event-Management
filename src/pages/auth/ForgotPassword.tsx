@@ -64,13 +64,13 @@ const ForgotPassword = (props: Props) => {
             try {
                 const forgotPasswordResponse = await ForgotPasswordAPI({ data })
                 console.log(forgotPasswordResponse.data.data)
-                if(forgotPasswordResponse.data.data){
+                if (forgotPasswordResponse.data.data) {
                     Alert.alert(forgotPasswordResponse.data.data, '', [
                         { text: 'OK', onPress: () => { } },
                     ]);
                     setTimeout(() => {
-                        navigation.navigate('Login') 
-                    },3000)
+                        navigation.navigate('Login')
+                    }, 3000)
                 }
             } catch (e: any) {
                 setError(true)
@@ -86,37 +86,43 @@ const ForgotPassword = (props: Props) => {
 
     return (
         <AuthContainer>
-            <AuthHeader
-                title='Forgot Password?'
-                subTitle='Fill the form to reset your password'
-            />
-            <View style={{ marginTop: 15, gap: 6 }}>
-                <InputText
-                    placeholder='Email'
-                    autoComplete='email'
-                    textSecure={false}
-                    showText={() => { }}
-                    inputMode={'email'}
-                    onDataChanged={handleEmailChange}
-                    //value={email}
-                    error={errorEmail}
-                    errorTxt={emailErrorMessage}
-                />
-                {error && <Text style={styles.errorTxt}>{errorMessage}</Text>}
-            </View>
-            <View style={styles.infoTxtBody}>
-                <Text style={styles.infoTxt}>A link send to you mail to reset password.</Text>
-            </View>
-            <Button
-                buttonClick={handleSubmit}
-                label='Reset'
-            />
-            <View style={styles.infoTxtBody}>
-                <Text style={styles.infoTxt}>Remember it ? <Text
-                    style={{ color: COLORS.secondary.main, fontWeight: '600' }}
-                    onPress={() => { navigation.navigate('Login') }}
+            <View style={{flex: 1,justifyContent: 'space-between',height: '100%'}}>
+                <View>
+                    <AuthHeader
+                        title='Forgot Password?'
+                        subTitle='Fill the form to reset your password'
+                    />
+                    <View style={{ marginTop: 15, gap: 6 }}>
+                        <InputText
+                            placeholder='Email'
+                            autoComplete='email'
+                            textSecure={false}
+                            showText={() => { }}
+                            inputMode={'email'}
+                            onDataChanged={handleEmailChange}
+                            //value={email}
+                            error={errorEmail}
+                            errorTxt={emailErrorMessage}
+                        />
+                        {error && <Text style={styles.errorTxt}>{errorMessage}</Text>}
+                    </View>
+                    <View style={styles.infoTxtBody}>
+                        <Text style={styles.infoTxt}>A link send to you mail to reset password.</Text>
+                    </View>
+                </View>
+                <View>
+                    <Button
+                        buttonClick={handleSubmit}
+                        label='Reset'
+                    />
+                    <View style={styles.infoTxtBody}>
+                        <Text style={styles.infoTxt}>Remember it ? <Text
+                            style={{ color: COLORS.secondary.main, fontWeight: '600' }}
+                            onPress={() => { navigation.navigate('Login') }}
 
-                >Login</Text></Text>
+                        >Login</Text></Text>
+                    </View>
+                </View>
             </View>
         </AuthContainer>
     )

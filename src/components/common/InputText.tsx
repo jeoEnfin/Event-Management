@@ -36,7 +36,7 @@ const InputText = (props: Props) => {
 
     return (
         <View style={styles.txtBody}>
-        <View style={[styles.txtField,props.error ? {borderColor: COLORS.redButton} : {borderColor: COLORS.background } ]}>
+        <View style={[styles.txtField,props.error ? {borderColor: COLORS.redButton} : {borderColor: COLORS.text.secondary } ]}>
             <TextInput
                 style={styles.txtFieldText}
                 placeholder={props.placeholder}

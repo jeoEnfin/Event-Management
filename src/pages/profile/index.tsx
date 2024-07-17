@@ -10,6 +10,7 @@ import { COLORS } from '../../constants'
 import QRCode from './QRCode'
 import AsyncStorageUtil from '../../utils/services/LocalCache'
 import { useNavigation } from '@react-navigation/native'
+import { Icon } from 'react-native-elements'
 
 type Props = {}
 
@@ -91,8 +92,8 @@ const Profile = (props: Props) => {
                 style={{ width: '100%' }}>
                 <View style={{ alignItems: 'center' }}>
                     <View style={styles.editIcon}>
-                        <TouchableOpacity onPress={()=>{navigation.navigate('Profile Edit')}}>
-                            <Ionicons name='create-outline' size={30} color={COLORS.secondary.main} />
+                        <TouchableOpacity onPress={()=>{navigation.navigate('Edit Profile')}}>
+                            <Icon name='edit' type={'feather'} size={30} color={COLORS.secondary.main} />
                         </TouchableOpacity>
                     </View>
                     <ProfileCard
@@ -107,15 +108,21 @@ const Profile = (props: Props) => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.logout_Container}>
+                        <TouchableOpacity style={styles.fav_Body} onPress={() => {}}>
+                            <Icon name={'lock-reset'} size={30} color={COLORS.secondary.main} />
+                            <Text style={styles.fav_Text}>Reset password</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.logout_Container}>
                         <TouchableOpacity style={styles.fav_Body} onPress={() => handleLogout()}>
-                            <Ionicons name={'log-out-outline'} size={30} color={COLORS.secondary.main} />
+                            <Icon name={'logout'} size={30} color={COLORS.secondary.main} />
                             <Text style={styles.fav_Text}>Logout</Text>
                         </TouchableOpacity>
                     </View>
                     {userData && <QRCode data={ userData} />}
                     <View style={styles.delete_account_Container}>
                         <TouchableOpacity style={styles.delete_Body} onPress={()=>handleDeleteAccount()}>
-                            <Ionicons name={'trash-outline'} size={28} color={COLORS.text.error} />
+                            <Icon name={'delete-outline'} size={30} color={COLORS.text.error} />
                             <Text style={styles.delete_Text}>Delete Account</Text>
                         </TouchableOpacity>
                     </View>

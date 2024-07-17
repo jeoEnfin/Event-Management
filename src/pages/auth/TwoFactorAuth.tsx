@@ -36,24 +36,30 @@ const TwoFactorAuth = ({ route }: Props) => {
 
     return (
         <AuthContainer>
-            <AuthHeader
-                title='OTP Authentication'
-                subTitle={`OTP set to ${CiTruncate(user, 15)}`}
-                linkButtonLabel='Change'
-                isLinkButton
-                linkButtonClick={()=>{ dispatch(Logout())}}
-            />
-            <View style={styles.otpBody}>
-                <OTPInput length={6} onComplete={(data) => setOtp(data)} />
-                {errorTxt && <Text style={styles.errorTxt}>{errorTxt}</Text>}
+            <View>
+                <View>
+                    <AuthHeader
+                        title='OTP Authentication'
+                        subTitle={`OTP set to ${CiTruncate(user, 15)}`}
+                        linkButtonLabel='Change'
+                        isLinkButton
+                        linkButtonClick={() => { dispatch(Logout()) }}
+                    />
+                    <View style={styles.otpBody}>
+                        <OTPInput length={6} onComplete={(data) => setOtp(data)} />
+                        {errorTxt && <Text style={styles.errorTxt}>{errorTxt}</Text>}
+                    </View>
+                    <View style={styles.infoTxtBody}>
+                        <Text style={styles.infoTxt}>Resend OTP in 60 sec</Text>
+                    </View>
+                </View>
+                <View>
+                    <Button
+                        label='Submit'
+                        buttonClick={handleOTP}
+                    />
+                </View>
             </View>
-            <View style={styles.infoTxtBody}>
-                <Text style={styles.infoTxt}>Resend OTP in 60 sec</Text>
-            </View>
-            <Button
-                label='Submit'
-                buttonClick={handleOTP}
-            />
         </AuthContainer>
     )
 }

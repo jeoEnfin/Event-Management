@@ -3,32 +3,35 @@ import React, { useEffect, useState } from 'react'
 import FormData from './Registration'
 import { COLORS } from '../../constants'
 import { GetRegistrationFieldsAPI } from './api/Registration-Fields'
+import ScreenWrapper from '../../components/ScreenWrapper'
 
 type Props = {}
 
 const Payment = (props: Props) => {
-  const[fieldData, setFieldData] = useState([]);
+  const [fieldData, setFieldData] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getFields();
-  },[])
- 
-  const getFields = async()=>{
-    try{
-      let fields =  await GetRegistrationFieldsAPI();
-      if(fields){
-       setFieldData(fields?.data?.data)
+  }, [])
+
+  const getFields = async () => {
+    try {
+      let fields = await GetRegistrationFieldsAPI();
+      if (fields) {
+        setFieldData(fields?.data?.data)
       }
-    } catch(err){
+    } catch (err) {
       console.log(err)
     }
   }
 
 
   return (
-      <View style={{backgroundColor: COLORS._background.primary}}>
-        {fieldData.length > 0 &&  <FormData data={fieldData} />}
+    <ScreenWrapper>
+      <View style={{width: '100%'}}>
+        {fieldData.length > 0 && <FormData data={fieldData} />}
       </View>
+    </ScreenWrapper>
   )
 }
 

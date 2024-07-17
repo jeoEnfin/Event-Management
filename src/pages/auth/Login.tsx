@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, TextInput, TouchableOpacity, Platform, Alert } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TextInput, TouchableOpacity, Platform, Alert, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLORS } from '../../constants'
 import RoundButton from '../../components/RoundButton';
@@ -103,7 +103,7 @@ const LoginScreen = (props: Props) => {
 
     const handleLogin = async () => {
         validation();
-       
+
         if (username != '' && password != '') {
             setIsLoading(true);
             const data = {
@@ -115,17 +115,20 @@ const LoginScreen = (props: Props) => {
                 const access_token = userData?.data?.data?.access_token;
                 const tenant = userData?.data?.data?.tenant;
                 const _user = userData?.data?.data?.user;
-                if(access_token){
-                    AsyncStorage.setItem('token', access_token);
+                if (access_token) {
+                    AsyncStorageUtil.saveData('token', access_token);
                 }
-                if(tenant){
-                    AsyncStorage.setItem('tenant_id', tenant)
+                if (tenant) {
+                    AsyncStorageUtil.saveData('tenant_id', tenant)
                 }
-                if(rememberCheck){
+                if (rememberCheck) {
                     await AsyncStorageUtil.saveData('user_credentials', data)
                 }
-                if(_user){
+                if (_user) {
                     await AsyncStorageUtil.saveData('user_details', _user)
+                    if (_user?.roleId) {
+                        await AsyncStorageUtil.saveData('roleId', _user?.roleId)
+                    }
                 }
                 dispatch(Login(username, access_token, tenant))
                 setError(false)
@@ -159,72 +162,80 @@ const LoginScreen = (props: Props) => {
         }
     }
 
-    const showPassword = () =>{
+    const showPassword = () => {
         setIsTextSecure(!isTextSecure)
     }
-   
-    const ForgotPasswordRoute = () =>{
+
+    const ForgotPasswordRoute = () => {
         navigation.navigate('ForgotPassword');
     }
 
     return (
         <AuthContainer>
-            <AuthHeader
-                title='Welcome Back'
-                subTitle='Login to your Account'
-            />
-            <View style={{ marginTop: 10, gap: 6 }}>
-                <InputText
-                    placeholder='Email'
-                    autoComplete='email'
-                    textSecure={false}
-                    showText={() => { }}
-                    inputMode={'email'}
-                    onDataChanged={handleEmailChange}
-                    error={errorEmail}
-                    errorTxt={emailErrorTxt}
-                />
-                <InputText
-                    placeholder='Password'
-                    iconName='eye-outline'
-                    autoComplete='new-password'
-                    textSecure={isTextSecure}
-                    showText={showPassword}
-                    // hideText={hidePassword}
-                    onDataChanged={handlePasswordChange}
-                    keyboardType={'default'}
-                    error={errorPassword}
-                    errorTxt={passwordErrorTxt}
-                />
-                {error && <Text style={styles.errorTxt}>{errorTxt}</Text>}
-            </View>
-            <View style={styles.forgotBody}>
-                <CheckboxWithLabel
-                    label='Remember me'
-                    isChecked={rememberCheck}
-                    onPress={()=>{setRememberCheck(!rememberCheck)}}
-                />
-                <TouchableOpacity onPress={() => {ForgotPasswordRoute()}}>
-                    <Text style={styles.fgtTxt}>Forgot password?</Text>
-                </TouchableOpacity>
-            </View>
-            <Button label='Login' buttonClick={handleLogin} loading={isLoading}/>
-            <View style={styles.signupBody}>
-                <Text style={styles.signupTxt}>or continue with</Text>
-            </View>
-            <View style={styles.socialBtn}>
-                <CustomIconButton
-                    imageUrl='https://static.vecteezy.com/system/resources/thumbnails/022/484/503/small_2x/google-lens-icon-logo-symbol-free-png.png'
-                    onClick={() => googleLoginHandler()}
-                />
-                <CustomIconButton
-                    imageUrl='https://i.pinimg.com/736x/42/75/49/427549f6f22470ff93ca714479d180c2.jpg'
-                // onClick={() => googleLoginHandler()}
-                />
-                <CustomIconButton
-                    imageUrl='https://i.pinimg.com/736x/ca/61/15/ca6115500b30a04913546177d69126f3.jpg'
-                // onClick={() => googleLoginHandler()}
-                />
+            <View style={{flex: 1,justifyContent: 'space-between',height: '100%'}}>
+                <View>
+                    <AuthHeader
+                        title='Welcome Back'
+                        subTitle='Login to your Account'
+                    />
+                    <ScrollView>
+                    <View style={{ marginTop: 10, gap: 10 }}>
+                        <InputText
+                            placeholder='Email'
+                            autoComplete='email'
+                            textSecure={false}
+                            showText={() => { }}
+                            inputMode={'email'}
+                            onDataChanged={handleEmailChange}
+                            error={errorEmail}
+                            errorTxt={emailErrorTxt}
+                        />
+                        <InputText
+                            placeholder='Password'
+                            iconName='eye-outline'
+                            autoComplete='new-password'
+                            textSecure={isTextSecure}
+                            showText={showPassword}
+                            // hideText={hidePassword}
+                            onDataChanged={handlePasswordChange}
+                            keyboardType={'default'}
+                            error={errorPassword}
+                            errorTxt={passwordErrorTxt}
+                        />
+                        {error && <Text style={styles.errorTxt}>{errorTxt}</Text>}
+                    </View>
+                    <View style={styles.forgotBody}>
+                        <CheckboxWithLabel
+                            label='Remember me'
+                            isChecked={rememberCheck}
+                            onPress={() => { setRememberCheck(!rememberCheck) }}
+                        />
+                        <TouchableOpacity onPress={() => { ForgotPasswordRoute() }}>
+                            <Text style={styles.fgtTxt}>Forgot password?</Text>
+                        </TouchableOpacity>
+                    </View>
+                    </ScrollView>
+                </View>
+                <View>
+                    <Button label='Login' buttonClick={handleLogin} loading={isLoading} />
+                    <View style={styles.signupBody}>
+                        <Text style={styles.signupTxt}>or continue with</Text>
+                    </View>
+                    <View style={styles.socialBtn}>
+                        <CustomIconButton
+                            imageUrl='https://static.vecteezy.com/system/resources/thumbnails/022/484/503/small_2x/google-lens-icon-logo-symbol-free-png.png'
+                            onClick={() => googleLoginHandler()}
+                        />
+                        <CustomIconButton
+                            imageUrl='https://i.pinimg.com/736x/42/75/49/427549f6f22470ff93ca714479d180c2.jpg'
+                        // onClick={() => googleLoginHandler()}
+                        />
+                        <CustomIconButton
+                            imageUrl='https://i.pinimg.com/736x/ca/61/15/ca6115500b30a04913546177d69126f3.jpg'
+                        // onClick={() => googleLoginHandler()}
+                        />
+                    </View>
+                </View>
             </View>
         </AuthContainer>
     )

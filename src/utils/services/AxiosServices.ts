@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { config } from "../config";
+import AsyncStorageUtil from "./LocalCache";
 
 const axiosClient = axios.create({
   baseURL: config.SERVER_URL,
@@ -13,14 +14,18 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   async (config) => {
-    let token = await AsyncStorage.getItem("token");
+    let token = await AsyncStorageUtil.getData("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
       config.headers['context'] = 'admin';
     }
-    let tenantId = await AsyncStorage.getItem("tenant_id");
+    let tenantId = await AsyncStorageUtil.getData("tenant_id");
     if (tenantId) {
       config.headers['x-tenant-id'] = tenantId;
+    }
+    let roleId = await AsyncStorageUtil.getData('roleId');
+    if (roleId) {
+      config.headers['x-Role-id'] = roleId;
     }
     return config;
   },

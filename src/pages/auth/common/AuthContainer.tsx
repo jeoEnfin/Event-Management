@@ -1,4 +1,4 @@
-import { Dimensions, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { ReactNode } from 'react'
 import { COLORS } from '../../../constants';
 
@@ -13,7 +13,7 @@ const AuthContainer = ({ children }: Props) => {
     return (
         <KeyboardAvoidingView style={styles.container}>
             <View style={styles.body}>
-                {children}
+                    {children}
             </View>
         </KeyboardAvoidingView>
     )
@@ -26,14 +26,14 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.background,
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        height: '100%'
     },
     body: {
         backgroundColor: COLORS.baseWhite,
-        width: screenWidth - 50,
-        padding: 15,
-        justifyContent: 'center',
-        elevation: 5,
-        borderRadius: 15
+        paddingHorizontal: 20,
+        paddingTop: '20%',
+        height: '100%',
+        paddingBottom: '5%'
     },
 })

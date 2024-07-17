@@ -12,11 +12,11 @@ import { COLORS } from '../constants';
 import Notification from '../pages/notification/Notification';
 import SearchScreen from '../pages/search/SearchScreen';
 import FavouriteContacts from '../pages/profile/FavouriteContacts';
-import EditForm from '../pages/profile/EditForm';
 import EventDetailsScreen from '../pages/main/EventDetailsScreen';
 import OfflineLobby from '../pages/main/OfflineLobby';
 import Payment from '../pages/payment';
-
+import ProfileEdit from '../pages/profile/ProfileEdit';
+import Welcome from '../pages/auth/Welcome';
 
 type Props = {}
 
@@ -26,9 +26,10 @@ const MainStack = (props: Props) => {
 
     return (
         <Stack.Navigator screenOptions={{ statusBarColor: COLORS.background ,headerShown: false}}>
+            <Stack.Screen name='Welcome' component={Welcome}/>
             <Stack.Screen name='HomeTab' component={TabNav}  />
             <Stack.Screen name='Favorites' component={FavouriteContacts} options={{headerShown: true}}/>
-            <Stack.Screen name='Profile Edit' component={EditForm} options={{headerShown: true}}/>
+            <Stack.Screen name='Edit Profile' component={ProfileEdit} options={{headerShown: true}}/>
             <Stack.Screen name='EventDetails' component={EventDetailsScreen} />
             <Stack.Screen name='OfflineLobby' component={OfflineLobby} />
             <Stack.Screen name='payment' component={Payment} />
