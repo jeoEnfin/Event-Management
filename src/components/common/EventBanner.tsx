@@ -3,57 +3,74 @@ import React from 'react'
 import { COLORS } from '../../constants';
 import { format } from 'date-fns';
 import { config } from '../../utils/config';
+import { Icon } from 'react-native-elements';
+import { isDateNotPassed } from '../../utils/common';
 
 type Props = {
     imgUrl: string;
-    onPressButton?: ()=>void;
+    onPressButton?: () => void;
     buttonLabel?: string;
     startDate?: string;
     endDate?: string;
     title?: string;
     subTitle?: string;
+    price?: string;
+    expRegStart?: string;
+    expRegEnd?: string;
+    isOrder?: boolean;
+    onPressButtonAfterOrdered?: () => void;
 }
 
 const screenWidth = Dimensions.get("window").width;
 
 const EventBanner = (props: Props) => {
-  return (
-    <View style={{
-        width: '100%',
-        height: 240,
-    }}>
-        <View
-            style={{
-                width: '100%',
-                borderRadius: 10,
-                overflow: 'hidden',
-                padding: 5,
-                height: 230,
-            }}>
-            <Image
-                style={{ width: '100%', height: '100%',borderRadius: 10}}
-                resizeMode='stretch'
-                source={{ uri: props.imgUrl === 'default.jpg' ?  `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg`: props.imgUrl}}
-                alt='No image'
-            />
-            <Image
-                style={styles.shade}
-                resizeMode='stretch'
-                source={require('../../assets/ci/bannerShade2.png')}
-                alt='No image'
-            />
+    const isRegisterEnded = isDateNotPassed(props.expRegEnd || '');
+    return (
+        <View style={{
+            width: '100%',
+            height: 200,
+            marginTop: 20
+        }}>
+            <View
+                style={{
+                    width: '100%',
+                    borderRadius: 10,
+                    overflow: 'hidden',
+                    height: 200,
+                }}>
+                <Image
+                    style={{ width: '100%', height: '100%', borderRadius: 10 }}
+                    resizeMode='stretch'
+                    source={{ 
+                        uri: props.imgUrl === 'default.jpg' 
+                          ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg` 
+                          : (props.imgUrl && (props.imgUrl.startsWith('https' || 'http') 
+                            ? props.imgUrl 
+                            : `${config.CLOUD_FRONT_URL}/${props.imgUrl}` ))
+                      }}
+                    alt='No image'
+                />
+                <Image
+                    style={styles.shade}
+                    resizeMode='stretch'
+                    source={require('../../assets/ci/bannerShade2.png')}
+                    alt='No image'
+                />
                 <View style={styles.body}>
                     <Text style={styles.text1}>{props.title}</Text>
                     <Text style={styles.text2}>{props.subTitle}</Text>
                     <Text style={styles.dateTxt}>{props.startDate && format(new Date(props.startDate), 'dd MMM yyyy')}-{props.endDate && format(new Date(props.endDate), 'dd MMM yyyy')}</Text>
-                    {props.buttonLabel && <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
+                    {!props.isOrder ? isRegisterEnded ? props.buttonLabel && <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
+                        {props.price && <Icon name='euro' color={COLORS.text.primary} size={13} />}
                         <Text style={styles.btnText}>{props.buttonLabel}</Text>
-                    </TouchableOpacity>}
+                    </TouchableOpacity> : <Text style={[styles.btnText,{color: COLORS.text.error}]}>Expo Registration Ended</Text>:  <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
+                        <Text style={styles.btnText}>Join</Text>
+                    </TouchableOpacity> }
                 </View>
-        </View>
+            </View>
 
-    </View>
-  )
+        </View>
+    )
 }
 
 export default EventBanner
@@ -71,7 +88,7 @@ const styles = StyleSheet.create({
     text1: {
         color: COLORS.text.primary,
         fontSize: 18,
-        fontWeight: '400'
+        fontWeight: '600'
     },
     text2: {
         color: COLORS.text.primary,
@@ -91,21 +108,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 10,
+        flexDirection: 'row',
+        gap: 2
     },
     subBody: {
         backgroundColor: COLORS.default.dark,
     },
     shade: {
-        width: '100%', 
-        height: 220,
+        width: '100%',
+        height: '100%',
         position: 'absolute',
-        left: 5,
-        top: 5,
         borderRadius: 10
     },
     dateTxt: {
         color: COLORS.text.primary,
         fontSize: 13,
         fontWeight: '600'
-      },
+    },
 })

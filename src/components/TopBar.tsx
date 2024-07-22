@@ -1,8 +1,9 @@
 import { Image, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { COLORS, TXT_SIZE } from '../constants'
 import RoundButton from './RoundButton'
 import { useNavigation } from '@react-navigation/native'
+import AsyncStorageUtil from '../utils/services/LocalCache'
 
 
 type Props = {
@@ -21,6 +22,31 @@ type Props = {
 
 const TopBar = (props: Props) => {
     const navigation: any = useNavigation()
+    const [userData, setUserData] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        getData();
+    }, [])
+
+    const getData = async () => {
+        setIsLoading(true)
+        try {
+            const _userData = await AsyncStorageUtil.getData('user_details')
+            if (_userData) {
+                const _data: any = {
+                    // name: _userData?.data?.displayName,
+                    // email: _userData?.data?.email,
+                    uuid: _userData?.uuid,
+                    imgUrl: _userData?.data?.userImage
+                }
+                setUserData(_data)
+            }
+            setIsLoading(false)
+        } catch (err) {
+            setIsLoading(false)
+        }
+    }
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor={COLORS._background.primary} barStyle={'dark-content'} />
@@ -46,10 +72,11 @@ const TopBar = (props: Props) => {
                     <RoundButton
                         iconName='search'
                         iconSize={28}
-                        color={COLORS.text.main}
+                        color={COLORS.text.default}
                         backgroundColor={COLORS._background.primary}
                         hapticFeedback={true}
-                        onPress={()=>{navigation.navigate('Search')}}
+                        iconType='feather'
+                        onPress={() => { navigation.navigate('Search') }}
                     />)}
                 {props.scanner && (
                     <RoundButton
@@ -71,23 +98,24 @@ const TopBar = (props: Props) => {
                     />)}
                 {props.notification && (
                     <RoundButton
-                        iconName="notifications-outline"
+                        iconName="bell"
                         iconSize={28}
-                        color={COLORS.text.main}
+                        color={COLORS.text.default}
                         backgroundColor={COLORS._background.primary}
                         hapticFeedback={true}
-                        onPress={()=>{navigation.navigate('Notification')}}
+                        iconType='feather'
+                        onPress={() => { navigation.navigate('Notification') }}
                     />)}
                 {props.profile && (
                     <RoundButton
-                        imageUrl='https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg'
+                        imageUrl={userData?.imgUrl ? userData?.imgUrl : 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg'}
                         color={COLORS.lightWhite}
                         backgroundColor={COLORS._background.primary}
                         hapticFeedback={true}
                         onPress={props.onPressMenu}
                         border
                     />)}
-                 {props.menu && (
+                {props.menu && (
                     <RoundButton
                         iconName="menu"
                         iconSize={28}
@@ -95,7 +123,7 @@ const TopBar = (props: Props) => {
                         backgroundColor={COLORS._background.primary}
                         hapticFeedback={true}
                         onPress={props.menuClick}
-                    />)}    
+                    />)}
             </View>
         </View>
     )
@@ -105,7 +133,7 @@ export default TopBar
 
 const styles = StyleSheet.create({
     container: {
-        height: 80,
+        height: 68,
         backgroundColor: COLORS._background.primary,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -124,7 +152,8 @@ const styles = StyleSheet.create({
     },
     button_container: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        gap: 3
     },
     title_container: {
         flexDirection: 'row',

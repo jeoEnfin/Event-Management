@@ -17,6 +17,7 @@ import OfflineLobby from '../pages/main/OfflineLobby';
 import Payment from '../pages/payment';
 import ProfileEdit from '../pages/profile/ProfileEdit';
 import Welcome from '../pages/auth/Welcome';
+import ResetPassword from '../pages/profile/ResetPassword';
 
 type Props = {}
 
@@ -32,7 +33,8 @@ const MainStack = (props: Props) => {
             <Stack.Screen name='Edit Profile' component={ProfileEdit} options={{headerShown: true}}/>
             <Stack.Screen name='EventDetails' component={EventDetailsScreen} />
             <Stack.Screen name='OfflineLobby' component={OfflineLobby} />
-            <Stack.Screen name='payment' component={Payment} />
+            <Stack.Screen name='Registration' component={Payment} options={{headerShown: true}}/>
+            <Stack.Screen name='Reset Password' component={ResetPassword} options={{headerShown: true}}/>
             {/* <Stack.Screen name='Scan' component={ScanScreen} options={{ orientation: 'portrait' }} />
             <Stack.Screen name='ScanReader' component={ScanReader} options={{ orientation: 'portrait' }} />
             <Stack.Screen name="Event" component={DemoEvent} options={{ orientation: 'landscape', statusBarHidden: true }} />

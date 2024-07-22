@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
         width: 140,
         justifyContent: 'space-between',
         alignItems: 'center',
+        marginTop: 10
     },
     img_View: {
         width: 100,

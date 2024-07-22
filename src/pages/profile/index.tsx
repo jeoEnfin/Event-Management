@@ -68,7 +68,8 @@ const Profile = (props: Props) => {
                 const _data = {
                     name: _userData?.data?.displayName,
                     email: _userData?.data?.email,
-                    uuid: _userData?.uuid
+                    uuid: _userData?.uuid,
+                    imgUrl: _userData?.data?.userImage
                 }
                 setUserData(_data)
             }
@@ -97,29 +98,34 @@ const Profile = (props: Props) => {
                         </TouchableOpacity>
                     </View>
                     <ProfileCard
-                        imageUrl='https://www.wilsoncenter.org/sites/default/files/media/images/person/james-person-1.jpg'
+                        imageUrl={userData ? userData?.imgUrl : ''}
                         email={userData ? userData?.email : ''}
                         name={userData ? userData?.name: ''}
                     />
+                     <View style={styles.divider}></View>
                     <View style={styles.fav_Container}>
                         <TouchableOpacity style={styles.fav_Body} onPress={()=>{navigation.navigate('Favorites')}}>
                             <Ionicons name={'star'} size={25} color={'#F7CA69'} />
                             <Text style={styles.fav_Text}>Favourite Contacts</Text>
                         </TouchableOpacity>
                     </View>
+                    <View style={styles.divider}></View>
                     <View style={styles.logout_Container}>
-                        <TouchableOpacity style={styles.fav_Body} onPress={() => {}}>
+                        <TouchableOpacity style={styles.fav_Body} onPress={() => {navigation.navigate('Reset Password')}}>
                             <Icon name={'lock-reset'} size={30} color={COLORS.secondary.main} />
                             <Text style={styles.fav_Text}>Reset password</Text>
                         </TouchableOpacity>
                     </View>
+                    <View style={styles.divider}></View>
                     <View style={styles.logout_Container}>
                         <TouchableOpacity style={styles.fav_Body} onPress={() => handleLogout()}>
                             <Icon name={'logout'} size={30} color={COLORS.secondary.main} />
                             <Text style={styles.fav_Text}>Logout</Text>
                         </TouchableOpacity>
                     </View>
+                    <View style={styles.divider}></View>
                     {userData && <QRCode data={ userData} />}
+                    <View style={styles.divider}></View>
                     <View style={styles.delete_account_Container}>
                         <TouchableOpacity style={styles.delete_Body} onPress={()=>handleDeleteAccount()}>
                             <Icon name={'delete-outline'} size={30} color={COLORS.text.error} />
@@ -136,19 +142,15 @@ export default Profile
 
 const styles = StyleSheet.create({
     fav_Container: {
-        marginTop: 20,
         width: '85%',
-        borderTopWidth: 1.5,
-        borderBottomWidth: 1.5,
         height: 60,
-        borderColor: COLORS._background.secondary,
         alignItems: 'center',
         justifyContent: 'center',
     },
     fav_Text: {
         color: COLORS.text.main,
-        fontSize: 18,
-        fontWeight: '500'
+        fontSize: 16,
+        fontWeight: '600'
     },
     fav_Body: {
         flexDirection: 'row',
@@ -157,20 +159,16 @@ const styles = StyleSheet.create({
     },
     logout_Container: {
         width: '85%',
-        borderBottomWidth: 1.5,
         height: 60,
-        borderColor: COLORS._background.secondary,
         alignItems: 'center',
         justifyContent: 'center',
     },
     delete_account_Container: {
         width: '85%',
-        borderTopWidth: 1.5,
         height: 60,
-        borderColor: COLORS._background.secondary,
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: 10
+        marginBottom: 10
     },
     delete_Text: {
         color: COLORS.text.error,
@@ -186,6 +184,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         margin: 15
+    },
+    divider: {
+        width: '85%',
+        height: 2,
+        backgroundColor: COLORS._background.secondary,
+        opacity: 0.2
     }
 })
 

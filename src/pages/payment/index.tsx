@@ -5,11 +5,14 @@ import { COLORS } from '../../constants'
 import { GetRegistrationFieldsAPI } from './api/Registration-Fields'
 import ScreenWrapper from '../../components/ScreenWrapper'
 
-type Props = {}
+type Props = {
+  route: any;
+}
 
-const Payment = (props: Props) => {
+const Payment = ({route}: Props) => {
+  const { event } = route.params;
   const [fieldData, setFieldData] = useState([]);
-
+  
   useEffect(() => {
     getFields();
   }, [])
@@ -28,8 +31,8 @@ const Payment = (props: Props) => {
 
   return (
     <ScreenWrapper>
-      <View style={{width: '100%'}}>
-        {fieldData.length > 0 && <FormData data={fieldData} />}
+      <View style={{ width: '100%' }}>
+        {fieldData && <FormData data={fieldData} eventData={event} />}
       </View>
     </ScreenWrapper>
   )

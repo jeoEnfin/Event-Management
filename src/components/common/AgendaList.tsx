@@ -55,14 +55,13 @@ const AgendaList = ({
 
     return (
         <View style={{ width: '100%' ,marginTop: 10}}>
-            <View>
             <Text style={{
                 fontWeight: '600',
-                fontSize: TXT_SIZE.L,
+                fontSize: 16,
                 color: COLORS.text.main,
-                marginLeft: 10,
                 marginBottom: 5
             }}>Agenda</Text>
+            <View style={{marginTop: 14}}>
             {_days && <DynamicTabList
                 tabs={_days}
                 onDateClick={(val) => handleShedule(val)}

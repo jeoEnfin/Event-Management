@@ -27,11 +27,12 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         margin: 5,
-        backgroundColor: COLORS._background.primary,
+        // backgroundColor: COLORS._background.primary,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1.5,
-        borderColor: COLORS.secondary.main
+        borderColor: COLORS.secondary.main,
+        height: 54
     },
     btnTxt: {
         color: COLORS.secondary.main,

@@ -8,7 +8,9 @@ import ScreenWrapper from '../../components/ScreenWrapper'
 import TopBar from '../../components/TopBar'
 import { ExpoListingAPI } from './apis/ExpoListApi'
 import { COLORS } from '../../constants'
-import { isSameDay, isWithinInterval, parseISO } from 'date-fns'
+import { compareAsc, isAfter, isSameDay, isWithinInterval, parseISO } from 'date-fns'
+import { OrderListAPI } from './apis/OrderListApi'
+import AsyncStorageUtil from '../../utils/services/LocalCache'
 
 type Props = {
 
@@ -19,16 +21,51 @@ const HomeScreen = (props: Props) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState(null);
-  const [newExpos,setNewExpos] = useState(null);
-  const [currentExpos,setCurrentExpos] = useState(null);
+  const [newExpos, setNewExpos] = useState(null);
+  const [currentExpos, setCurrentExpos] = useState(null);
+  const [order, setOrder] = useState(null);
+  const [registeredExpos, setRegisteredExpos] = useState(null);
 
   useEffect(() => {
     fetchData();
+    fetchOrder();
   }, []);
+
+  useEffect(() => {
+    if (data && order) {
+      const filteredExpos = filterExpos(order, data);
+      if (filteredExpos) {
+        const currentDate = new Date();
+        const _filteredExpos = filteredExpos
+          .filter((expo: any) => isAfter(parseISO(expo.expEndDate), currentDate))
+          .sort((a: any, b: any) => compareAsc(parseISO(a.expStartDate), parseISO(b.expStartDate)));
+        setRegisteredExpos(_filteredExpos);
+      }
+    }
+  }, [data, order])
+
+  const filterExpos = (orders: any, expos: any) => {
+    const expoIds = orders.map((order: any) => {
+      const itemDetails = JSON.parse(order.eoItemDetails);
+      return itemDetails.expoId;
+    });
+    return expos.filter((expo: any) => expoIds.includes(expo.id));
+  };
+
+  const fetchOrder = async () => {
+    try {
+      const orders = await OrderListAPI();
+      // console.log(orders?.data?.data?.data, "OrderList")
+      setOrder(orders?.data?.data?.data)
+      AsyncStorageUtil.saveData('MyOrders', orders?.data?.data?.data);
+    } catch (err) {
+      console.log('error fetching order-', err)
+    }
+  }
 
   const fetchData = async () => {
     setIsLoading(true);
-    const url = '?page=1&limit=10'
+    const url = '?page=1&limit=50'
     try {
       const response = await ExpoListingAPI({ url });
       setData(response?.data?.data?.allExpo)
@@ -36,18 +73,19 @@ const HomeScreen = (props: Props) => {
       const currentDate = new Date();
 
       // Filter expos where expRegistrationStartDate matches current date
-      const filteredExpos = _data.filter((expo:any) => {
-        const startDate = parseISO(expo.expRegistrationStartDate);
-        const endDate = parseISO(expo.expRegistrationEndDate);
-        return isWithinInterval(currentDate, { start: startDate, end: endDate });
+      const filteredExpos = _data.filter((expo: any) => {
+        const currentDate = new Date();
+        const registrationStartDate = parseISO(expo.expRegistrationStartDate);
+        const registrationEndDate = parseISO(expo.expRegistrationEndDate);
+        const expoStartDate = parseISO(expo.expStartDate);
+
+        return isWithinInterval(currentDate, { start: registrationStartDate, end: registrationEndDate })
+          && isAfter(expoStartDate, currentDate);
       });
 
-      const currentExpos = _data.filter((expo:any) => 
-        isWithinInterval(currentDate, { 
-          start: parseISO(expo.expStartDate),
-          end: parseISO(expo.expEndDate) 
-        })
-      );
+      const currentExpos = _data
+        .filter((expo: any) => isAfter(parseISO(expo.expEndDate), currentDate))
+        .sort((a: any, b: any) => compareAsc(parseISO(a.expStartDate), parseISO(b.expStartDate)));
 
       setCurrentExpos(currentExpos);
       setNewExpos(filteredExpos);
@@ -60,29 +98,27 @@ const HomeScreen = (props: Props) => {
 
   const onRefresh = async () => {
     fetchData();
+    fetchOrder();
   };
 
   const ItemData = [
     <Banner />,
+    <EventCardList
+      title='Registered Events'
+      data={registeredExpos || []}
+      isWatched={true}
+      noDataText='You are not registered in any events'
+    />,
     // <EventCardList
-    //   title='Registered Events'
-    //   data={''}
-    //   isWatched={true}
-    //   noDataText='You are not registered in any events'
+    //   title='New Events'
+    //   data={newExpos || []}
+    //   isWatched={false}
     // />,
     <EventCardList
-      title='New Events'
-      data={newExpos}
-      isWatched={false}
-    />,
-    <EventCardList
       title='Events'
-      data={currentExpos}
+      data={currentExpos || []}
       isWatched={false}
-    />,
-    // <EventCardList
-    //   title='Events Nearby'
-    //   data={DATA} />,
+    />
   ]
 
 

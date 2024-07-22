@@ -108,16 +108,16 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 12,
     marginBottom: 5,
-    color: COLORS.text.main,
+    color: COLORS.text.secondary,
     fontWeight: '400',
     position: 'absolute',
     top: -11,
     left: 8,
     padding: 2,
-    backgroundColor: '#ffffff'
+    backgroundColor: COLORS._background.main
 },
   uploadButton: {
-    height: 50,
+    height: 54,
     borderColor: COLORS.text.secondary,
     borderWidth: 1,
     borderRadius: 4,

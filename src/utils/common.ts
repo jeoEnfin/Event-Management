@@ -9,23 +9,43 @@ export function CiTruncate(str: string, num_chars: number) {
 
 
 
-export const calculateTimeDifference = (futureDate: any) => {
+export const calculateTimeDifference = (startDate:any, endDate:any) => {
     const now = new Date();
-    const date = new Date(futureDate);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-    const daysDiff = differenceInDays(date, now);
-    const hoursDiff = differenceInHours(date, now) % 24;
-    const minutesDiff = differenceInMinutes(date, now) % 60;
+    if (isBefore(now, start)) {
+        // Expo is upcoming
+        const daysDiff = differenceInDays(start, now);
+        const hoursDiff = differenceInHours(start, now) % 24;
+        const minutesDiff = differenceInMinutes(start, now) % 60;
 
-    if (daysDiff > 0) {
-        return `ends in ${daysDiff} day${daysDiff > 1 ? 's' : ''}`;
-    } else if (hoursDiff > 0) {
-        return `ends in ${hoursDiff} hour${hoursDiff > 1 ? 's' : ''}`;
-    } else if (minutesDiff > 0) {
-        return `ends in ${minutesDiff} minute${minutesDiff > 1 ? 's' : ''}`;
-    } else {
+        if (daysDiff > 0) {
+            return `starts in ${daysDiff} day${daysDiff > 1 ? 's' : ''}`;
+        } else if (hoursDiff > 0) {
+            return `starts in ${hoursDiff} hour${hoursDiff > 1 ? 's' : ''}`;
+        } else if (minutesDiff > 0) {
+            return `starts in ${minutesDiff} minute${minutesDiff > 1 ? 's' : ''}`;
+        }
+    } else if (isAfter(now, end)) {
+        // Expo has already ended
         return 'already ended';
+    } else {
+        // Expo is ongoing
+        const daysDiff = differenceInDays(end, now);
+        const hoursDiff = differenceInHours(end, now) % 24;
+        const minutesDiff = differenceInMinutes(end, now) % 60;
+
+        if (daysDiff > 0) {
+            return `ends in ${daysDiff} day${daysDiff > 1 ? 's' : ''}`;
+        } else if (hoursDiff > 0) {
+            return `ends in ${hoursDiff} hour${hoursDiff > 1 ? 's' : ''}`;
+        } else if (minutesDiff > 0) {
+            return `ends in ${minutesDiff} minute${minutesDiff > 1 ? 's' : ''}`;
+        }
     }
+
+    return 'happening now';
 };
 
 export const calculateTimeDifferenceForTwoDates = (firstDate: string, secondDate: string) => {
@@ -62,7 +82,7 @@ export const calculateTimeDifferenceForTwoDates = (firstDate: string, secondDate
             return 'ends soon';
         }
     } else {
-        return 'event ended';
+        return 'ended';
     }
 };
 
@@ -138,3 +158,33 @@ export const getCurrentDateSchedules = (schedules:any) => {
     // Compare the dates using date-fns
     return isAfter(dateToCheck, currentDate);
   }
+
+ export const splitName = (fullName:string) => {
+    const nameParts = fullName.trim().split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+    return { firstName, lastName };
+}; 
+
+export const generateRandomId = () => {
+    const s4 = () => {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    };
+  
+    return (
+      s4() +
+      s4() +
+      '-' +
+      s4() +
+      '-' +
+      s4() +
+      '-' +
+      s4() +
+      '-' +
+      s4() +
+      s4() +
+      s4()
+    );
+  };

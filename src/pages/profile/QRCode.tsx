@@ -14,18 +14,19 @@ const QRCode = ({ data }: Props) => {
 
     useEffect(() => {
         if (data) {
-            checkQrcode(data);
+            getQrcode();
+            // checkQrcode(data);
         }
     },[])
 
-    const checkQrcode = async (data:any) => {
-        const _prvQrcode = await AsyncStorageUtil.getData(`QrCode_${data.uuid}`)
-        if (_prvQrcode === null) {
-            getQrcode();
-        } else {
-            setQrcode(_prvQrcode)
-        }
-    }
+    // const checkQrcode = async (data:any) => {
+    //     const _prvQrcode = await AsyncStorageUtil.getData(`QrCode_${data.uuid}`)
+    //     if (_prvQrcode === null) {
+    //         getQrcode();
+    //     } else {
+    //         setQrcode(_prvQrcode)
+    //     }
+    // }
 
     const getQrcode = async () => {
         try {
@@ -55,12 +56,13 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         marginTop: 20,
+        marginBottom: 20,
         width: '100%',
     },
     head_Text: {
         color: COLORS.text.main,
         fontWeight: '600',
-        fontSize: 18,
+        fontSize: 16,
         marginBottom: 5
     },
     message_Text: {
@@ -70,6 +72,7 @@ const styles = StyleSheet.create({
     },
     qrBody: {
         height: 250,
-        width: 250
+        width: 250,
+        marginTop: 10
     }
 })

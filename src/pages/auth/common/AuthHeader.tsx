@@ -14,7 +14,7 @@ const AuthHeader = (props: Props) => {
     return (
         <View style={styles.headBody}>
             <Text style={styles.headTxt}>{props.title}</Text>
-            <Text>{props.subTitle} {props.isLinkButton && <Text 
+            <Text style={styles.subText}>{props.subTitle} {props.isLinkButton && <Text 
             style={{color: COLORS.secondary.main, fontWeight: '500'}}
             onPress={props.linkButtonClick}>{props.linkButtonLabel}</Text>}</Text>
         </View>
@@ -34,4 +34,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 17
     },
+    subText: {
+        fontSize: 14,
+        color: COLORS.text.main
+    }
 })

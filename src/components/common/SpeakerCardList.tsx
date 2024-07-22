@@ -19,6 +19,7 @@ const SpeakerCardList = ({ title, data }: Props) => {
     const Item = ({ id, data }: ItemProps) => {
         return (
             <SpeakerCard
+                key={id}
                 avatar={data.userImage}
                 firstName={data.firstName}
                 lastName={data.lastName}
@@ -26,17 +27,16 @@ const SpeakerCardList = ({ title, data }: Props) => {
         )
     }
 
-    if(data.length === 0){
+    if (data.length === 0) {
         return null
     }
 
     return (
-        <View style={{ marginTop: 10, width: '100%' }}>
+        <View style={{ marginTop: 12, width: '100%' }}>
             <Text style={{
                 fontWeight: '600',
-                fontSize: TXT_SIZE.L,
+                fontSize: 16,
                 color: COLORS.text.main,
-                marginLeft: 10,
                 marginBottom: 5
             }}>{title}</Text>
             <FlatList

@@ -3,6 +3,7 @@ import React, { useRef } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { COLORS, TXT_SIZE } from '../constants';
+import { Icon } from 'react-native-elements';
 
 type Props = {
   iconName?: string,
@@ -14,6 +15,7 @@ type Props = {
   label?: string,
   imageUrl?: string,
   border?: boolean,
+  iconType?: string,
 }
 
 const RoundButton = (props: Props) => {
@@ -43,7 +45,7 @@ const RoundButton = (props: Props) => {
       onPressIn={onPressIn}
       onPressOut={onPressOut} >
       <Animated.View style={[styles.container, { transform: [{ scale }], backgroundColor: props.backgroundColor },props.border && {borderColor: COLORS.text.main , borderWidth: 1.5}]}>
-        {(props.iconName && !props.imageUrl) && <Ionicons name={props.iconName} size={props.iconSize} color={props.color} />}
+        {(props.iconName && !props.imageUrl) && <Icon name={props.iconName} size={props.iconSize} color={props.color} type={props.iconType}/>}
         {(props.imageUrl && !props.iconName) && <Image source={{ uri: props.imageUrl }}  style={{height: '100%',width: '100%'}} resizeMode='cover'/>}
       </Animated.View>
       {props.label && <Text style={styles.label}>{props.label}</Text>}
@@ -55,8 +57,8 @@ export default RoundButton
 
 const styles = StyleSheet.create({
   container: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 50,

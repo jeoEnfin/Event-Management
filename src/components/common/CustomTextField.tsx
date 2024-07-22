@@ -61,7 +61,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
         value={value}
         {...rest}
       />
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={[styles.label, isFocused && {color: COLORS.secondary.main}]}>{label}</Text>}
       {helperText && !error && <Text style={styles.helperText}>{helperText}</Text>}
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
@@ -75,23 +75,23 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 12,
     marginBottom: 5,
-    color: COLORS.text.main,
-    fontWeight: '400',
+    color: COLORS.text.secondary,
+    fontWeight: '500',
     position: 'absolute',
     top: -11,
     left: 8,
     padding: 2,
-    backgroundColor: '#ffffff'
+    backgroundColor: COLORS._background.main
   },
   input: {
-    height: 50,
+    height: 54,
     borderColor: COLORS.text.secondary,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderRadius: 4,
     paddingHorizontal: 10,
   },
   focusedInput: {
-    borderColor: '#6200ee',
+    borderColor: COLORS.secondary.main,
   },
   errorInput: {
     borderColor: 'red',

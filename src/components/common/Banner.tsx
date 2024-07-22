@@ -14,8 +14,9 @@ const Banner = (props: Props) => {
 
     return (
         <View style={{
-            width: '100%',
-            height: 240,
+            marginHorizontal: 10,
+            marginTop: 10,
+            height: 200,
         }}>
             <TouchableOpacity
                 onPress={() => { props.onBannerPress }}
@@ -23,7 +24,7 @@ const Banner = (props: Props) => {
                     width: '100%',
                     borderRadius: 10,
                     overflow: 'hidden',
-                    padding: 5
+                    padding: 5,
                 }}>
                 <Image
                     style={{ width: '100%', height: '100%', borderRadius: 10 }}

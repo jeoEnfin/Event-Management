@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 type Props = {
     title: string;
-    data?: any;
+    data?: any[];
     isWatched?: boolean;
     noDataText?: string;
 }
@@ -36,14 +36,18 @@ const EventCardList = ({ title, data, isWatched, noDataText }: Props) => {
                     regEndDate={data.expRegistrationEndDate}
                     createrName={data.expCreator}
                     isRegistrationEnabled={data.expIsRegistrationEnabled}
-                    onPress={() => navigation.navigate('EventDetails', { event: data.id })}
+                    onPress={() => navigation.navigate('EventDetails', { event: data.id , order: isWatched})}
                     buttonPress={() => navigation.navigate('EventDetails', { event: data.id })}
                 /></View>
         )
     }
 
+    if(data?.length === 0){
+        return null;
+    }
+
     return (
-        <View style={{ marginTop: 10 }}>
+        <View style={{ marginTop: 10,marginLeft: 10 }}>
             <View style={styles.headerBody}>
                 <Text style={{
                     fontWeight: 'bold',
@@ -91,6 +95,7 @@ const styles = StyleSheet.create({
     headTxt: {
         color: COLORS.secondary.main,
         fontWeight: '500',
-        fontSize: 14
+        fontSize: 14,
+        marginRight: 10
     }
 })

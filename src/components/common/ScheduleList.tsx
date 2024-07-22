@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { format, parseISO, compareAsc } from 'date-fns';
 import { getTimeDifference } from '../../utils/common';
 import { COLORS } from '../../constants';
+import ScheduleCard from './ScheduleCard';
 
 interface Schedule {
     hallName: string;
@@ -37,24 +38,22 @@ const ScheduleList: React.FC<{ schedules: Schedule[] }> = ({ schedules }) => {
     });
 
     // FlatList renderItem function to render each schedule row
-    const renderScheduleItem = ({ item }: { item: Schedule }) => (
-        <View style={styles.row}>
-            <View>
-                <Text style={styles.timeCell}>{formatTime(item.schStartDateTime)} - {formatTime(item.schEndDateTime)}</Text>
-                <Text>{getTimeDifference(item.schStartDateTime, item.schEndDateTime)}</Text>
-            </View>
-            <Text style={styles.eventCell}>{item.schName}</Text>
-            <Text style={styles.speakerCell}>{item.speakers}</Text>
-        </View>
+    const renderScheduleItem = ({ item }: { item: Schedule }) => ( 
+        <ScheduleCard
+            time={`${formatTime(item.schStartDateTime)} - ${formatTime(item.schEndDateTime)}`}
+            title={item.schName}
+            speaker={item.speakers}
+        />
     );
 
+    //<Text>{getTimeDifference(item.schStartDateTime, item.schEndDateTime)}</Text>
     // FlatList keyExtractor function
     const keyExtractor = (item: Schedule) => item.id;
 
     if (!schedules || schedules === null || schedules.length === 0) {
         return (<View style={styles.container}>
             <View style={styles.noData}>
-            <Text style={styles.noDataText}>There Are No Schedules Listed</Text>
+                <Text style={styles.noDataText}>No Schedules Created</Text>
             </View>
         </View>)
     }
@@ -69,12 +68,14 @@ const ScheduleList: React.FC<{ schedules: Schedule[] }> = ({ schedules }) => {
             </View> */}
             {Object.keys(groupedSchedules).map((hallName) => (
                 <View key={hallName} style={styles.hallContainer}>
-                    <Text style={styles.hallName}>{hallName} ({groupedSchedules[hallName].length} Sessions)</Text>
+                    <View style={styles.hallbody}>
+                    <Text style={styles.hallNametxt}>{hallName}</Text>
+                    <Text style={styles.hallSessionTxt}>{groupedSchedules[hallName].length} Sessions</Text>
+                    </View>
                     <FlatList
                         data={groupedSchedules[hallName]}
                         renderItem={renderScheduleItem}
                         keyExtractor={keyExtractor}
-                      
                     />
                 </View>
             ))}
@@ -86,9 +87,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        minHeight: 300,
+        minHeight: 200,
         height: '100%',
-        marginBottom: 55
+        marginBottom: 10,
+        backgroundColor: COLORS._background.primary,
+        borderRadius: 6
     },
     headerRow: {
         flexDirection: 'row',
@@ -106,11 +109,18 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         color: COLORS.text.main
     },
-    hallName: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 8,
+    hallbody: {
+      marginBottom: 18  
+    },
+    hallNametxt: {
+        fontSize: 16,
+        fontWeight: '600',
         color: COLORS.text.main
+    },
+    sessionCount: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: COLORS.text.default 
     },
     row: {
         flexDirection: 'row',
@@ -145,6 +155,11 @@ const styles = StyleSheet.create({
         color: COLORS.text.main,
         fontSize: 16,
         fontWeight: '500',
+    },
+    hallSessionTxt: {
+        color: COLORS.text.default,
+        fontSize: 14,
+        fontWeight: '400',
     }
 });
 

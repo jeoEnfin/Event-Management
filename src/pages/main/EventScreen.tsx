@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import EventSmallCard from '../../components/cards/EventSmallCard';
 import { COLORS } from '../../constants';
 import { isAfter, parseISO } from 'date-fns';
+import CustomEventBanner from '../../components/common/CustomEventBanner';
 
 type Props = {};
 
@@ -80,8 +81,8 @@ const EventScreen = (props: Props) => {
 
   const Item = ({ id, data }: ItemProps) => {
     return (
-      <View style={{ width: '50%', marginVertical: 4 }}>
-        <EventSmallCard
+      <View style={{ marginVertical: 6,paddingHorizontal: 16}}>
+        <CustomEventBanner
           key={id}
           url={data.expImage}
           eventType={data.expType}
@@ -105,6 +106,9 @@ const EventScreen = (props: Props) => {
   return (
     <ScreenWrapper>
       <TopBar profile notification search />
+      <View style={{width: '100%',paddingHorizontal: 22,marginBottom: 10,marginTop: 20}}>
+        <Text style={{fontSize: 20,fontWeight: '600',color: COLORS.text.main}}>Events</Text>
+      </View>
       {data && (
         <FlatList
           data={activeExpos}
@@ -115,7 +119,7 @@ const EventScreen = (props: Props) => {
               data={item}
             />
           )}
-          numColumns={2}
+          numColumns={1}
           horizontal={false}
           keyExtractor={(item: any) => item.id}
           style={{ margin: 3, width: '100%' }}

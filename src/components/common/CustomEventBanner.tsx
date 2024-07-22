@@ -5,6 +5,7 @@ import { COLORS } from '../../constants'
 import { calculateTimeDifference, calculateTimeDifferenceForTwoDates, CiTruncate, isDateNotPassed } from '../../utils/common'
 import { format } from 'date-fns'
 import { config } from '../../utils/config'
+import { Icon } from 'react-native-elements'
 
 
 type Props = {
@@ -22,10 +23,10 @@ type Props = {
   eventTitle?: string;
   createrName?: string;
   isRegistrationEnabled?: boolean;
-  viewPress?: ()=>void;
+  viewPress?: () => void;
 }
 
-const EventSmallCard = ({
+const CustomEventBanner = ({
   url,
   onPress,
   isWatched = true,
@@ -52,7 +53,7 @@ const EventSmallCard = ({
       onPress={onPress}
       style={styles.container}>
       <View
-        style={{ height: 143, width: '100%' }}
+        style={{ height: 218, width: '100%', overflow: 'hidden', borderRadius: 12 }}
       >{loading && (
         <View style={styles.previewContainer}>
           <Image source={require('../../assets/errors/plainBackground.jpg')} style={styles.preview} />
@@ -75,40 +76,52 @@ const EventSmallCard = ({
             setError(true);
           }}
         />
+        <Image
+          style={styles.shade}
+          resizeMode='stretch'
+          source={require('../../assets/ci/bannerShade2.png')}
+          alt='No image'
+        />
         <View style={styles.header}>
           <View style={styles.typeBody}>
             {eventType && <Text style={styles.typeStyle}>{eventType}</Text>}
           </View>
-          {isWatched && <View style={styles.infoBody}>
-            {endDate && <Text style={styles.infoStyle}>Event {endDate && calculateTimeDifference(startDate,endDate)}</Text>}
+          {!isWatched && <View style={styles.infoBody}>
+            {regEndDate && regStartDate && <Text style={styles.infoStyle}>Event registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate, regEndDate)}</Text>}
           </View>}
         </View>
-        {!isWatched && <View style={styles.footer}>
-          <View style={styles.regInfoBody}>
-            {regEndDate && regStartDate && <Text style={styles.regInfo}>Event registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate, regEndDate)}</Text>}
+        {/* {!isWatched && <View style={styles.footer}>
+              <View style={styles.regInfoBody}>
+                {regEndDate && regStartDate && <Text style={styles.regInfo}>Registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate, regEndDate)}</Text>}
+              </View>
+            </View>} */}
+        <View style={styles.detailBody}>
+          <View style={{ gap: 10, height: 85, justifyContent: 'flex-end' }}>
+            <Text numberOfLines={2} style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
+            {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>}
+            {startDate && endDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>}
           </View>
-        </View>}
-      </View>
-      <View style={styles.detailBody}>
-        <View style={{ gap: 4, height: 85, justifyContent: 'space-between' }}>
-          <Text numberOfLines={2} style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
-          {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>}
-          {startDate && endDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>}
-        </View>
-        {!isWatched && <View style={styles.priceBody}>
-          {(isPaid && price) ? <Text style={styles.priceTxt}>$ {price}/-</Text> : <Text style={styles.priceTxt}>FREE</Text>}
-          {isRegisterEnded ? <TouchableOpacity disabled={true} style={styles.btnBody} onPress={buttonPress}>
+          {!isWatched && <View style={styles.priceBody}>
+            {(isPaid && price) ?
+              <View style={{flexDirection: 'row',alignItems: 'center',gap : 5}}>
+                <Icon name='euro' color={COLORS.text.primary} size={22} />
+                <Text style={styles.priceTxt}>{price}/-</Text>
+              </View>
+              : <Text style={styles.priceTxt}>FREE</Text>}
+           {isRegisterEnded ? <TouchableOpacity disabled={true} style={styles.btnBody} onPress={buttonPress}>
             <Text style={styles.btnText}>{isRegistrationEnabled ? 'Register' : 'View'}</Text>
           </TouchableOpacity> : <TouchableOpacity disabled={true} style={styles.btnBody} onPress={viewPress}>
             <Text style={styles.btnText}>View</Text>
           </TouchableOpacity>}
-        </View>}
+          </View>}
+        </View>
       </View>
+
     </TouchableOpacity>
   )
 }
 
-export default EventSmallCard
+export default CustomEventBanner
 
 const styles = StyleSheet.create({
   container: {
@@ -119,58 +132,62 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     margin: 4,
-    elevation: 2,
+    elevation: 3,
     overflow: 'hidden',
   },
   btnText: {
-    color: COLORS.secondary.main,
-    fontWeight: '600'
+    color: COLORS.text.primary,
+    fontWeight: '600',
+    fontSize: 14
   },
   btnBody: {
     borderRadius: 8,
     borderWidth: 1.5,
     borderColor: COLORS.secondary.main,
-    height: 39,
-    width: 90,
+    height: 42,
+    width: 95,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
+    backgroundColor: COLORS.secondary.main
   },
   detailBody: {
-    padding: 10,
+    flex: 1,
+    padding: 20,
     width: '100%',
-    marginVertical: 5,
+    marginVertical: 4,
+    position: 'absolute',
+    bottom: 0
   },
   priceBody: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 7
+    marginTop: 5
   },
   priceTxt: {
-    color: COLORS.text.main,
-    fontSize: 20,
-    fontWeight: '600',
-    marginTop: 7
+    color: COLORS.text.primary,
+    fontSize: 22,
+    fontWeight: '700',
   },
   titleTxt: {
-    color: COLORS.text.main,
+    color: COLORS.text.primary,
     fontSize: 16,
     fontWeight: '700'
   },
   createdTxt: {
-    color: COLORS.text.main,
+    color: COLORS.text.primary,
     fontSize: 12,
     fontWeight: '500'
   },
   dateBody: {
-    color: COLORS.text.main,
+    color: COLORS.text.primary,
     fontSize: 12,
     fontWeight: '400'
   },
   dateTxt: {
-    color: COLORS.text.main,
-    fontSize: 13,
+    color: COLORS.text.primary,
+    fontSize: 14,
     fontWeight: '600'
   },
   typeStyle: {
@@ -186,14 +203,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 5
   },
   typeBody: {
-    backgroundColor: COLORS.default.dark,
+    backgroundColor: COLORS.default.primary,
     height: 19,
     maxWidth: '25%',
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    top: 5,
-    left: 5
+    top: 11,
+    left: 18
   },
   header: {
     flexDirection: 'row',
@@ -201,48 +218,46 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   infoBody: {
-    backgroundColor: COLORS.info.main,
+    backgroundColor: COLORS.secondary.main,
     height: 21,
     maxWidth: '70%',
-    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    top: 5,
-    right: 5
+    top: 0,
+    right: 0,
+    borderBottomLeftRadius: 10
   },
   footer: {
     position: 'absolute',
     bottom: 0,
-    left: 0,
-    right: 0
+    left: '18%'
   },
   regInfoBody: {
-    justifyContent: 'flex-end',
+    height: 21,
+    backgroundColor: COLORS.secondary.main,
+    justifyContent: 'center',
     alignItems: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   regInfo: {
     color: COLORS.text.primary,
-    backgroundColor: COLORS.secondary.main,
     fontSize: 10,
     fontWeight: '600',
-    padding: 4,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    height: 21,
-    alignItems: 'center',
-    justifyContent: 'center',
-    maxWidth: '90%'
+    marginHorizontal: 7
   },
   image: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
-    position: 'absolute'
+    resizeMode: "cover",
+    position: 'absolute',
+    borderRadius: 12,
   },
   previewContainer: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 12
   },
   preview: {
     width: '100%',
@@ -258,5 +273,11 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
     position: 'absolute',
+  },
+  shade: {
+    width: '100%',
+    height: 218,
+    position: 'absolute',
+    borderRadius: 12
   },
 })

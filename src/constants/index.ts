@@ -21,7 +21,8 @@ export const COLORS = {
     },
     default: {
         light: "#FFFFFF",
-        dark: "#000000"
+        dark: "#000000",
+        primary: "#1F1F1F"
     },
     text: {
         main: "#000000",

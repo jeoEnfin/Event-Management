@@ -24,12 +24,12 @@ export default SubHeader
 const styles = StyleSheet.create({
     title: {
         color: COLORS.text.main,
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '600'
     },
     container: {
-        paddingHorizontal: 10,
-        gap: 10
+        gap: 10,
+        marginVertical: 20
     },
     message: {
         color: COLORS.text.secondary,

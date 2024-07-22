@@ -12,7 +12,7 @@ export const Login = (username: string, token: string, tenant: string) => {
 
 export const Init = () => {
   return async (dispatch: any) => {
-    let token = await AsyncStorageUtil.getData
+    let token = await AsyncStorageUtil.getData('token')
       try {
         let data = await AutoLoginAPI();
         console.log(data, 'hit inside');
@@ -26,6 +26,7 @@ export const Init = () => {
         let credentials = await AsyncStorageUtil.getData('user_credentials');
         console.log(credentials);
         if (credentials) {
+          await AsyncStorageUtil.removeData('token')
           try {
             const user = await AuthLoginAPI({ credentials });
             const access_token = user?.data?.data?.access_token;

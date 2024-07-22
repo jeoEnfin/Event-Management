@@ -20,7 +20,7 @@ export default ScreenWrapper
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS._background.primary,
+        backgroundColor: COLORS._background.main,
         alignItems: 'center',
         width: '100%'
     }

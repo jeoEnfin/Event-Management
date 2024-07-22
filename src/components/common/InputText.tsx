@@ -5,6 +5,7 @@ import { COLORS } from '../../constants';
 
 
 type Props = {
+    label?: string;
     iconName?: string;
     placeholder: string;
     autoComplete: any;
@@ -17,6 +18,8 @@ type Props = {
     value?: any;
     error?: boolean;
     errorTxt?: string;
+    defaultValue?: string;
+    backgroundColor?: string;
 }
 
 const InputText = (props: Props) => {
@@ -36,9 +39,9 @@ const InputText = (props: Props) => {
 
     return (
         <View style={styles.txtBody}>
-        <View style={[styles.txtField,props.error ? {borderColor: COLORS.redButton} : {borderColor: COLORS.text.secondary } ]}>
+        <View style={[styles.txtField,props.error ? {borderColor: COLORS.redButton} : {borderColor: COLORS.text.secondary }, isFocused && {borderColor: COLORS.secondary.main} ]}>
             <TextInput
-                style={styles.txtFieldText}
+                style={[styles.txtFieldText]}
                 placeholder={props.placeholder}
                 placeholderTextColor={COLORS.btnBackground}
                 autoComplete={props.autoComplete}
@@ -49,12 +52,14 @@ const InputText = (props: Props) => {
                 keyboardType={props.keyboardType}
                 onFocus={() => setIsFocused(true)} 
                 onBlur={() => setIsFocused(false)}
+                defaultValue={props.defaultValue}
             />
             {props.iconName &&
             <TouchableOpacity style={{position: 'absolute',left: '90%',opacity: props.textSecure ?  0.5 : 1}} onPress={props.showText} >
                 <Ionicons name={props.textSecure ? 'eye-off-outline': 'eye-outline'} size={28} color={COLORS.background2} />
             </TouchableOpacity>}
         </View>
+        {props.label && <Text style={[styles.label,{backgroundColor: props.backgroundColor}]}>{props.label}</Text>}
         {props.errorTxt && <Text style={styles.errorTxt}>{props.errorTxt}</Text>}
         </View>
     )
@@ -85,5 +90,15 @@ const styles = StyleSheet.create({
         color: COLORS.text.error,
         fontWeight: '500',
         marginTop: 2
-    }
+    },
+    label: {
+        fontSize: 13,
+        marginBottom: 5,
+        color: COLORS.text.secondary,
+        fontWeight: '500',
+        position: 'absolute',
+        top: -11,
+        left: 8,
+        padding: 2
+    },
 })
