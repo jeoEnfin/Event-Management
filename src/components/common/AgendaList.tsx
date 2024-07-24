@@ -9,7 +9,8 @@ import { isSameDay, isWithinInterval, parseISO } from 'date-fns';
 type Props = {
     startDate?: string;
     endDate?: string;
-    schedules?: any
+    schedules?: any;
+    isJoin?: boolean;
 }
 
 interface Schedule {
@@ -33,7 +34,8 @@ const filterSchedulesByDate = (schedules: Schedule[], date: Date): Schedule[] =>
 const AgendaList = ({
     startDate,
     endDate,
-    schedules
+    schedules,
+    isJoin
 }: Props) => {
 
     const [_days, set_Days] = useState<any>([]);
@@ -68,7 +70,7 @@ const AgendaList = ({
             />}
             </View>
             {schedules && 
-            <ScheduleList schedules={_schedules ? _schedules : schedules} />}
+            <ScheduleList schedules={_schedules ? _schedules : schedules} isJoin={isJoin} />}
         </View>
     )
 }

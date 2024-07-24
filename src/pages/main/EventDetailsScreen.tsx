@@ -123,7 +123,7 @@ const EventDetailsScreen = ({ route }: Props) => {
         }
 
         if (data.expIsRegistrationEnabled) {
-            navigation.navigate('Registration',{ event: eventData})
+            navigation.replace('Registration',{ event: eventData})
         }
         // navigation.navigate('payment')
     };
@@ -164,6 +164,7 @@ const EventDetailsScreen = ({ route }: Props) => {
                 startDate={data.expStartDate}
                 endDate={data.expEndDate}
                 schedules={schedule}
+                isJoin={isOrder}
             />
         );
         ItemData.push(

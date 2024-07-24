@@ -1,5 +1,5 @@
 import { Alert, Platform, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import AuthContainer from './common/AuthContainer'
 import AuthHeader from './common/AuthHeader'
 import InputText from '../../components/common/InputText'
@@ -20,6 +20,14 @@ const ForgotPassword = (props: Props) => {
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
     const platformName = Platform.OS;
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const textInputRef: any = useRef(null);
+
+    const clearTextFields = () => {
+        if (textInputRef.current) {
+            textInputRef.current.clear();
+        }
+    };
 
 
     const handleEmailChange = (newEmail: string) => {
@@ -58,6 +66,7 @@ const ForgotPassword = (props: Props) => {
     const handleSubmit = async () => {
         validation();
         if (username) {
+            setIsLoading(true)
             const data = {
                 email: username
             }
@@ -65,17 +74,23 @@ const ForgotPassword = (props: Props) => {
                 const forgotPasswordResponse = await ForgotPasswordAPI({ data })
                 console.log(forgotPasswordResponse.data.data)
                 if (forgotPasswordResponse.data.data) {
-                    Alert.alert(forgotPasswordResponse.data.data, '', [
+                    Alert.alert(forgotPasswordResponse.data.data, `Email send successfully to your email address ${data.email}`, [
                         { text: 'OK', onPress: () => { } },
                     ]);
-                    setTimeout(() => {
-                        navigation.navigate('Login')
-                    }, 3000)
+                    // setTimeout(() => {
+                    //     navigation.navigate('Login')
+                    // }, 3000)
                 }
+                setIsLoading(false);
+                clearTextFields();
             } catch (e: any) {
                 setError(true)
+                setIsLoading(false);
+                clearTextFields();
                 if (e.response.data.message) {
-                    setErrorMessage(e.response.data.message)
+                    Alert.alert('Email send successfully', `Email send successfully to your email address ${data.email}`, [
+                        { text: 'OK', onPress: () => { } },
+                    ]);
                 }
                 else {
                     setErrorMessage('Something went wrong')
@@ -86,7 +101,7 @@ const ForgotPassword = (props: Props) => {
 
     return (
         <AuthContainer>
-            <View style={{flex: 1,justifyContent: 'space-between',height: '100%'}}>
+            <View style={{ flex: 1, justifyContent: 'space-between', height: '100%' }}>
                 <View>
                     <AuthHeader
                         title='Forgot Password?'
@@ -94,6 +109,7 @@ const ForgotPassword = (props: Props) => {
                     />
                     <View style={{ marginTop: 15, gap: 6 }}>
                         <InputText
+                            ref={textInputRef}
                             placeholder='Email'
                             autoComplete='email'
                             textSecure={false}
@@ -107,13 +123,14 @@ const ForgotPassword = (props: Props) => {
                         {error && <Text style={styles.errorTxt}>{errorMessage}</Text>}
                     </View>
                     <View style={styles.infoTxtBody}>
-                        <Text style={styles.infoTxt}>A link send to you mail to reset password.</Text>
+                        <Text style={styles.infoTxt}>A link send to your mail to reset password.</Text>
                     </View>
                 </View>
                 <View>
                     <Button
                         buttonClick={handleSubmit}
                         label='Reset'
+                        loading={isLoading}
                     />
                     <View style={styles.infoTxtBody}>
                         <Text style={styles.infoTxt}>Remember it ? <Text

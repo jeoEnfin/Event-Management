@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     },
     message: {
         color: COLORS.text.secondary,
-        fontSize: 14
+        fontSize: 14,
+        lineHeight: 20
     }
 })

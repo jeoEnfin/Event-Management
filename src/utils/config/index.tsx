@@ -1,7 +1,7 @@
 export const config = {
     URL_PROTOCOL: 'https:',
     URL_HOST: 'stackoverflow.com',
-    SERVER_URL: 'https://cibackend.enfinlabs.com',
+    SERVER_URL: 'https://devciapi.enfinlabs.com/',
     USER_NAME: 'jeothankachan98@gmail.com',
     PASSWORD: 'Abcd1234@',
     API_KEY: '47828021',

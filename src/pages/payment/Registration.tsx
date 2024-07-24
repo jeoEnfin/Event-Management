@@ -95,7 +95,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
             eoOrderId: orderId,
             eoUserId: user_id,
             eoItemDetails: JSON.stringify(event),
-            eoOrderStatus: "paymentProgress",
+            eoOrderStatus: "completed",
             eoTransactionId: "txn_1234567890",
             eoPaymentResponse: "{}",
             eoLog: ["Log entry 1", "Log entry 2"],
@@ -104,7 +104,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         try {
             const response = await OrderAPI({ data });
             if (response.data) {
-                navigation.replace('EventDetails', { event: eventData.id });
+                navigation.replace('SucessPage', { event: eventData.id });
             }
         } catch (err: any) {
             console.log(err.response.data, 'err------')

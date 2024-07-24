@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: 4,
     paddingHorizontal: 10,
+    color: COLORS.text.main
   },
   focusedInput: {
     borderColor: COLORS.secondary.main,

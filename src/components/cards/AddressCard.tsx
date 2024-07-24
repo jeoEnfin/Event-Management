@@ -5,9 +5,10 @@ import { Icon } from 'react-native-elements'
 
 type Props = {
     address?: string;
+    onTextPress?: ()=>void;
 }
 
-const AddressCard = ({ address }: Props) => {
+const AddressCard = ({ address,onTextPress }: Props) => {
 
     if(!address){
         return null;
@@ -24,11 +25,11 @@ const AddressCard = ({ address }: Props) => {
             <View style={{
                 flexDirection: 'row',
                 marginTop: 14,
-                gap: 7,
+                gap: 15,
                 width: '100%',
             }}>
                 <Icon name='map-pin' type='feather' size={20} color={COLORS.default.dark} />
-                <Text style={styles.addTxt}>{address}</Text>
+                <Text onPress={onTextPress} style={styles.addTxt}>{address}</Text>
             </View>
 
         </View>
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
     addTxt: {
         color: COLORS.text.default,
         fontSize: 14,
-        fontWeight: '600'
+        fontWeight: '600',
+        lineHeight: 20
     }
 })

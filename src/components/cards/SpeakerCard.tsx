@@ -32,16 +32,16 @@ const SpeakerCard = (props: Props) => {
                     ellipsizeMode='tail'
                     numberOfLines={1}
                 >{props.firstName} {props.lastName}</Animated.Text>
-                <Text
+                {props.designation && <Text
                     ellipsizeMode='tail'
                     numberOfLines={1}
                     style={styles.txt_info}
-                >{props.designation}</Text>
-                <Text
+                >{props.designation}</Text>}
+                {props.companyName && <Text
                     ellipsizeMode='tail'
                     numberOfLines={1}
                     style={styles.txt_info}
-                >{props.companyName}</Text>
+                >{props.companyName}</Text>}
             </View>
         </TouchableOpacity>
     )
@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     img_View: {
-        width: 100,
-        height: 100,
+        width: 90,
+        height: 90,
         borderRadius: 50,
     },
     txt_name: {

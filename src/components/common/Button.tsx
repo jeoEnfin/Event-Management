@@ -2,19 +2,27 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import React from 'react'
 import { COLORS } from '../../constants';
 
+type ButtonVarient = 'fill' | 'outline'
+
 type Props = {
     label: string;
-    buttonClick?: ()=>void;
+    buttonClick?: () => void;
     loading?: boolean;
+    variant?: ButtonVarient
 }
 
-const Button = (props: Props) => {
+const Button = ({
+    label,
+    buttonClick,
+    loading,
+    variant = 'fill'
+}: Props) => {
     return (
-        <TouchableOpacity 
-        disabled={props.loading}
-        style={styles.btn} onPress={props.buttonClick}>
-            {!props.loading ? <Text style={styles.btnTxt}>{props.label}</Text>:
-            <ActivityIndicator color={COLORS.secondary.main} />
+        <TouchableOpacity
+            disabled={loading}
+            style={[styles.btn , variant === 'fill' && {backgroundColor: COLORS.secondary.main}]} onPress={buttonClick}>
+            {!loading ? <Text style={[styles.btnTxt,variant === 'fill' && {color: COLORS.text.primary} ]}>{label}</Text> :
+                <ActivityIndicator color={variant === 'fill' ? COLORS.text.primary : COLORS.secondary.main } />
             }
         </TouchableOpacity>
     )

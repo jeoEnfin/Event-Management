@@ -1,8 +1,8 @@
 import { ActivityIndicator, Image, ImageBackground, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { COLORS } from '../../constants'
-import { calculateTimeDifference, calculateTimeDifferenceForTwoDates, CiTruncate, isDateNotPassed } from '../../utils/common'
+import { calculateTimeDifference, calculateTimeDifferenceForTwoDates, CiTruncate, isDateNotPassed, isDurationLessThan24Hours } from '../../utils/common'
 import { format } from 'date-fns'
 import { config } from '../../utils/config'
 import { Icon } from 'react-native-elements'
@@ -47,6 +47,27 @@ const CustomEventBanner = ({
   const isRegisterEnded = isDateNotPassed(regEndDate || '');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [isEventEnded, setIsEventEnded] = useState<boolean>(false);
+  const [isBelow24H,setIsBelow24H] = useState<boolean>(false);
+
+  useEffect(()=>{
+    if(regStartDate && regEndDate){
+      const _isEnded = calculateTimeDifferenceForTwoDates(regStartDate, regEndDate);
+      const _isBelow24H = isDurationLessThan24Hours(regEndDate);
+      
+      if(_isBelow24H){
+        setIsBelow24H(_isBelow24H);
+      }
+      
+      if(_isEnded === 'ended'){
+        setIsEventEnded(true);
+      }else{
+        setIsEventEnded(false);
+      }
+
+    }
+
+  },[regStartDate,regEndDate])
 
   return (
     <TouchableOpacity
@@ -86,8 +107,8 @@ const CustomEventBanner = ({
           <View style={styles.typeBody}>
             {eventType && <Text style={styles.typeStyle}>{eventType}</Text>}
           </View>
-          {!isWatched && <View style={styles.infoBody}>
-            {regEndDate && regStartDate && <Text style={styles.infoStyle}>Event registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate, regEndDate)}</Text>}
+          {!isWatched && <View style={[styles.infoBody,isEventEnded && {backgroundColor: COLORS.text.error}, isBelow24H && {backgroundColor: 'orange'}]}>
+            {regEndDate && regStartDate && <Text style={[styles.infoStyle]}>Event registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate, regEndDate)}</Text>}
           </View>}
         </View>
         {/* {!isWatched && <View style={styles.footer}>

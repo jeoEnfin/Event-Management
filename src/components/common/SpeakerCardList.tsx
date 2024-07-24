@@ -49,7 +49,7 @@ const SpeakerCardList = ({ title, data }: Props) => {
                     />
                 }
                 horizontal={true}
-                keyExtractor={(item: any) => item.title}
+                keyExtractor={(item: any) => item.id}
                 style={{ margin: 3 }}
                 showsHorizontalScrollIndicator={false}
             />

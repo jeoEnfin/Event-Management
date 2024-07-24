@@ -51,6 +51,7 @@ const LoginScreen = (props: Props) => {
     }, []);
 
     const handleEmailChange = (newEmail: string) => {
+        setErrorTxt('')
         const isEmailValid = isValidEmail(newEmail);
         if (isEmailValid) {
             setUsername(newEmail.toLowerCase())
@@ -65,6 +66,7 @@ const LoginScreen = (props: Props) => {
     };
 
     const handlePasswordChange = (newPassword: string) => {
+        setErrorTxt('')
         const isPasswordValid = newPassword.length > 0;
         if (isPasswordValid) {
             setPassword(newPassword);
@@ -145,9 +147,9 @@ const LoginScreen = (props: Props) => {
                 }
             }
         } else {
-            Alert.alert('Invalid Credentials', 'username or password is invalid', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
+            // Alert.alert('Invalid Credentials', 'username or password is invalid', [
+            //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+            // ]);
             setError(true)
         }
     }

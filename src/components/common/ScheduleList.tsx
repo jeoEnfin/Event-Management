@@ -14,7 +14,7 @@ interface Schedule {
     speakers: string;
 }
 
-const ScheduleList: React.FC<{ schedules: Schedule[] }> = ({ schedules }) => {
+const ScheduleList: React.FC<{ schedules: Schedule[],isJoin?: boolean }> = ({ schedules,isJoin }) => {
     // Function to format time from ISO string
     const formatTime = (dateTime: string): string => {
         const date = parseISO(dateTime);
@@ -40,9 +40,12 @@ const ScheduleList: React.FC<{ schedules: Schedule[] }> = ({ schedules }) => {
     // FlatList renderItem function to render each schedule row
     const renderScheduleItem = ({ item }: { item: Schedule }) => ( 
         <ScheduleCard
-            time={`${formatTime(item.schStartDateTime)} - ${formatTime(item.schEndDateTime)}`}
+            key = {item.id}
+            startTime={item.schStartDateTime}
+            timeDuration={getTimeDifference(item.schStartDateTime, item.schEndDateTime)}
             title={item.schName}
             speaker={item.speakers}
+            isJoin={isJoin}
         />
     );
 
@@ -53,7 +56,7 @@ const ScheduleList: React.FC<{ schedules: Schedule[] }> = ({ schedules }) => {
     if (!schedules || schedules === null || schedules.length === 0) {
         return (<View style={styles.container}>
             <View style={styles.noData}>
-                <Text style={styles.noDataText}>No Schedules Created</Text>
+                <Text style={styles.noDataText}>No Schedules</Text>
             </View>
         </View>)
     }

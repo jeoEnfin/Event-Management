@@ -1,8 +1,8 @@
 import { ActivityIndicator, Image, ImageBackground, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { COLORS } from '../../constants'
-import { calculateTimeDifference, calculateTimeDifferenceForTwoDates, CiTruncate, isDateNotPassed } from '../../utils/common'
+import { calculateTimeDifference, calculateTimeDifferenceForTwoDates, CiTruncate, isDateNotPassed, isDurationLessThan24Hours } from '../../utils/common'
 import { format } from 'date-fns'
 import { config } from '../../utils/config'
 
@@ -46,6 +46,27 @@ const EventSmallCard = ({
   const isRegisterEnded = isDateNotPassed(regEndDate || '');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [isEventEnded, setIsEventEnded] = useState<boolean>(false);
+  const [isBelow24H,setIsBelow24H] = useState<boolean>(false);
+
+  useEffect(()=>{
+    if(regStartDate && regEndDate){
+      const _isEnded = calculateTimeDifferenceForTwoDates(regStartDate, regEndDate);
+      const _isBelow24H = isDurationLessThan24Hours(regEndDate);
+      
+      if(_isBelow24H){
+        setIsBelow24H(_isBelow24H);
+      }
+      
+      if(_isEnded === 'ended'){
+        setIsEventEnded(true);
+      }else{
+        setIsEventEnded(false);
+      }
+
+    }
+
+  },[regStartDate,regEndDate])
 
   return (
     <TouchableOpacity
@@ -85,14 +106,14 @@ const EventSmallCard = ({
         </View>
         {!isWatched && <View style={styles.footer}>
           <View style={styles.regInfoBody}>
-            {regEndDate && regStartDate && <Text style={styles.regInfo}>Event registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate, regEndDate)}</Text>}
+            {regEndDate && regStartDate && <Text style={[styles.regInfo,isEventEnded && {backgroundColor: COLORS.text.error}, isBelow24H && {backgroundColor: 'orange'}]}>Event registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate, regEndDate)}</Text>}
           </View>
         </View>}
       </View>
       <View style={styles.detailBody}>
-        <View style={{ gap: 4, height: 85, justifyContent: 'space-between' }}>
+        <View style={{ gap: 4, height: 70, justifyContent: 'space-between' }}>
           <Text numberOfLines={2} style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
-          {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>}
+          {/* {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>} */}
           {startDate && endDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>}
         </View>
         {!isWatched && <View style={styles.priceBody}>

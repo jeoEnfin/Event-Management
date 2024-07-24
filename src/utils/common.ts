@@ -1,4 +1,4 @@
-import { differenceInDays, differenceInHours, differenceInMinutes, eachDayOfInterval, endOfDay, format, isAfter, isBefore, isWithinInterval, parseISO, startOfDay } from 'date-fns';
+import { differenceInDays, differenceInHours, differenceInMinutes, eachDayOfInterval, endOfDay, format, isAfter, isBefore, isEqual, isWithinInterval, parseISO, startOfDay } from 'date-fns';
 
 export function CiTruncate(str: string, num_chars: number) {
     if (str.length > num_chars) {
@@ -188,3 +188,49 @@ export const generateRandomId = () => {
       s4()
     );
   };
+
+  export const isDurationLessThan24Hours = (date:any) => {
+    const now = new Date();
+    const parsedDate = parseISO(date);
+  
+    // Check if the date is in the past
+    if (isBefore(parsedDate, now)) {
+      return false;
+    }
+  
+    // Check if the date is within the next 24 hours
+    const hoursDifference = differenceInHours(parsedDate, now);
+    return hoursDifference <= 24;
+  };
+
+  export const fitNamesInArea = (namesString: any, maxWidth:any, measureWidth:any) => {
+    const names = namesString.split(',');
+    let currentWidth = 0;
+    let displayNames = [];
+    let overflowCount = 0;
+  
+    for (let i = 0; i < names.length; i++) {
+      const name = names[i].trim();
+      const nameWidth = measureWidth(name);
+  
+      if (currentWidth + nameWidth > maxWidth) {
+        overflowCount = names.length - i;
+        break;
+      }
+  
+      displayNames.push(name);
+      currentWidth += nameWidth;
+  
+      // Add width for comma separator
+      if (i < names.length - 1) {
+        currentWidth += measureWidth(',');
+      }
+    }
+  
+    if (overflowCount > 0) {
+      displayNames.push(`+${overflowCount}`);
+    }
+  
+    return displayNames.join(',');
+  };
+  
