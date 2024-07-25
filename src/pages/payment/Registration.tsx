@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, Alert, Keyboard } from 'react-native';
 import CustomTextField from '../../components/common/CustomTextField';
 import CustomSelector from '../../components/common/CustomSelector';
 import { COLORS } from '../../constants';
@@ -42,6 +42,20 @@ interface Props {
 const FormData: React.FC<Props> = ({ data, eventData }) => {
     const navigation: any = useNavigation();
     const [formValues, setFormValues] = useState<Record<string, any>>({});
+    const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            setKeyboardVisible(true);
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardVisible(false);
+        });
+        return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+        };
+    }, [Keyboard]);
 
     const handleInputChange = (id: string, value: string) => {
         setFormValues((prevValues) => ({
@@ -86,8 +100,10 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     const freeOrder = async () => {
         const orderId = generateRandomId();
         const event = {
-            expoId: eventData?.id,
-            expoName: eventData?.expName,
+            expId: eventData?.id,
+            expName: eventData?.expName,
+            expStartDate: eventData?.expStartDate,
+            expEndDate: eventData?.expEndDate
         }
         const user = await AsyncStorageUtil.getData('user_details')
         let user_id = user?.uuid;
@@ -104,87 +120,87 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         try {
             const response = await OrderAPI({ data });
             if (response.data) {
-                navigation.replace('SucessPage', { event: eventData.id });
+                navigation.replace('SucessPage', { event: data });
             }
         } catch (err: any) {
-            console.log(err.response.data, 'err------')
+            navigation.replace('FailPage');
         }
     };
 
     const handleSubmit = () => {
         console.log('Form submitted with values:', formValues);
         const isFormValid = validateForm(data, formValues);
-        if (isFormValid){
-            if(eventData.expPrice > 0) {
-            fetchPaymentSheetParams();
+        if (isFormValid) {
+            if (eventData.expPrice > 0) {
+                fetchPaymentSheetParams();
+            } else {
+                freeOrder();
+            }
         } else {
-            freeOrder();
+            Alert.alert('Form Submission Error', 'Please fill all Fields')
         }
-    } else {
-        Alert.alert('Form Submission Error', 'Please fill all Fields')
-}
     };
 
-const renderFormFields = () => {
-    return data.map((field) => {
-        switch (field.pFType) {
-            case 'input':
-                return (
-                    <View key={field._id} style={{ marginBottom: 10 }}>
-                        <CustomTextField
-                            label={field.pFLabel}
-                            placeholder={field.pFPlaceholder || ''}
-                            validationType={field?.pFValidation?.type || 'text'}
-                            customErrorText={field.pFHelperText}
-                            value={formValues[field.pFColumName || ''] || ''}
-                            onChangeText={(text) => handleInputChange(field.pFColumName || '', text)}
-                        />
-                    </View>
-                );
-            case 'select':
-                return (
-                    <View key={field._id} style={{ marginBottom: 10 }}>
-                        <CustomSelector
-                            label={field.pFLabel}
-                            placeholder={field.pFPlaceholder}
-                            options={Object.values(field.pFData) || []}
-                            selectedValue={formValues[field.pFColumName || ''] || ''}
-                            onValueChange={(value: any) => handleSelectChange(field.pFColumName || '', value)}
-                        />
-                    </View>
-                );
-            case 'file':
-                return (
-                    <View key={field._id} style={{ marginBottom: 10 }}>
-                        <CustomFileUpload
-                            label={field.pFLabel}
-                            onFileSelect={() => { }}
-                            maxSizeInMB={field?.pFUploadParams?.maxFileSize}
-                            allowedTypes={field?.pFUploadParams?.fileType}
-                            multiple={field?.pFUploadParams?.multiFile}
-                        />
-                    </View>
-                );
-            default:
-                return null;
-        }
-    });
-};
+    const renderFormFields = () => {
+        return data.map((field) => {
+            switch (field.pFType) {
+                case 'input':
+                    return (
+                        <View key={field._id} style={{ marginBottom: 10 }}>
+                            <CustomTextField
+                                label={field.pFLabel}
+                                placeholder={field.pFPlaceholder || ''}
+                                validationType={field?.pFValidation?.type || 'text'}
+                                customErrorText={field.pFHelperText}
+                                value={formValues[field.pFColumName || ''] || ''}
+                                onChangeText={(text) => handleInputChange(field.pFColumName || '', text)}
+                            />
+                        </View>
+                    );
+                case 'select':
+                    return (
+                        <View key={field._id} style={{ marginBottom: 10 }}>
+                            <CustomSelector
+                                label={field.pFLabel}
+                                placeholder={field.pFPlaceholder}
+                                options={Object.values(field.pFData) || []}
+                                selectedValue={formValues[field.pFColumName || ''] || ''}
+                                onValueChange={(value: any) => handleSelectChange(field.pFColumName || '', value)}
+                            />
+                        </View>
+                    );
+                case 'file':
+                    return (
+                        <View key={field._id} style={{ marginBottom: 10 }}>
+                            <CustomFileUpload
+                                label={field.pFLabel}
+                                onFileSelect={() => { }}
+                                maxSizeInMB={field?.pFUploadParams?.maxFileSize}
+                                allowedTypes={field?.pFUploadParams?.fileType}
+                                multiple={field?.pFUploadParams?.multiFile}
+                            />
+                        </View>
+                    );
+                default:
+                    return null;
+            }
+        });
+    };
 
-return (
-    <View style={{ padding: 25, justifyContent: 'space-between', height: '100%' }}>
-        <ScrollView showsVerticalScrollIndicator={false} >
-            <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: '20%' }}>
-                <Text style={{ fontSize: 32, fontWeight: '600', marginBottom: 6, color: COLORS.text.main }}>Reserve Your Slot</Text>
-                <Text style={{ fontSize: 14, fontWeight: '400', marginBottom: 28, color: COLORS.text.main }}>Fill the form to Reserve Your Slot</Text>
+    return (
+        <View style={{  justifyContent: 'space-between', height: '100%' }}>
+            <ScrollView showsVerticalScrollIndicator={false} style= {{paddingHorizontal: 25}} >
+                <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: '20%' }}>
+                    <Text style={{ fontSize: 32, fontWeight: '600', marginBottom: 6, color: COLORS.text.main }}>Register Event</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '400', marginBottom: 28, color: COLORS.text.main }}>Fill the form to Register Event</Text>
+                </View>
+                {renderFormFields()}
+            </ScrollView>
+            <View style={{ width: '100%',paddingVertical: 10,backgroundColor: keyboardVisible ? COLORS._background.primary : COLORS._background.main ,paddingHorizontal: 22 }}>
+                <Button label={eventData.expPrice <= 0 ? "Register" : "Checkout"} buttonClick={handleSubmit} />
             </View>
-            {renderFormFields()}
-        </ScrollView>
-        <View style={{ width: '100%' }}>
-            <Button label="Checkout" buttonClick={handleSubmit} />
         </View>
-    </View>
-);
+    );
 };
 
 export default FormData;

@@ -86,9 +86,9 @@ const CustomEventBanner = ({
           source={{ 
             uri: url === 'default.jpg' 
               ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg` 
-              : (url && (url.startsWith('https' || 'http') 
+              : (url && (url.startsWith('https') || url.startsWith('http')))
                 ? url 
-                : `${config.CLOUD_FRONT_URL}/${url}` ))
+                : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${url}` 
           }}
           onLoadEnd={() => setLoading(false)}
           onError={() => {
@@ -114,12 +114,12 @@ const CustomEventBanner = ({
         {/* {!isWatched && <View style={styles.footer}>
               <View style={styles.regInfoBody}>
                 {regEndDate && regStartDate && <Text style={styles.regInfo}>Registration {regEndDate && regStartDate && calculateTimeDifferenceForTwoDates(regStartDate, regEndDate)}</Text>}
-              </View>
+              </View> 
             </View>} */}
         <View style={styles.detailBody}>
           <View style={{ gap: 10, height: 85, justifyContent: 'flex-end' }}>
             <Text numberOfLines={2} style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
-            {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>}
+            {/* {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>} */}
             {startDate && endDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>}
           </View>
           {!isWatched && <View style={styles.priceBody}>

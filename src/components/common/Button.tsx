@@ -8,19 +8,21 @@ type Props = {
     label: string;
     buttonClick?: () => void;
     loading?: boolean;
-    variant?: ButtonVarient
+    variant?: ButtonVarient;
+    color?: string;
 }
 
 const Button = ({
     label,
     buttonClick,
     loading,
-    variant = 'fill'
+    variant = 'fill',
+    color = COLORS.secondary.main
 }: Props) => {
     return (
         <TouchableOpacity
             disabled={loading}
-            style={[styles.btn , variant === 'fill' && {backgroundColor: COLORS.secondary.main}]} onPress={buttonClick}>
+            style={[styles.btn , variant === 'fill' && {backgroundColor: color},{borderColor: color}]} onPress={buttonClick}>
             {!loading ? <Text style={[styles.btnTxt,variant === 'fill' && {color: COLORS.text.primary} ]}>{label}</Text> :
                 <ActivityIndicator color={variant === 'fill' ? COLORS.text.primary : COLORS.secondary.main } />
             }
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1.5,
-        borderColor: COLORS.secondary.main,
+        //borderColor: COLORS.secondary.main,
         height: 54
     },
     btnTxt: {

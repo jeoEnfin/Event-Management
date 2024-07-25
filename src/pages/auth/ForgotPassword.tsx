@@ -109,7 +109,6 @@ const ForgotPassword = (props: Props) => {
                     />
                     <View style={{ marginTop: 15, gap: 6 }}>
                         <InputText
-                            ref={textInputRef}
                             placeholder='Email'
                             autoComplete='email'
                             textSecure={false}

@@ -44,9 +44,9 @@ const EventBanner = (props: Props) => {
                     source={{ 
                         uri: props.imgUrl === 'default.jpg' 
                           ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg` 
-                          : (props.imgUrl && (props.imgUrl.startsWith('https' || 'http') 
+                          : (props.imgUrl && (props.imgUrl.startsWith('https') ||props.imgUrl.startsWith('http')))
                             ? props.imgUrl 
-                            : `${config.CLOUD_FRONT_URL}/${props.imgUrl}` ))
+                            : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${props.imgUrl}` 
                       }}
                     alt='No image'
                 />

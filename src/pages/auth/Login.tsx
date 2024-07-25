@@ -204,7 +204,7 @@ const LoginScreen = (props: Props) => {
                             error={errorPassword}
                             errorTxt={passwordErrorTxt}
                         />
-                        {error && <Text style={styles.errorTxt}>{errorTxt}</Text>}
+                        {(error &&  errorTxt) && <Text style={styles.errorTxt}>{errorTxt}</Text>}
                     </View>
                     <View style={styles.forgotBody}>
                         <CheckboxWithLabel

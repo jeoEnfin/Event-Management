@@ -20,7 +20,6 @@ type Props = {
     errorTxt?: string;
     defaultValue?: string;
     backgroundColor?: string;
-    ref?: string;
 }
 
 const InputText = (props: Props) => {
@@ -42,7 +41,6 @@ const InputText = (props: Props) => {
         <View style={styles.txtBody}>
         <View style={[styles.txtField,props.error ? {borderColor: COLORS.redButton} : {borderColor: COLORS.text.secondary }, isFocused && {borderColor: COLORS.secondary.main} ]}>
             <TextInput
-                ref={props.ref}
                 style={[styles.txtFieldText]}
                 placeholder={props.placeholder}
                 placeholderTextColor={COLORS.btnBackground}

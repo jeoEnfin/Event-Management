@@ -85,9 +85,9 @@ const EventSmallCard = ({
           source={{ 
             uri: url === 'default.jpg' 
               ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg` 
-              : (url && (url.startsWith('https' || 'http') 
+              : (url && (url.startsWith('https') || url.startsWith('http')))
                 ? url 
-                : `${config.CLOUD_FRONT_URL}/${url}` ))
+                : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${url}` 
           }}
           onLoadEnd={() => setLoading(false)}
           onError={() => {

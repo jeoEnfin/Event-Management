@@ -119,7 +119,9 @@ const EventDetailsScreen = ({ route }: Props) => {
         const eventData = {
             id: data.id,
             expName: data.expName,
-            expPrice: data.expPrice
+            expPrice: data.expPrice,
+            expStartDate: data.expStartDate,
+            expEndDate: data.expEndDate
         }
 
         if (data.expIsRegistrationEnabled) {

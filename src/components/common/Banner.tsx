@@ -30,7 +30,7 @@ const Banner = (props: Props) => {
                     style={{ width: '100%', height: '100%', borderRadius: 10 }}
                     resizeMode='stretch'
                     // source={require('../../assets/ci/banner.png')}
-                    source={{ uri: `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/banner/default.png` }}
+                    source={{ uri: `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/banner/default-baner.jpg` }}
                     alt='No image'
                     defaultSource={require('../../assets/ci/banner.png')}
                 />
