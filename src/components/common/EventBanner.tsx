@@ -58,7 +58,7 @@ const EventBanner = (props: Props) => {
                 />
                 <View style={styles.body}>
                     <Text style={styles.text1}>{props.title}</Text>
-                    <Text style={styles.text2}>{props.subTitle}</Text>
+                    {/* <Text style={styles.text2}>{props.subTitle}</Text> */}
                     <Text style={styles.dateTxt}>{props.startDate && format(new Date(props.startDate), 'dd MMM yyyy')}-{props.endDate && format(new Date(props.endDate), 'dd MMM yyyy')}</Text>
                     {!props.isOrder ? isRegisterEnded ? props.buttonLabel && <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
                         {props.price && <Icon name='euro' color={COLORS.text.primary} size={13} />}
