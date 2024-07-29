@@ -13,8 +13,9 @@ import { useNavigation } from '@react-navigation/native'
 import { isDateInFuture } from '../../utils/common'
 import AddressCard from '../../components/cards/AddressCard'
 import PolicesCard from '../../components/cards/PolicesCard'
-import AsyncStorageUtil from '../../utils/services/LocalCache'
 import { OrderListAPI } from './apis/OrderListApi'
+import { getModuleAccessRules } from '../../utils/services/aclLibrary'
+import QRCodeModal from './components/QRCodeModal'
 
 
 type Props = {
@@ -30,15 +31,39 @@ const EventDetailsScreen = ({ route }: Props) => {
     const [schedule, setSchedule] = useState<any>([]);
     const [isOrder, setIsOrder] = useState<boolean>(false);
     const [order, setOrder] = useState<any>([]);
+    const [userRules, setUserRules] = useState<any>(null);
+    const [isScanner, setIsScanner] = useState<boolean>(false)
+    const [isModalVisible, setModalVisible] = useState<boolean>(false);
+
+    const toggleModal = () => {
+      setModalVisible(!isModalVisible);
+    };
 
     useEffect(() => {
         // const _order: any = AsyncStorageUtil.getData('MyOrders')
         // if (_order.length > 0) {
         //     setOrder(_order);
         // } else {
-            orderdetails();
+        orderdetails();
         // }
     }, [])
+
+    useEffect(() => {
+		const init = async () => {
+            console.log('hit here')
+			const userRules:any = await getModuleAccessRules('expo');
+            //console.log('hit here', userRules)
+			setUserRules(userRules?.access);
+		}
+		init();
+	},[]);
+
+    useEffect(()=>{
+        if(userRules && isOrder){
+            console.log(userRules)
+            setIsScanner(userRules?.qrScanner?.permission);
+        }
+    },[userRules,isOrder])
 
     useEffect(() => {
         if (event) {
@@ -49,7 +74,7 @@ const EventDetailsScreen = ({ route }: Props) => {
     useEffect(() => {
         if (data && order) {
             const _order = checkExpoIdInOrders(data.id, order)
-            if(_order){
+            if (_order) {
                 setIsOrder(_order);
             }
         }
@@ -67,7 +92,7 @@ const EventDetailsScreen = ({ route }: Props) => {
         }
     }
 
-    const checkExpoIdInOrders = (expoId:any, orders:any) => {
+    const checkExpoIdInOrders = (expoId: any, orders: any) => {
         if (!Array.isArray(orders)) {
             throw new Error('Orders data should be an array');
         }
@@ -125,7 +150,7 @@ const EventDetailsScreen = ({ route }: Props) => {
         }
 
         if (data.expIsRegistrationEnabled) {
-            navigation.replace('Registration',{ event: eventData})
+            navigation.replace('Registration', { event: eventData })
         }
         // navigation.navigate('payment')
     };
@@ -147,6 +172,7 @@ const EventDetailsScreen = ({ route }: Props) => {
                 subTitle={data.expCreator}
                 onPressButton={handleJoin}
                 isOrder={isOrder}
+                qrCodePress={()=>{setModalVisible(true)}}
             />
         );
         ItemData.push(
@@ -184,7 +210,12 @@ const EventDetailsScreen = ({ route }: Props) => {
 
     return (
         <ScreenWrapper>
-            <TopBar notification profile />
+            <TopBar
+                // notification
+                profile
+                scanner={isScanner || false} 
+                scannerPress={()=>{navigation.navigate('Scan')}}
+                />
             {!isLoading ?
                 <View style={{ width: '100%' }}>
                     {data &&
@@ -206,6 +237,7 @@ const EventDetailsScreen = ({ route }: Props) => {
                             }}
                         />
                     }
+                <QRCodeModal isModalVisible={isModalVisible} toggleModal={()=>toggleModal()} />
                 </View> : <ActivityElement />}
         </ScreenWrapper>
     )

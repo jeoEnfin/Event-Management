@@ -11,6 +11,7 @@ import QRCode from './QRCode'
 import AsyncStorageUtil from '../../utils/services/LocalCache'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
+import { CacheIndex } from '../../utils/services/CacheIndex'
 
 type Props = {}
 
@@ -63,7 +64,7 @@ const Profile = (props: Props) => {
     const getData = async () => {
         setIsLoading(true)
         try {
-            const _userData = await AsyncStorageUtil.getData('user_details')
+            const _userData = await AsyncStorageUtil.getData('userData')
             if (_userData) {
                 const _data = {
                     name: _userData?.data?.displayName,

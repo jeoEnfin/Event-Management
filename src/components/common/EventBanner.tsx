@@ -19,6 +19,7 @@ type Props = {
     expRegEnd?: string;
     isOrder?: boolean;
     onPressButtonAfterOrdered?: () => void;
+    qrCodePress?: () => void;
 }
 
 const screenWidth = Dimensions.get("window").width;
@@ -41,13 +42,13 @@ const EventBanner = (props: Props) => {
                 <Image
                     style={{ width: '100%', height: '100%', borderRadius: 10 }}
                     resizeMode='stretch'
-                    source={{ 
-                        uri: props.imgUrl === 'default.jpg' 
-                          ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg` 
-                          : (props.imgUrl && (props.imgUrl.startsWith('https') ||props.imgUrl.startsWith('http')))
-                            ? props.imgUrl 
-                            : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${props.imgUrl}` 
-                      }}
+                    source={{
+                        uri: props.imgUrl === 'default.jpg'
+                            ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg`
+                            : (props.imgUrl && (props.imgUrl.startsWith('https') || props.imgUrl.startsWith('http')))
+                                ? props.imgUrl
+                                : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${props.imgUrl}`
+                    }}
                     alt='No image'
                 />
                 <Image
@@ -63,10 +64,15 @@ const EventBanner = (props: Props) => {
                     {!props.isOrder ? isRegisterEnded ? props.buttonLabel && <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
                         {props.price && <Icon name='euro' color={COLORS.text.primary} size={13} />}
                         <Text style={styles.btnText}>{props.buttonLabel}</Text>
-                    </TouchableOpacity> : <Text style={[styles.btnText,{color: COLORS.text.error}]}>Expo Registration Ended</Text>:  <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
+                    </TouchableOpacity> : <Text style={[styles.btnText, { color: COLORS.text.error }]}>Expo Registration Ended</Text> : <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
                         <Text style={styles.btnText}>Join</Text>
-                    </TouchableOpacity> }
+                    </TouchableOpacity>}
+
                 </View>
+                {props.isOrder &&
+                    <TouchableOpacity style={styles.qrContainer} onPress={props.qrCodePress}>
+                        <Icon name='qr-code' color={COLORS.text.primary} size={28} />
+                    </TouchableOpacity>}
             </View>
 
         </View>
@@ -125,4 +131,9 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontWeight: '600'
     },
+    qrContainer: {
+        position: 'absolute',
+        right: 18,
+        top: 18
+    }
 })

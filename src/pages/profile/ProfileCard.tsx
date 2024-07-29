@@ -2,8 +2,6 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { styles } from './styles';
 import { style } from '../../constants/styles';
-import RoundButton from '../../components/RoundButton';
-import { COLORS } from '../../constants';
 
 type Props = {
     email?: string;

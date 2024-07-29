@@ -12,16 +12,16 @@ type Props = {
 }
 
 const ScanReader = ({ route, navigation }: Props) => {
-    const {url} = route.params
-    const Url = parse(url, true);
+    const { data , tenant  } = route.params
+
 
     return (
         <ScreenWrapper>
-            <TopBar title={Url.host} home scanner />
+            <TopBar scanner />
             <View style={styles.container}>
-                <Text style={[style.txt_1, { marginBottom: 20 }]}>{url}</Text>
-                <Button title='Join Event'
-                    onPress={() => { navigation.navigate('Test2', { url }) }} />
+                <Text style={[style.txt_1, { marginBottom: 20 }]}>{data && data}{tenant}</Text>
+                <Button title='retake'
+                    onPress={() => { navigation.goBack(); }} />
             </View>
         </ScreenWrapper>
     )

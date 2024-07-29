@@ -19,6 +19,7 @@ import CustomIconButton from '../../components/common/CustomIconButton';
 import { AuthLoginAPI } from './apis/AuthLogin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AsyncStorageUtil from '../../utils/services/LocalCache';
+import { CacheIndex } from '../../utils/services/CacheIndex';
 
 
 
@@ -127,9 +128,12 @@ const LoginScreen = (props: Props) => {
                     await AsyncStorageUtil.saveData('user_credentials', data)
                 }
                 if (_user) {
-                    await AsyncStorageUtil.saveData('user_details', _user)
+                    await AsyncStorageUtil.saveData('userData', _user)
                     if (_user?.roleId) {
-                        await AsyncStorageUtil.saveData('roleId', _user?.roleId)
+                        await AsyncStorageUtil.saveData('userRoleId', _user?.roleId)
+                    }
+                    else if (_user?.roles.length > 0) {
+                        await AsyncStorageUtil.saveData('userRoleId', _user?.roles[0]?._id)
                     }
                 }
                 dispatch(Login(username, access_token, tenant))
@@ -174,48 +178,48 @@ const LoginScreen = (props: Props) => {
 
     return (
         <AuthContainer>
-            <View style={{flex: 1,justifyContent: 'space-between',height: '100%'}}>
+            <View style={{ flex: 1, justifyContent: 'space-between', height: '100%' }}>
                 <View>
                     <AuthHeader
                         title='Welcome Back'
                         subTitle='Login to your Account'
                     />
                     <ScrollView>
-                    <View style={{ marginTop: 10, gap: 10 }}>
-                        <InputText
-                            placeholder='Email'
-                            autoComplete='email'
-                            textSecure={false}
-                            showText={() => { }}
-                            inputMode={'email'}
-                            onDataChanged={handleEmailChange}
-                            error={errorEmail}
-                            errorTxt={emailErrorTxt}
-                        />
-                        <InputText
-                            placeholder='Password'
-                            iconName='eye-outline'
-                            autoComplete='new-password'
-                            textSecure={isTextSecure}
-                            showText={showPassword}
-                            // hideText={hidePassword}
-                            onDataChanged={handlePasswordChange}
-                            keyboardType={'default'}
-                            error={errorPassword}
-                            errorTxt={passwordErrorTxt}
-                        />
-                        {(error &&  errorTxt) && <Text style={styles.errorTxt}>{errorTxt}</Text>}
-                    </View>
-                    <View style={styles.forgotBody}>
-                        <CheckboxWithLabel
-                            label='Remember me'
-                            isChecked={rememberCheck}
-                            onPress={() => { setRememberCheck(!rememberCheck) }}
-                        />
-                        <TouchableOpacity onPress={() => { ForgotPasswordRoute() }}>
-                            <Text style={styles.fgtTxt}>Forgot password?</Text>
-                        </TouchableOpacity>
-                    </View>
+                        <View style={{ marginTop: 10, gap: 10 }}>
+                            <InputText
+                                placeholder='Email'
+                                autoComplete='email'
+                                textSecure={false}
+                                showText={() => { }}
+                                inputMode={'email'}
+                                onDataChanged={handleEmailChange}
+                                error={errorEmail}
+                                errorTxt={emailErrorTxt}
+                            />
+                            <InputText
+                                placeholder='Password'
+                                iconName='eye-outline'
+                                autoComplete='new-password'
+                                textSecure={isTextSecure}
+                                showText={showPassword}
+                                // hideText={hidePassword}
+                                onDataChanged={handlePasswordChange}
+                                keyboardType={'default'}
+                                error={errorPassword}
+                                errorTxt={passwordErrorTxt}
+                            />
+                            {(error && errorTxt) && <Text style={styles.errorTxt}>{errorTxt}</Text>}
+                        </View>
+                        <View style={styles.forgotBody}>
+                            <CheckboxWithLabel
+                                label='Remember me'
+                                isChecked={rememberCheck}
+                                onPress={() => { setRememberCheck(!rememberCheck) }}
+                            />
+                            <TouchableOpacity onPress={() => { ForgotPasswordRoute() }}>
+                                <Text style={styles.fgtTxt}>Forgot password?</Text>
+                            </TouchableOpacity>
+                        </View>
                     </ScrollView>
                 </View>
                 <View>

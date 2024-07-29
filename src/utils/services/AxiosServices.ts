@@ -1,6 +1,7 @@
 import axios from "axios";
 import { config } from "../config";
 import AsyncStorageUtil from "./LocalCache";
+import { CacheIndex } from "./CacheIndex";
 
 const axiosClient = axios.create({
   baseURL: config.SERVER_URL,
@@ -22,7 +23,7 @@ axiosClient.interceptors.request.use(
     if (tenantId) {
       config.headers['x-tenant-id'] = tenantId;
     }
-    let roleId = await AsyncStorageUtil.getData('roleId');
+    let roleId = await AsyncStorageUtil.getData('userRoleId');
     if (roleId) {
       config.headers['x-Role-id'] = roleId;
     }

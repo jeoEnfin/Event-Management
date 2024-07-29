@@ -10,6 +10,7 @@ import { isValidEmail } from '../../utils/validations';
 import { splitName } from '../../utils/common';
 import { UpdateProfileAPI } from './apis/UpdateProfileAPI';
 import { useNavigation } from '@react-navigation/native';
+import { CacheIndex } from '../../utils/services/CacheIndex';
 
 type Props = {}
 
@@ -39,7 +40,7 @@ const ProfileEdit = (props: Props) => {
   const getData = async () => {
     setIsLoading(true)
     try {
-      const _userData = await AsyncStorageUtil.getData('user_details')
+      const _userData = await AsyncStorageUtil.getData('userData')
       if (_userData) {
         const _data = {
           name: _userData?.data?.displayName,

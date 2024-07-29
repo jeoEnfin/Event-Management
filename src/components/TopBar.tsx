@@ -18,6 +18,9 @@ type Props = {
     search?: boolean;
     menu?: boolean;
     menuClick?: () => void;
+    scannerPress?: () => void;
+    home?: boolean;
+    homePress?: () => void;
 }
 
 const TopBar = (props: Props) => {
@@ -54,9 +57,9 @@ const TopBar = (props: Props) => {
                 {props.back && (
                     <RoundButton
                         iconName='arrow-back'
-                        iconSize={26}
-                        color={COLORS.lightWhite}
-                        backgroundColor={COLORS.background}
+                        iconSize={28}
+                        color={COLORS.text.default}
+                        backgroundColor={COLORS._background.primary}
                         hapticFeedback={true}
                         onPress={() => { navigation.goBack() }}
                     />
@@ -81,12 +84,23 @@ const TopBar = (props: Props) => {
                 {props.scanner && (
                     <RoundButton
                         iconName='scan'
+                        iconType='ionicon'
                         iconSize={28}
-                        color={COLORS.lightWhite}
+                        color={COLORS.text.main}
                         backgroundColor={COLORS._background.primary}
                         hapticFeedback={true}
-                        onPress={() => { navigation.navigate('Scan') }}
+                        onPress={props.scannerPress}
                     />)}
+                {props.home && (
+                    <RoundButton
+                        iconName='home'
+                        iconType='ionicon'
+                        iconSize={28}
+                        color={COLORS.text.main}
+                        backgroundColor={COLORS._background.primary}
+                        hapticFeedback={true}
+                        onPress={props.homePress}
+                    />)}    
                 {props.share && (
                     <RoundButton
                         iconName='share-social'

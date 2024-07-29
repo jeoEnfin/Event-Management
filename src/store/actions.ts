@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AutoLoginAPI } from "../pages/auth/apis/AutoLogin";
 import AsyncStorageUtil from "../utils/services/LocalCache";
 import { AuthLoginAPI } from "../pages/auth/apis/AuthLogin";
+import { CacheIndex } from "../utils/services/CacheIndex";
 
 export const Login = (username: string, token: string, tenant: string) => {
   return ({
@@ -13,48 +14,57 @@ export const Login = (username: string, token: string, tenant: string) => {
 export const Init = () => {
   return async (dispatch: any) => {
     let token = await AsyncStorageUtil.getData('token')
-      try {
-        let data = await AutoLoginAPI();
-        console.log(data, 'hit inside');
-        if(data){
+    try {
+      let data = await AutoLoginAPI();
+      if (data) {
         dispatch({
           type: 'LOGIN',
           payload: token
-        })}
-      } catch (error) {
-        console.log(error)
-        let credentials = await AsyncStorageUtil.getData('user_credentials');
-        console.log(credentials);
-        if (credentials) {
-          await AsyncStorageUtil.removeData('token')
-          try {
-            const user = await AuthLoginAPI({ credentials });
-            const access_token = user?.data?.data?.access_token;
-            if (access_token) {
-              AsyncStorageUtil.saveData('token', access_token);
-            }
-            dispatch({
-              type: 'LOGIN',
-              payload: access_token
-            })
-          } catch (error) {
-            console.log(error)
-            await AsyncStorageUtil.clearAllData();
-            dispatch({
-              type: 'LOGOUT',
-              payload: null
-            })
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      let credentials = await AsyncStorageUtil.getData('user_credentials');
+      if (credentials) {
+        await AsyncStorageUtil.removeData('token')
+        try {
+          const user = await AuthLoginAPI({ credentials });
+          const access_token = user?.data?.data?.access_token;
+          if (access_token) {
+            AsyncStorageUtil.saveData('token', access_token);
           }
-        } else {
+          const _user = user?.data?.data?.user;
+          if (_user) {
+            await AsyncStorageUtil.saveData('userData', _user)
+            if (_user?.roleId) {
+              await AsyncStorageUtil.saveData('userRoleId', _user?.roleId)
+            }
+            if (_user?.roles.length > 0) {
+              await AsyncStorageUtil.saveData('userRoleId', _user?.roles[0]?._id)
+            }
+          }
+          dispatch({
+            type: 'LOGIN',
+            payload: access_token
+          })
+        } catch (error) {
+          console.log(error)
           await AsyncStorageUtil.clearAllData();
           dispatch({
             type: 'LOGOUT',
             payload: null
           })
         }
-
+      } else {
+        await AsyncStorageUtil.clearAllData();
+        dispatch({
+          type: 'LOGOUT',
+          payload: null
+        })
       }
+
     }
+  }
 }
 
 export const Otp = (otp: any) => {

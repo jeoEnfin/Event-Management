@@ -1,5 +1,5 @@
 export const config = {
-    URL_PROTOCOL: 'https:',
+    QR_PROTOCOL: 'ci_expo',
     URL_HOST: 'stackoverflow.com',
     SERVER_URL: 'https://devciapi.enfinlabs.com/',
     USER_NAME: 'jeothankachan98@gmail.com',

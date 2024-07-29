@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axiosClient from './AxiosServices';
+import { CacheIndex } from './CacheIndex';
 
 // Define types for your function parameters and return values
 type AsyncStorageKey = string;
@@ -57,6 +59,43 @@ const AsyncStorageUtil: AsyncStorageUtil = {
       return false;
     }
   },
+
+  
 };
 
 export default AsyncStorageUtil;
+
+export const getRoleModules = async (roleType: any) => {
+  const token = await AsyncStorageUtil.getData("token");
+  if (!token) {
+    return false;
+  }
+  try {
+    const response = await axiosClient.request({
+      url: `/role/modules`,
+      method: "get",
+      params: { roleType }
+    });
+    return response?.data?.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const getUserSession = async () => {
+  const token = await AsyncStorageUtil.getData("token");
+  if (!token) {
+    return false;
+  }
+  const roleId =await AsyncStorageUtil.getData('userRoleId');
+  try {
+    const response = await axiosClient.request({
+      url: `/users/session`,
+      method: "get",
+      ... ((roleId !== null) ? { params: { roleId: roleId } } : {})
+    });
+    return response?.data?.data?.users;
+  } catch (error) {
+    throw error;
+  }
+}
