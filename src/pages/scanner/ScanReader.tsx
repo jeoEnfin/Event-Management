@@ -44,7 +44,7 @@ const ScanReader = ({ route, navigation }: Props) => {
                 const message = err?.response?.data?.message
                 if (message == 'Attendance already marked') {
                     Alert.alert(message, '',[
-                        {text: 'OK', onPress: () => {}}
+                        {text: 'OK', onPress: () => navigation.goBack()}
                     ])
                 }
             } else {
