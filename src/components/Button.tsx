@@ -5,7 +5,7 @@ import { COLORS, TXT_SIZE } from '../constants';
 
 type Props = {
   title: string;
-  backgroundColor: string,
+  backgroundColor?: string,
   hapticFeedback?: boolean,
   onPress?: () => void
 }
