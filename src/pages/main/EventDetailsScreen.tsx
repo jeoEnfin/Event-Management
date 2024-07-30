@@ -16,6 +16,8 @@ import PolicesCard from '../../components/cards/PolicesCard'
 import { OrderListAPI } from './apis/OrderListApi'
 import { getModuleAccessRules } from '../../utils/services/aclLibrary'
 import QRCodeModal from './components/QRCodeModal'
+import { QrCodeAPI } from '../profile/apis/QrCodeAPI'
+import AsyncStorageUtil from '../../utils/services/LocalCache'
 
 
 type Props = {
@@ -34,9 +36,10 @@ const EventDetailsScreen = ({ route }: Props) => {
     const [userRules, setUserRules] = useState<any>(null);
     const [isScanner, setIsScanner] = useState<boolean>(false)
     const [isModalVisible, setModalVisible] = useState<boolean>(false);
+    const [orderQrCode, setOrderQrCode] = useState<any>(null);
 
     const toggleModal = () => {
-      setModalVisible(!isModalVisible);
+        setModalVisible(!isModalVisible);
     };
 
     useEffect(() => {
@@ -49,21 +52,20 @@ const EventDetailsScreen = ({ route }: Props) => {
     }, [])
 
     useEffect(() => {
-		const init = async () => {
-            console.log('hit here')
-			const userRules:any = await getModuleAccessRules('expo');
+        const init = async () => {
+            const userRules: any = await getModuleAccessRules('expo');
             //console.log('hit here', userRules)
-			setUserRules(userRules?.access);
-		}
-		init();
-	},[]);
+            setUserRules(userRules?.access);
+        }
+        init();
+    }, []);
 
-    useEffect(()=>{
-        if(userRules && isOrder){
-            console.log(userRules)
+    useEffect(() => {
+        if (userRules && isOrder) {
+            //console.log(userRules)
             setIsScanner(userRules?.qrScanner?.permission);
         }
-    },[userRules,isOrder])
+    }, [userRules, isOrder])
 
     useEffect(() => {
         if (event) {
@@ -76,9 +78,29 @@ const EventDetailsScreen = ({ route }: Props) => {
             const _order = checkExpoIdInOrders(data.id, order)
             if (_order) {
                 setIsOrder(_order);
+                getQrCode();
             }
         }
     }, [data, order])
+
+    const getQrCode = async () => {
+        const _userData = await AsyncStorageUtil.getData('userData');
+        if (_userData) {
+            const _data = {
+                attUserId: _userData.uuid,
+                attExpoId: data.id,
+                attType: data.expType
+            }
+            try {
+                const qrCode = await QrCodeAPI({ data: _data });
+                if (qrCode) {
+                    setOrderQrCode(qrCode.data);
+                }
+            } catch (err: any) {
+                console.log(err.response.data, 'error')
+            }
+        }
+    };
 
     const orderdetails = async () => {
         try {
@@ -172,7 +194,7 @@ const EventDetailsScreen = ({ route }: Props) => {
                 subTitle={data.expCreator}
                 onPressButton={handleJoin}
                 isOrder={isOrder}
-                qrCodePress={()=>{setModalVisible(true)}}
+                qrCodePress={() => { setModalVisible(true) }}
             />
         );
         ItemData.push(
@@ -208,14 +230,18 @@ const EventDetailsScreen = ({ route }: Props) => {
         );
     }
 
+    // if(!data){
+    //     return <ActivityElement />
+    // }
+
     return (
         <ScreenWrapper>
             <TopBar
                 // notification
                 profile
-                scanner={isScanner || false} 
-                scannerPress={()=>{navigation.navigate('Scan')}}
-                />
+                scanner={isScanner || false}
+                scannerPress={() => { navigation.navigate('Scan') }}
+            />
             {!isLoading ?
                 <View style={{ width: '100%' }}>
                     {data &&
@@ -237,7 +263,14 @@ const EventDetailsScreen = ({ route }: Props) => {
                             }}
                         />
                     }
-                <QRCodeModal isModalVisible={isModalVisible} toggleModal={()=>toggleModal()} />
+                    {data && <QRCodeModal
+                        isModalVisible={isModalVisible}
+                        toggleModal={() => toggleModal()}
+                        eventName={data.expName}
+                        eventStartDate={data.expStartDate}
+                        eventEndDate={data.expEndDate}
+                        url={orderQrCode}
+                    />}
                 </View> : <ActivityElement />}
         </ScreenWrapper>
     )

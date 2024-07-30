@@ -14,7 +14,7 @@ export const getModuleAccessRules = async (module: string, _access?: string) => 
     const userData = await getUserSession();
 
     const modules = await getRoleModules(userData.role || 'admin');
-    console.log(modules, "modules")
+    //console.log(modules, "modules")
 
     //check module name is valid and if so, assign to a variable
     if (typeof modules[module] === "undefined") {

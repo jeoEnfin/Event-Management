@@ -28,9 +28,9 @@ const ScanScreen = (props: Props) => {
     const [isRetake, setIsRetake] = useState(false)
     const navigation: any = useNavigation()
     const onSuccess = (e: any) => {
-        console.log('e',e.data);
+        // console.log('e',e.data);
         if (e.data) {
-            navigation.navigate('ScanReader',{data: e.data, tenant: 'adidas'})
+            navigation.navigate('ScanReader',{data: e.data, tenant: ''})
         } else {
             Alert.alert('This url not work in this app', e.data,
                 [{ text: 'OK', onPress: () => { setIsRetake(true) } }],
