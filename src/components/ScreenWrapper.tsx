@@ -1,6 +1,7 @@
 import { StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { ReactNode } from 'react'
 import { COLORS } from '../constants'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = {
     children: ReactNode
@@ -8,10 +9,10 @@ type Props = {
 
 const ScreenWrapper: React.FC<Props> = ({ children }) => {
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={COLORS._background.primary} barStyle={'dark-content'} />
             {children}
-        </View>
+        </SafeAreaView>
     )
 }
 

@@ -28,7 +28,7 @@ const Welcome = (props: Props) => {
     },[])
 
     return (
-        <ScreenWrapper>
+        <View style={styles.container}>
             <StatusBar backgroundColor={'#000'} barStyle={'light-content'} />
             <View style={{ width: screenWidth, height: screenHeight, justifyContent: 'space-between',alignItems: 'center' }}>
                 <Image
@@ -41,7 +41,7 @@ const Welcome = (props: Props) => {
                 </TouchableOpacity>:
                 <ActivityIndicator size={'large'} style={{marginBottom: 15}} color={COLORS.secondary.main} />}
             </View>
-        </ScreenWrapper>
+        </View>
     )
 }
 
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         width: '90%',
         height: 54,
         backgroundColor: COLORS.secondary.main,
-        marginBottom: 15,
+        marginBottom: 30,
         borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center'
@@ -61,5 +61,11 @@ const styles = StyleSheet.create({
         color: COLORS.text.primary,
         fontWeight: '600',
         fontSize: 18
+    },
+    container: {
+        flex: 1,
+        backgroundColor: COLORS._background.main,
+        alignItems: 'center',
+        width: '100%'
     }
 })
