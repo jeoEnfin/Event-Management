@@ -14,17 +14,17 @@ const FloatingButton = (props: Props) => {
     const actions = [
         {
             icon: require('../assets/qr-code.png'),
-            name: 'scanner',
+            name: 'lobby',
             position: 1,
         },
         {
             icon: require('../assets/user.png'),
-            name: 'profile',
+            name: 'attendees',
             position: 2,
         },
         {
             icon: require('../assets/call.png'),
-            name: 'call',
+            name: 'chat',
             position: 3,
         },
         {
@@ -36,15 +36,15 @@ const FloatingButton = (props: Props) => {
 
     const handleActionPress = (name: string) => {
         if (name === 'call') {
-            navigation.navigate('Home', {
-                apiKey: config.API_KEY,
-                sessionId: config.SESSION_ID,
-                token: config.TOKEN
-            })
+            // navigation.navigate('Home', {
+            //     apiKey: config.API_KEY,
+            //     sessionId: config.SESSION_ID,
+            //     token: config.TOKEN
+            // })
         } else if (name === 'profile') {
-            navigation.navigate('Profile')
+            // navigation.navigate('Profile')
         } else if (name === 'scanner') {
-            navigation.navigate('Scan')
+            // navigation.navigate('Scan')
         }
     };
 
@@ -55,8 +55,8 @@ const FloatingButton = (props: Props) => {
                 onPressItem={(name: any) => handleActionPress(name)}
                 floatingIcon={require('../assets/add.png')}
                 //overrideWithAction
-                color={COLORS.btnBackground2}
-                position="left"
+                color={COLORS.secondary.main}
+                position="right"
             />
         </>
     );

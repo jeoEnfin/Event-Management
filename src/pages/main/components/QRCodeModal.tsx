@@ -47,8 +47,8 @@ export default QRCodeModal
 
 const styles = StyleSheet.create({
     container: {
-        height: '80%',
-        padding: 20,
+        // height: '80%',
+        paddingVertical: 35,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
     },
     qrcodeContainer: {
         width: 220,
-        height: 220
+        height: 220,
+        marginTop: 10 
     },
     text3: {
         fontSize: 12,

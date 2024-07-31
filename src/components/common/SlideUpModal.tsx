@@ -65,7 +65,7 @@ const SlideUpModal: React.FC<SlideUpModalProps> = ({ isVisible, onClose, childre
 const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {

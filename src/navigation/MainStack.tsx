@@ -20,6 +20,7 @@ import Welcome from '../pages/auth/Welcome';
 import ResetPassword from '../pages/profile/ResetPassword';
 import PaymentSucess from '../pages/payment/PaymentSucess';
 import PaymentFail from '../pages/payment/PaymentFail';
+import Lobby from '../pages/event/lobby/Lobby';
 
 type Props = {}
 
@@ -41,6 +42,7 @@ const MainStack = (props: Props) => {
             <Stack.Screen name='FailPage' component={PaymentFail} />
             <Stack.Screen name='Scan' component={ScanScreen} options={{ orientation: 'portrait' }} />
             <Stack.Screen name='ScanReader' component={ScanReader} options={{ orientation: 'portrait' }} />
+            <Stack.Screen name='Lobby' component={Lobby } />
             {/* <Stack.Screen name="Event" component={DemoEvent} options={{ orientation: 'landscape', statusBarHidden: true }} />
             <Stack.Screen name="Booth" component={BoothScreen} options={{ orientation: 'landscape', statusBarHidden: true }} />
             <Stack.Screen name="Hall_1" component={Hall_1} options={{orientation: 'portrait'}}/> */}

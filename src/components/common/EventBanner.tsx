@@ -20,6 +20,7 @@ type Props = {
     isOrder?: boolean;
     onPressButtonAfterOrdered?: () => void;
     qrCodePress?: () => void;
+    isTenant?: boolean;
 }
 
 const screenWidth = Dimensions.get("window").width;
@@ -69,7 +70,7 @@ const EventBanner = (props: Props) => {
                     </TouchableOpacity>}
 
                 </View>
-                {props.isOrder &&
+                {(props.isOrder && !props.isTenant) &&
                     <TouchableOpacity style={styles.qrContainer} onPress={props.qrCodePress}>
                         <Icon name='qr-code' color={COLORS.text.primary} size={28} />
                     </TouchableOpacity>}

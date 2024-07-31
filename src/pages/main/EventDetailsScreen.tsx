@@ -153,16 +153,7 @@ const EventDetailsScreen = ({ route }: Props) => {
     };
 
     const handleJoin = async () => {
-        // if (data.expExpoMode === 'Public') {
-        //     let dateValid = isDateInFuture(data.expStartDate)
-        //     if (dateValid) {
-        //         Alert.alert('Event Not Started', 'The event has not started yet. Please check back later.', [
-        //             { text: 'OK'},
-        //         ]);
-        //     } else {
-        //         navigation.navigate('OfflineLobby', { event: data.id })
-        //     }
-        // }
+
         const eventData = {
             id: data.id,
             expName: data.expName,
@@ -174,8 +165,21 @@ const EventDetailsScreen = ({ route }: Props) => {
         if (data.expIsRegistrationEnabled) {
             navigation.replace('Registration', { event: eventData })
         }
-        // navigation.navigate('payment')
+       
     };
+
+    const handleJoinExpo = async () => {
+        let dateValid = isDateInFuture(data.expStartDate);
+            if (!dateValid) {
+                if(isOrder){
+                  navigation.navigate('Lobby',{ event: data.id , varient: data.expType})
+                }
+            } else {
+                Alert.alert('Event Not Started', 'The event has not started yet. Please check back later.', [
+                    { text: 'OK'},
+                ]);
+            }
+    }
 
     const ItemData = []
 
@@ -195,6 +199,8 @@ const EventDetailsScreen = ({ route }: Props) => {
                 onPressButton={handleJoin}
                 isOrder={isOrder}
                 qrCodePress={() => { setModalVisible(true) }}
+                onPressButtonAfterOrdered={() =>{handleJoinExpo()}}
+                isTenant={isScanner}
             />
         );
         ItemData.push(
