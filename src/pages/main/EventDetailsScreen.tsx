@@ -244,6 +244,7 @@ const EventDetailsScreen = ({ route }: Props) => {
         <ScreenWrapper>
             <TopBar
                 // notification
+                back
                 profile
                 scanner={isScanner || false}
                 scannerPress={() => { navigation.navigate('Scan') }}

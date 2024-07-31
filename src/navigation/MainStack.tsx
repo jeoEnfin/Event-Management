@@ -43,6 +43,7 @@ const MainStack = (props: Props) => {
             <Stack.Screen name='Scan' component={ScanScreen} options={{ orientation: 'portrait' }} />
             <Stack.Screen name='ScanReader' component={ScanReader} options={{ orientation: 'portrait' }} />
             <Stack.Screen name='Lobby' component={Lobby } />
+            <Stack.Screen name="Notification" component={Notification} options={{ orientation: 'portrait', headerShown: true}} />
             {/* <Stack.Screen name="Event" component={DemoEvent} options={{ orientation: 'landscape', statusBarHidden: true }} />
             <Stack.Screen name="Booth" component={BoothScreen} options={{ orientation: 'landscape', statusBarHidden: true }} />
             <Stack.Screen name="Hall_1" component={Hall_1} options={{orientation: 'portrait'}}/> */}

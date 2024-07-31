@@ -18,7 +18,7 @@ const ActivityElement = (props: Props) => {
         right: 0,
         top: 0,
         bottom: 0,
-        justifyContent: 'center',
+        justifyContent: 'center'
       }}>
       <ActivityIndicator color={COLORS.secondary.main} size="large" />
     </View>

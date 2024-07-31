@@ -14,7 +14,6 @@ const HomeStack = () => {
     return (
         <Stack.Navigator screenOptions={{ statusBarColor: COLORS.background, headerShown: false }}>
             <Stack.Screen name='EventHome' component={HomeScreen} />
-            <Stack.Screen name="Notification" component={Notification} options={{ orientation: 'portrait', headerShown: true}} />
             <Stack.Screen name="Search" component={SearchScreen} options={{ orientation: 'portrait', headerShown: true, headerTitle: '' }} />
         </Stack.Navigator>
     )

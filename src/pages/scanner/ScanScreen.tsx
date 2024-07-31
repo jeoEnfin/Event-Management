@@ -21,6 +21,7 @@ import { config } from '../../utils/config';
 import { COLORS } from '../../constants';
 import UserSuccessModal from './components/UserSuccessModal';
 import { UserAttendenceApi } from './apis/UserAttendenceApi';
+import ActivityElement from '../../components/common/ActivityElement';
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 
@@ -39,7 +40,7 @@ const ScanScreen = (props: Props) => {
     const onSuccess = (e: any) => {
         if (e.data) {
             setIsRetake(false)
-            markAttendence(e.data); 
+            markAttendence(e.data);
         } else {
             Alert.alert('This url not work in this app', e.data,
                 [{ text: 'OK', onPress: () => { setIsRetake(true) } }],
@@ -62,21 +63,22 @@ const ScanScreen = (props: Props) => {
             setIsModalVisible(true);
             setIsLoading(false);
         } catch (err: any) {
-            if(err.response.status !== 500){
-            if (err?.response?.data) {
-                const message = err?.response?.data?.message
-                if (message == 'Attendance already marked') {
-                    Alert.alert(message, '',[
-                        {text: 'OK', onPress: () => {setIsRetake(true)}}
+            if (err.response.status !== 500) {
+                if (err?.response?.data) {
+                    const message = err?.response?.data?.message
+                    if (message == 'Attendance already marked') {
+                        Alert.alert(message, '', [
+                            { text: 'OK', onPress: () => { setIsRetake(true) } }
+                        ])
+                    }
+                } else {
+                    Alert.alert('Not a valid QR Code', '', [
+                        { text: 'OK', onPress: () => { setIsRetake(true) } }
                     ])
                 }
             } else {
-                Alert.alert('Not a valid QR Code', '',[
-                    {text: 'OK', onPress: () => {setIsRetake(true)}}
-                ])
-            }} else {
-                Alert.alert('Not a valid QR Code', '',[
-                    {text: 'OK', onPress: () => {setIsRetake(true)}}
+                Alert.alert('Not a valid QR Code', '', [
+                    { text: 'OK', onPress: () => { setIsRetake(true) } }
                 ])
             }
             setIsLoading(false);
@@ -84,7 +86,7 @@ const ScanScreen = (props: Props) => {
 
     };
 
-    const modalToggle = () =>{
+    const modalToggle = () => {
         setIsModalVisible(!isModalVisible);
         setIsRetake(true);
     };
@@ -100,6 +102,7 @@ const ScanScreen = (props: Props) => {
                 reactivateTimeout={3000}
                 cameraStyle={{ height: '100%' }}
                 markerStyle={{ borderColor: COLORS.secondary.main }}
+                cameraTimeout={300000}
             />
             {userData && <UserSuccessModal
                 isModalVisible={isModalVisible}
@@ -109,6 +112,7 @@ const ScanScreen = (props: Props) => {
                 eventStartDate={expoData?.expStartDate}
                 eventEndDate={expoData?.expEndDate}
             />}
+             {isLoading && <ActivityElement />}
         </ScreenWrapper>
     )
 }

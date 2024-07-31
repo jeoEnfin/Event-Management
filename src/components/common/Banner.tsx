@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Dimensions, ImageBackground, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Dimensions, ImageBackground, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import React, { useState } from 'react'
 
 import { COLORS } from '../../constants';
 import { config } from '../../utils/config';
@@ -11,6 +11,8 @@ type Props = {
 }
 
 const Banner = (props: Props) => {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
     return (
         <View style={{
@@ -26,13 +28,23 @@ const Banner = (props: Props) => {
                     overflow: 'hidden',
                     padding: 5,
                 }}>
+                {loading && (
+                    <View style={styles.previewContainer}>
+                        <Image source={require('../../assets/errors/plainBackground.jpg')} style={styles.preview} />
+                        <ActivityIndicator style={styles.loader} size="large" color={COLORS.secondary.main} />
+                    </View>
+                )}
                 <Image
                     style={{ width: '100%', height: '100%', borderRadius: 10 }}
                     resizeMode='stretch'
-                    // source={require('../../assets/ci/banner.png')}
                     source={{ uri: `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/banner/default-baner.jpg` }}
                     alt='No image'
-                    defaultSource={require('../../assets/ci/banner.png')}
+                    onLoadEnd={() => setLoading(false)}
+                    onError={() => {
+                        console.info('error')
+                        setLoading(false);
+                        setError(true);
+                    }}
                 />
                 {/* <Image
                     style={styles.shade}
@@ -97,5 +109,19 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 5,
         top: 5
-    }
+    },
+    previewContainer: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    preview: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+        position: 'absolute',
+    },
+    loader: {
+        position: 'absolute',
+    },
 })
