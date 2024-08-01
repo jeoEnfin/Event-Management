@@ -6,6 +6,7 @@ import {
     Animated,
     TouchableWithoutFeedback,
     SafeAreaView,
+    Platform,
 } from 'react-native';
 
 // Define the prop types for the modal component
@@ -16,7 +17,8 @@ interface TopDownModalProps {
 }
 
 export const TopDownModal: React.FC<TopDownModalProps> = ({ visible, onClose, children }) => {
-    const slideAnim = useRef(new Animated.Value(-500)).current; // Initial position above the screen
+    const slideAnim = useRef(new Animated.Value(-500)).current;
+    const platform = Platform.OS // Initial position above the screen
 
     useEffect(() => {
         if (visible) {
@@ -45,7 +47,7 @@ export const TopDownModal: React.FC<TopDownModalProps> = ({ visible, onClose, ch
                 <View style={styles.overlay}>
                     <TouchableWithoutFeedback>
                         <SafeAreaView>
-                            <Animated.View style={[styles.modal, { transform: [{ translateY: slideAnim }] }]}>
+                            <Animated.View style={[styles.modal, { transform: [{ translateY: slideAnim }] }, platform === 'ios' && {top: 90} ]}>
                                 {children}
                             </Animated.View>
                         </SafeAreaView>
