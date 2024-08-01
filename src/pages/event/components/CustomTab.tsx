@@ -1,7 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { Icon } from 'react-native-elements'
 import { COLORS } from '../../../constants'
+import { Icon } from 'react-native-elements';
+
 
 type Props = {
     position?: 'portrait' | 'landscape';
