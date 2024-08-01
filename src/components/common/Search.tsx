@@ -34,7 +34,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS._background.main,
     borderRadius: 35,
     padding: 10,
-    elevation: 5
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   leftContainer: {
     flexDirection: 'row',

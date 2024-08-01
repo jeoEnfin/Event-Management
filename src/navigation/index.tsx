@@ -1,4 +1,4 @@
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Image, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -13,23 +13,26 @@ type Props = {
 }
 
 const RootNavigation = (props: Props) => {
-    const [loading,setLoading] = useState<boolean>(true)
+    const [loading, setLoading] = useState<boolean>(true)
     const token = useSelector((state: any) => state.AuthReducers.authToken);
     const isAuth = useSelector((state: any) => state.AuthReducers.authentication);
-    const dispatch:any = useDispatch()
-    const init = async () =>{
+    const dispatch: any = useDispatch()
+    const init = async () => {
         await dispatch(Init());
         setLoading(false);
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         init();
-    },[])
+    }, [])
 
-    if (loading){
-        return(
-            <View style={{flex:1,justifyContent: 'center'}}>
-                <ActivityIndicator size='large' color={COLORS.background} />
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'flex-end', paddingBottom: 20 }}>
+                <Image source={require('../assets/ci/splash.png')}
+                    style={{ width: '100%', height: '100%', position: 'absolute' }}
+                />
+                <ActivityIndicator size='large' color={COLORS.secondary.main} />
             </View>
         )
     }

@@ -14,7 +14,7 @@ interface Schedule {
     speakers: string;
 }
 
-const ScheduleList: React.FC<{ schedules: Schedule[],isJoin?: boolean }> = ({ schedules,isJoin }) => {
+const  ScheduleList: React.FC<{ schedules: Schedule[],isJoin?: boolean }> = ({ schedules,isJoin }) => {
     // Function to format time from ISO string
     const formatTime = (dateTime: string): string => {
         const date = parseISO(dateTime);

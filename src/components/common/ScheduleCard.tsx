@@ -25,11 +25,11 @@ const ScheduleCard = ({
     isJoin
 }: Props) => {
 
-    const measureWidth = (text:any) => {
+    const measureWidth = (text: any) => {
         // Assuming each character has a fixed width for simplicity
         const charWidth = 10;
         return text.length * charWidth;
-      };
+    };
 
     return (
         <TouchableOpacity onPress={onPress} style={styles.container}>
@@ -61,6 +61,10 @@ const styles = StyleSheet.create({
         elevation: 3,
         flexDirection: 'row',
         marginVertical: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     timeContainer: {
         height: 74,
@@ -70,7 +74,11 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.secondary.main,
         borderRadius: 6,
         elevation: 2,
-        padding: 10
+        padding: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     timeBoxText: {
         fontWeight: '600',

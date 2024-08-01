@@ -48,7 +48,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: COLORS.background3,
         elevation: 5,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     body: {
         flexDirection: 'row',
@@ -67,7 +71,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 5,
-        elevation: 10
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     headTxt: {
         color: COLORS.baseWhite,

@@ -8,13 +8,13 @@ type Props = {
 }
 
 const HallSmallCard = (props: Props) => {
-  return (
-    <TouchableOpacity 
-    onPress={props.onPress}
-    style={styles.container}>
-        <Text style={styles.title_txt}>{props.title?.toUpperCase()}</Text>
-    </TouchableOpacity>
-  )
+    return (
+        <TouchableOpacity
+            onPress={props.onPress}
+            style={styles.container}>
+            <Text style={styles.title_txt}>{props.title?.toUpperCase()}</Text>
+        </TouchableOpacity>
+    )
 }
 
 export default HallSmallCard
@@ -29,7 +29,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         margin: 2,
         elevation: 2,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     title_txt: {
         color: COLORS.text_color,

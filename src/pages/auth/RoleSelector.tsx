@@ -66,7 +66,7 @@ const RoleSelector = ({ route }: Props) => {
                             name={item.name}
                         />
                     }
-                    keyExtractor={(item: any) => item.id}
+                    keyExtractor={(item: any) => item._id}
                     style={{ margin: 3 ,width: '100%'}}
                 />}
                 <View style={styles.infoTxtBody}>

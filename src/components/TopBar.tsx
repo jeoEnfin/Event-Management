@@ -100,7 +100,7 @@ const TopBar = (props: Props) => {
                         backgroundColor={COLORS._background.primary}
                         hapticFeedback={true}
                         onPress={props.homePress}
-                    />)}    
+                    />)}
                 {props.share && (
                     <RoundButton
                         iconName='share-social'
@@ -155,6 +155,10 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 10,
         width: '100%',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     title_text: {
         fontWeight: 'bold',
