@@ -103,7 +103,8 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
             expId: eventData?.id,
             expName: eventData?.expName,
             expStartDate: eventData?.expStartDate,
-            expEndDate: eventData?.expEndDate
+            expEndDate: eventData?.expEndDate,
+            expType: eventData?.expType
         }
         const user = await AsyncStorageUtil.getData('user_details')
         let user_id = user?.uuid;
@@ -120,7 +121,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         try {
             const response = await OrderAPI({ data });
             if (response.data) {
-                navigation.replace('SucessPage', { event: data });
+                navigation.replace('SucessPage', { event: data ,details: event});
             }
         } catch (err: any) {
             navigation.replace('FailPage');

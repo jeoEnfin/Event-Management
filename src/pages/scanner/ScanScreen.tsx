@@ -22,6 +22,7 @@ import { COLORS } from '../../constants';
 import UserSuccessModal from './components/UserSuccessModal';
 import { UserAttendenceApi } from './apis/UserAttendenceApi';
 import ActivityElement from '../../components/common/ActivityElement';
+import { RNCamera } from 'react-native-camera';
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 
@@ -103,6 +104,7 @@ const ScanScreen = (props: Props) => {
                 cameraStyle={{ height: '100%' }}
                 markerStyle={{ borderColor: COLORS.secondary.main }}
                 cameraTimeout={300000}
+                flashMode={RNCamera.Constants.FlashMode.auto}
             />
             {userData && <UserSuccessModal
                 isModalVisible={isModalVisible}

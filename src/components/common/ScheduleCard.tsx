@@ -65,11 +65,12 @@ const styles = StyleSheet.create({
     timeContainer: {
         height: 74,
         width: 86,
-        alignItems: 'center',
+        alignItems: 'flex-end',
         justifyContent: 'center',
         backgroundColor: COLORS.secondary.main,
         borderRadius: 6,
-        elevation: 2
+        elevation: 2,
+        padding: 10
     },
     timeBoxText: {
         fontWeight: '600',

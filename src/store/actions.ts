@@ -14,6 +14,7 @@ export const Login = (username: string, token: string, tenant: string) => {
 export const Init = () => {
   return async (dispatch: any) => {
     let token = await AsyncStorageUtil.getData('token')
+    let roleId = await AsyncStorageUtil.getData('userRoleId');
     try {
       let data = await AutoLoginAPI();
       if (data) {
@@ -21,9 +22,16 @@ export const Init = () => {
           type: 'LOGIN',
           payload: token
         })
+        if (roleId) {
+          let authentication = true
+          dispatch({
+            type: 'ROLE',
+            payload: { roleId, authentication }
+          })
+        }
       }
     } catch (error) {
-      console.log(error)
+      //console.log(error)
       let credentials = await AsyncStorageUtil.getData('user_credentials');
       if (credentials) {
         await AsyncStorageUtil.removeData('token')
@@ -31,16 +39,24 @@ export const Init = () => {
           const user = await AuthLoginAPI({ credentials });
           const access_token = user?.data?.data?.access_token;
           if (access_token) {
-            AsyncStorageUtil.saveData('token', access_token);
+            await AsyncStorageUtil.saveData('token', access_token);
           }
           const _user = user?.data?.data?.user;
           if (_user) {
             await AsyncStorageUtil.saveData('userData', _user)
             if (_user?.roleId) {
-              await AsyncStorageUtil.saveData('userRoleId', _user?.roleId)
+              let authentication = false;
+              let roleId = _user?.roleId
+              if (access_token) {
+                authentication = true;
+              }
+              dispatch({
+                type: 'ROLE',
+                payload: { roleId, authentication }
+              })
             }
             if (_user?.roles.length > 0) {
-              await AsyncStorageUtil.saveData('userRoleId', _user?.roles[0]?._id)
+              await AsyncStorageUtil.saveData('userRoles', _user?.roles)
             }
           }
           dispatch({
@@ -78,6 +94,24 @@ export const Otp = (otp: any) => {
       type: 'OTP',
       payload: AUTH_OTP
     })
+  }
+}
+
+export const Role = (roleId: string) => {
+  console.log(roleId, 'role')
+  return async (dispatch: any) => {
+    if (roleId) {
+      await AsyncStorageUtil.saveData('userRoleId', roleId);
+      let token = await AsyncStorageUtil.getData('token');
+      let authentication = false
+      if (token) {
+        authentication = true;
+      }
+      dispatch({
+        type: 'ROLE',
+        payload: { roleId, authentication }
+      })
+    }
   }
 }
 

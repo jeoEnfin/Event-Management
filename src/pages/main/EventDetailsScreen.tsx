@@ -87,8 +87,8 @@ const EventDetailsScreen = ({ route }: Props) => {
         const _userData = await AsyncStorageUtil.getData('userData');
         if (_userData) {
             const _data = {
-                attUserId: _userData.uuid,
-                attExpoId: data.id,
+                epUserId: _userData.uuid,
+                epExpoId: data.id,
                 attType: data.expType
             }
             try {

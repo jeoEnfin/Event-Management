@@ -1,10 +1,10 @@
 import { differenceInDays, differenceInHours, differenceInMinutes, eachDayOfInterval, endOfDay, format, isAfter, isBefore, isEqual, isWithinInterval, parseISO, startOfDay } from 'date-fns';
 
 export function CiTruncate(str: string, num_chars: number) {
-    if (str.length > num_chars) {
-        return str.slice(0, num_chars - 1) + '...';
-    }
-    return str;
+    // if (str.length > num_chars) {
+    //     return str.slice(0, num_chars - 1) + '...';
+    // }
+    // return str;
 }
 
 

@@ -112,7 +112,7 @@ const EventSmallCard = ({
       </View>
       <View style={styles.detailBody}>
         <View style={{ gap: 4, height: 70, justifyContent: 'space-between' }}>
-          <Text numberOfLines={2} style={styles.titleTxt}>{eventTitle && CiTruncate(eventTitle, 50)}</Text>
+          <Text numberOfLines={2} style={styles.titleTxt} ellipsizeMode='tail'>{eventTitle}</Text>
           {/* {createrName && <Text style={styles.createdTxt}>by {createrName && CiTruncate(createrName, 20)}</Text>} */}
           {startDate && endDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{startDate && format(new Date(startDate), 'dd MMM yyyy')}-{endDate && format(new Date(endDate), 'dd MMM yyyy')}</Text></Text>}
         </View>

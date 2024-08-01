@@ -9,7 +9,7 @@ import { isValidEmail, isValidPassword } from '../../utils/validations';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import googleConfig from '../../utils/services/GoogleSigninConfig';
 import { useDispatch } from 'react-redux';
-import { Login } from '../../store/actions';
+import { Login, Role } from '../../store/actions';
 import Button from '../../components/common/Button';
 import CheckboxWithLabel from '../../components/common/CheckboxWithLabel';
 import InputText from '../../components/common/InputText';
@@ -31,7 +31,7 @@ type Props = {}
 
 const LoginScreen = (props: Props) => {
     const navigation: any = useNavigation()
-    const dispatch = useDispatch();
+    const dispatch: any = useDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isTextSecure, setIsTextSecure] = useState<boolean>(true);
@@ -119,10 +119,10 @@ const LoginScreen = (props: Props) => {
                 const tenant = userData?.data?.data?.tenant;
                 const _user = userData?.data?.data?.user;
                 if (access_token) {
-                    AsyncStorageUtil.saveData('token', access_token);
+                    await AsyncStorageUtil.saveData('token', access_token);
                 }
                 if (tenant) {
-                    AsyncStorageUtil.saveData('tenant_id', tenant)
+                    await AsyncStorageUtil.saveData('tenant_id', tenant)
                 }
                 if (rememberCheck) {
                     await AsyncStorageUtil.saveData('user_credentials', data)
@@ -130,10 +130,13 @@ const LoginScreen = (props: Props) => {
                 if (_user) {
                     await AsyncStorageUtil.saveData('userData', _user)
                     if (_user?.roleId) {
-                        await AsyncStorageUtil.saveData('userRoleId', _user?.roleId)
+                        //await AsyncStorageUtil.saveData('userRoleId', _user?.roleId)
+                        //console.log('roleId', _user?.roleId)
+                        dispatch(Role(_user?.roleId));
                     }
                     else if (_user?.roles.length > 0) {
-                        await AsyncStorageUtil.saveData('userRoleId', _user?.roles[0]?._id)
+                        await AsyncStorageUtil.saveData('userRoles', _user?.roles);
+                        //console.log('roles', _user?.roles);
                     }
                 }
                 dispatch(Login(username, access_token, tenant))

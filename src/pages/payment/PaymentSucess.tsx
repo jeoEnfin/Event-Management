@@ -11,7 +11,7 @@ type Props = {
 }
 
 const PaymentSucess = ({ route }: Props) => {
-  const { event } = route.params
+  const { event, details } = route.params
   const navigation: any = useNavigation();
   const [data, setData] = useState<any>(null);
   const [qrCode, setQrcode] = useState(null);
@@ -23,14 +23,19 @@ const PaymentSucess = ({ route }: Props) => {
   }, [event])
 
   useEffect(() => {
-    if (data) {
+    if (data && details) {
       getQrcode();
     }
-  }, [data])
+  }, [data, details])
 
   const getQrcode = async () => {
+    const _data = {
+      epUserId: data.eoUserId,
+      epExpoId: details.expId,
+      attType: details.expType
+    }
     try {
-      const qrCode = await QrCodeAPI({ data });
+      const qrCode = await QrCodeAPI({ _data });
       setQrcode(qrCode.data)
     } catch (err) {
       console.log('QRCodeerror', err)

@@ -14,7 +14,8 @@ type Props = {
 
 const RootNavigation = (props: Props) => {
     const [loading,setLoading] = useState<boolean>(true)
-    const token = useSelector((state: any) => state.AuthReducers.authToken)
+    const token = useSelector((state: any) => state.AuthReducers.authToken);
+    const isAuth = useSelector((state: any) => state.AuthReducers.authentication);
     const dispatch:any = useDispatch()
     const init = async () =>{
         await dispatch(Init());
@@ -35,7 +36,7 @@ const RootNavigation = (props: Props) => {
 
     return (
         <NavigationContainer>
-            {token === null ?
+            {(isAuth === false) ?
                 <AuthStack /> :
                 <MainStack />
             }
