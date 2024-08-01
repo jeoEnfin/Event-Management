@@ -16,8 +16,6 @@ import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import TopBar from '../../components/TopBar';
 import { Alert } from 'react-native';
-import parse from 'url-parse';
-import { config } from '../../utils/config';
 import { COLORS } from '../../constants';
 import UserSuccessModal from './components/UserSuccessModal';
 import { UserAttendenceApi } from './apis/UserAttendenceApi';

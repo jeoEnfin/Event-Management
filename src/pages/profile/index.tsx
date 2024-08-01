@@ -16,7 +16,7 @@ import { CacheIndex } from '../../utils/services/CacheIndex'
 type Props = {}
 
 const Profile = (props: Props) => {
-    const dispatch: any = useDispatch()
+    const dispatch: any = useDispatch();
     const [userData, setUserData] = useState<any>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const navigation:any = useNavigation();
