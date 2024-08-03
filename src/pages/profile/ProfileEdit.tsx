@@ -11,6 +11,7 @@ import { splitName } from '../../utils/common';
 import { UpdateProfileAPI } from './apis/UpdateProfileAPI';
 import { useNavigation } from '@react-navigation/native';
 import { CacheIndex } from '../../utils/services/CacheIndex';
+import { config } from '../../utils/config';
 
 type Props = {}
 
@@ -22,7 +23,8 @@ const ProfileEdit = (props: Props) => {
     uuid: '',
     name: '',
     email: '',
-    roleId: null
+    roleId: null,
+    userImage: ''
   })
   const [error, setError] = useState<boolean>(false);
   const [errorTxt, setErrorTxt] = useState<string>('')
@@ -32,6 +34,7 @@ const ProfileEdit = (props: Props) => {
   const [nameErrorTxt, setNameErrorTxt] = useState<string>('')
   const [errorName, setErrorName] = useState<boolean>(false);
   const [name, setName] = useState<string>(data.name || '');
+  const [image, setImage] = useState<string>(data.userImage || '');
 
   useEffect(() => {
     getData();
@@ -40,22 +43,26 @@ const ProfileEdit = (props: Props) => {
   const getData = async () => {
     setIsLoading(true)
     try {
-      const _userData = await AsyncStorageUtil.getData('userData')
+      const _userData = await AsyncStorageUtil.getData('userData');
+      const _roleId = await AsyncStorageUtil.getData('userRoleId');
       if (_userData) {
         const _data = {
           name: _userData?.data?.displayName,
           email: _userData?.data?.email,
-          uuid: _userData?.uuid
+          uuid: _userData?.uuid,
+          userImage: _userData?.data?.userImage
         }
         setUserData(_data)
         setData({
           uuid: _userData?.uuid,
           name: _userData?.data?.displayName,
           email: _userData?.data?.email,
-          roleId: _userData?.roleId
+          roleId: _roleId,
+          userImage: _userData?.data?.userImage
         })
         setName(_userData?.data?.displayName)
         setEmail(_userData?.data?.email)
+        setImage(_userData?.data?.userImage)
       }
       setIsLoading(false)
     } catch (err) {
@@ -157,8 +164,11 @@ const ProfileEdit = (props: Props) => {
           handleSuccess();
         }
       } catch (err: any) {
-        console.log(err.response.data, 'error');
+        console.log(err.response, 'error');
         setErrorTxt('Something went wrong')
+        Alert.alert('Something went wrong', 'Please try again later', [
+          { text: 'OK' },
+        ]);
         setIsLoading(false);
       }
     } else {
@@ -176,11 +186,17 @@ const ProfileEdit = (props: Props) => {
         <View style={{ width: '100%', alignItems: 'center' }}>
           <View style={styles.avatar_container}>
             <View style={styles.avatar}>
-              <Image
-                source={{ uri: 'https://www.wilsoncenter.org/sites/default/files/media/images/person/james-person-1.jpg' }}
+             {image && <Image
+               source={{ 
+                uri: image === 'default.jpg' 
+                  ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg` 
+                  : (image && (image.startsWith('https') || image.startsWith('http')))
+                    ? image
+                    : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${image}` 
+              }}
                 style={{ width: '100%', height: '100%', borderRadius: 70 }}
                 resizeMode='cover'
-              />
+              />}
               <TouchableOpacity style={styles.editIcon}>
                 <Icon name={'create'} size={26} color={COLORS.secondary.main} />
               </TouchableOpacity>

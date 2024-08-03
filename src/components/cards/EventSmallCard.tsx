@@ -83,11 +83,11 @@ const EventSmallCard = ({
         <Image
           style={styles.image}
           source={{ 
-            uri: url === 'default.jpg' 
-              ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg` 
+            uri: url === 'default.webp' 
+              ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/expo/default.webp` 
               : (url && (url.startsWith('https') || url.startsWith('http')))
                 ? url 
-                : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${url}` 
+                : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/expo/${url}` 
           }}
           onLoadEnd={() => setLoading(false)}
           onError={() => {
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   regInfoBody: {
     justifyContent: 'flex-end',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   regInfo: {
     color: COLORS.text.primary,

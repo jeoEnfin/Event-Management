@@ -75,7 +75,8 @@ const EventDetailsScreen = ({ route }: Props) => {
 
     useEffect(() => {
         if (data && order) {
-            const _order = checkExpoIdInOrders(data.id, order)
+            const _order = checkExpoIdInOrders(data.id, order);
+            console.log('Order', _order)
             if (_order) {
                 setIsOrder(_order);
                 getQrCode();
@@ -121,7 +122,7 @@ const EventDetailsScreen = ({ route }: Props) => {
         return orders.some(order => {
             try {
                 const itemDetails = JSON.parse(order.eoItemDetails);
-                return itemDetails.expoId === expoId;
+                return itemDetails.expId === expoId;
             } catch (error) {
                 console.error('Error parsing itemDetails:', error);
                 return false;
@@ -149,6 +150,7 @@ const EventDetailsScreen = ({ route }: Props) => {
     const onRefresh = async () => {
         if (event) {
             fetchData();
+            orderdetails();
         }
     };
 
@@ -163,22 +165,26 @@ const EventDetailsScreen = ({ route }: Props) => {
         }
 
         if (data.expIsRegistrationEnabled) {
-            navigation.replace('Registration', { event: eventData })
+            navigation.navigate('Registration', { event: eventData })
+        } else {
+            Alert.alert('Registration Closed', 'The registration for this event has temperory closed.', [
+                { text: 'OK'},
+            ]);
         }
        
     };
 
     const handleJoinExpo = async () => {
-        let dateValid = isDateInFuture(data.expStartDate);
-            if (!dateValid) {
+       // let dateValid = isDateInFuture(data.expStartDate);
+            //if (!dateValid) {
                 if(isOrder){
                   navigation.navigate('Lobby',{ event: data.id , varient: data.expType})
                 }
-            } else {
-                Alert.alert('Event Not Started', 'The event has not started yet. Please check back later.', [
-                    { text: 'OK'},
-                ]);
-            }
+           // } else {
+            //     Alert.alert('Event Not Started', 'The event has not started yet. Please check back later.', [
+            //         { text: 'OK'},
+            //     ]);
+            // }
     }
 
     const ItemData = []
@@ -187,14 +193,14 @@ const EventDetailsScreen = ({ route }: Props) => {
         ItemData.push(
             <EventBanner
                 title={data.expName}
-                imgUrl={data.expImage}
+                imgUrl={data.expBanerImage}
                 startDate={data.expStartDate}
                 endDate={data.expEndDate}
                 expRegEnd={data.expRegistrationEndDate}
                 price={data.expPrice ? data.expPrice : ''}
                 buttonLabel={data.expIsRegistrationEnabled ?
                     (data.expPrice ? `${data.expPrice} /- ` : 'Register')
-                    : 'Join'}
+                    :  (data.expPrice ? `${data.expPrice} /- ` : 'Join')}
                 subTitle={data.expCreator}
                 onPressButton={handleJoin}
                 isOrder={isOrder}

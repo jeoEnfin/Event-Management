@@ -37,7 +37,7 @@ const Banner = (props: Props) => {
                 <Image
                     style={{ width: '100%', height: '100%', borderRadius: 10 }}
                     resizeMode='stretch'
-                    source={{ uri: `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/banner/default-baner.jpg` }}
+                    source={{ uri: `${config.CLOUD_FRONT_URL}/uploads/ci/default/mobile-banner/default.webp` }}
                     alt='No image'
                     onLoadEnd={() => setLoading(false)}
                     onError={() => {

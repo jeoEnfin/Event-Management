@@ -84,7 +84,7 @@ const EventScreen = (props: Props) => {
       <View style={{ marginVertical: 6,paddingHorizontal: 16}}>
         <CustomEventBanner
           key={id}
-          url={data.expImage}
+          url={data.expBanerImage}
           eventType={data.expType}
           startDate={data.expStartDate}
           endDate={data.expEndDate}

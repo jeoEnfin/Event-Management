@@ -4,6 +4,8 @@ import ScreenWrapper from '../../components/ScreenWrapper'
 import { COLORS } from '../../constants'
 import { useNavigation } from '@react-navigation/native'
 import { QrCodeAPI } from '../profile/apis/QrCodeAPI'
+import { format } from 'date-fns'
+import Button from '../../components/common/Button'
 
 
 type Props = {
@@ -35,10 +37,10 @@ const PaymentSucess = ({ route }: Props) => {
       attType: details.expType
     }
     try {
-      const qrCode = await QrCodeAPI({ _data });
+      const qrCode = await QrCodeAPI({ data: _data });
       setQrcode(qrCode.data)
-    } catch (err) {
-      console.log('QRCodeerror', err)
+    } catch (err: any) {
+      console.log('QRCodeerror', err.response.data)
     }
   }
 
@@ -55,12 +57,18 @@ const PaymentSucess = ({ route }: Props) => {
             {qrCode && <Image source={{ uri: qrCode }} style={{ width: '100%', height: '100%' }} />}
           </View>
         </View>
-        <View>
-          <Text style={styles.eventTxt}>Event Name:</Text>
-          <Text></Text>
-        </View>
+        {details.expName && <View style={styles.eventDetails}>
+          <Text style={styles.text3}>Event Name:</Text>
+          <Text style={styles.text2}>{details.expName}</Text>
+        </View>}
+        {details.expStartDate && details.expEndDate && <View style={styles.eventDetails}>
+          <Text style={styles.text3}>Event Date:</Text>
+          <Text style={styles.text2}>{format(details.expStartDate, 'dd MMMM yyyy')} - {format(details.expEndDate, 'dd MMMM yyyy')}</Text>
+        </View>}
       </View>
-
+      <View style={{width: '95%'}}>
+        <Button label='Back to Home' buttonClick={()=>{navigation.goBack()}}/>
+      </View>
     </ScreenWrapper>
   )
 }
@@ -115,5 +123,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 12,
     marginTop: 10
-  }
+  },
+  text3: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.text.main
+  },
+  eventDetails: {
+    alignItems: 'center',
+    gap: 5,
+    marginVertical: 10
+  },
+  text2: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: COLORS.text.main,
+    marginTop: 2
+},
 })

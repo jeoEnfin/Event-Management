@@ -39,21 +39,22 @@ const ScanReader = ({ route, navigation }: Props) => {
             }
             setIsLoading(false);
         } catch (err: any) {
-            if(err.response.status !== 500){
-            if (err?.response?.data) {
-                const message = err?.response?.data?.message
-                if (message == 'Attendance already marked') {
-                    Alert.alert(message, '',[
-                        {text: 'OK', onPress: () => navigation.goBack()}
+            if (err.response.status !== 500) {
+                if (err?.response?.data) {
+                    const message = err?.response?.data?.message
+                    if (message == 'Attendance already marked') {
+                        Alert.alert(message, '', [
+                            { text: 'OK', onPress: () => navigation.goBack() }
+                        ])
+                    }
+                } else {
+                    Alert.alert('Not a valid QR Code', '', [
+                        { text: 'OK', onPress: () => navigation.goBack() }
                     ])
                 }
             } else {
-                Alert.alert('Not a valid QR Code', '',[
-                    {text: 'OK', onPress: () => navigation.goBack()}
-                ])
-            }} else {
-                Alert.alert('Not a valid QR Code', '',[
-                    {text: 'OK', onPress: () => navigation.goBack()}
+                Alert.alert('Not a valid QR Code', '', [
+                    { text: 'OK', onPress: () => navigation.goBack() }
                 ])
             }
             setIsLoading(false);
@@ -76,7 +77,7 @@ const ScanReader = ({ route, navigation }: Props) => {
 
                     </View>}
                     <View style={styles.button}>
-                        <Button label='Scan Another' buttonClick={() => {navigation.goBack()}} />
+                        <Button label='Scan Another' buttonClick={() => { navigation.goBack() }} />
                     </View>
                 </View> : <ActivityElement />}
         </ScreenWrapper>

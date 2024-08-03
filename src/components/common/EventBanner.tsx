@@ -21,6 +21,7 @@ type Props = {
     onPressButtonAfterOrdered?: () => void;
     qrCodePress?: () => void;
     isTenant?: boolean;
+    isButtonEnabled?: boolean;
 }
 
 const screenWidth = Dimensions.get("window").width;
@@ -44,11 +45,11 @@ const EventBanner = (props: Props) => {
                     style={{ width: '100%', height: '100%', borderRadius: 10 }}
                     resizeMode='stretch'
                     source={{
-                        uri: props.imgUrl === 'default.jpg'
-                            ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg`
+                        uri: props.imgUrl === 'default.webp'
+                            ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/banner/${props.imgUrl}`
                             : (props.imgUrl && (props.imgUrl.startsWith('https') || props.imgUrl.startsWith('http')))
                                 ? props.imgUrl
-                                : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${props.imgUrl}`
+                                : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/banner/${props.imgUrl}`
                     }}
                     alt='No image'
                 />
@@ -65,7 +66,7 @@ const EventBanner = (props: Props) => {
                     {!props.isOrder ? isRegisterEnded ? props.buttonLabel && <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
                         {props.price && <Icon name='euro' color={COLORS.text.primary} size={13} />}
                         <Text style={styles.btnText}>{props.buttonLabel}</Text>
-                    </TouchableOpacity> : <Text style={[styles.btnText, { color: COLORS.text.error }]}>Expo Registration Ended</Text> : <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
+                    </TouchableOpacity> : <Text style={[styles.btnText, { color: COLORS.text.error, marginVertical: 5, fontSize: 16}]}>Expo Registration Ended</Text> : <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
                         <Text style={styles.btnText}>Join</Text>
                     </TouchableOpacity>}
 

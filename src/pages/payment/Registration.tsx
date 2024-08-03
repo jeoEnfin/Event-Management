@@ -43,6 +43,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     const navigation: any = useNavigation();
     const [formValues, setFormValues] = useState<Record<string, any>>({});
     const [keyboardVisible, setKeyboardVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -91,8 +92,10 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
             const response = await axiosClient.post('/stripe/create-checkout-session', {
                 price: 5,
             })
+            setIsLoading(false)
             console.log(response.data)
         } catch (err: any) {
+            setIsLoading(false);
             console.log(err.response, 'err-----')
         };
     };
@@ -106,7 +109,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
             expEndDate: eventData?.expEndDate,
             expType: eventData?.expType
         }
-        const user = await AsyncStorageUtil.getData('user_details')
+        const user = await AsyncStorageUtil.getData('userData')
         let user_id = user?.uuid;
         const data = {
             eoOrderId: orderId,
@@ -121,14 +124,18 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         try {
             const response = await OrderAPI({ data });
             if (response.data) {
+                console.log(response.data)
                 navigation.replace('SucessPage', { event: data ,details: event});
+                setIsLoading(false);
             }
         } catch (err: any) {
+            setIsLoading(false);
             navigation.replace('FailPage');
         }
     };
 
     const handleSubmit = () => {
+        setIsLoading(true);
         console.log('Form submitted with values:', formValues);
         const isFormValid = validateForm(data, formValues);
         if (isFormValid) {
@@ -138,7 +145,8 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                 freeOrder();
             }
         } else {
-            Alert.alert('Form Submission Error', 'Please fill all Fields')
+            Alert.alert('Form not Completed', 'Please fill all Fields')
+            setIsLoading(false);
         }
     };
 
@@ -198,7 +206,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                 {renderFormFields()}
             </ScrollView>
             <View style={{ width: '100%',paddingVertical: 10,backgroundColor: keyboardVisible ? COLORS._background.primary : COLORS._background.main ,paddingHorizontal: 22 }}>
-                <Button label={eventData.expPrice <= 0 ? "Register" : "Checkout"} buttonClick={handleSubmit} />
+                <Button label={eventData.expPrice <= 0 ? "Register" : "Checkout"} buttonClick={handleSubmit} loading={isLoading}/>
             </View>
         </View>
     );

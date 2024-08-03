@@ -83,12 +83,13 @@ const CustomEventBanner = ({
       )}
         <Image
           style={styles.image}
+          resizeMode='stretch'
           source={{ 
-            uri: url === 'default.jpg' 
-              ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg` 
+            uri: url === 'default.webp' 
+              ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/banner/${url}` 
               : (url && (url.startsWith('https') || url.startsWith('http')))
                 ? url 
-                : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${url}` 
+                : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/banner/${url}` 
           }}
           onLoadEnd={() => setLoading(false)}
           onError={() => {

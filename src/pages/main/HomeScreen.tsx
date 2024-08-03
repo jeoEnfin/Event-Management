@@ -47,7 +47,7 @@ const HomeScreen = (props: Props) => {
   const filterExpos = (orders: any, expos: any) => {
     const expoIds = orders.map((order: any) => {
       const itemDetails = JSON.parse(order.eoItemDetails);
-      return itemDetails.expoId;
+      return itemDetails.expId;
     });
     return expos.filter((expo: any) => expoIds.includes(expo.id));
   };
@@ -55,7 +55,7 @@ const HomeScreen = (props: Props) => {
   const fetchOrder = async () => {
     try {
       const orders = await OrderListAPI();
-      // console.log(orders?.data?.data?.data, "OrderList")
+      //console.log(orders?.data?.data?.data, "OrderList")
       setOrder(orders?.data?.data?.data)
       AsyncStorageUtil.saveData('MyOrders', orders?.data?.data?.data);
     } catch (err) {
