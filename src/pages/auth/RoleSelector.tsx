@@ -7,6 +7,7 @@ import { Logout, Role } from '../../store/actions'
 import { COLORS } from '../../constants'
 import AsyncStorageUtil from '../../utils/services/LocalCache'
 import Rolecard from './common/Rolecard'
+import AuthLogo from './common/AuthLogo'
 
 type Props = {
     route?: any;
@@ -53,6 +54,7 @@ const RoleSelector = ({ route }: Props) => {
     return (
         <AuthContainer>
             <View style={{ flex: 1, justifyContent: 'space-between', height: '100%', width: screenWidth, paddingHorizontal: 30 }}>
+                {/* <AuthLogo /> */}
                 <AuthHeader
                     title='Choose a Role'
                     subTitle='Please select a role for continue'

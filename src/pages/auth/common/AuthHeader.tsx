@@ -15,7 +15,7 @@ const AuthHeader = (props: Props) => {
         <View style={styles.headBody}>
             <Text style={styles.headTxt}>{props.title}</Text>
             <Text style={styles.subText}>{props.subTitle} {props.isLinkButton && <Text 
-            style={{color: COLORS.secondary.main, fontWeight: '500'}}
+            style={{color: COLORS.secondary.main, fontWeight: '500',textDecorationLine: 'underline'}}
             onPress={props.linkButtonClick}>{props.linkButtonLabel}</Text>}</Text>
         </View>
     )

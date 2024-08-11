@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 import { isValidPassword } from '../../utils/validations'
 import { COLORS } from '../../constants'
 import Button from '../../components/common/Button'
+import AuthLogo from './common/AuthLogo'
 
 type Props = {}
 
@@ -77,12 +78,14 @@ const ResetPassword = (props: Props) => {
         <AuthContainer>
             <View style={{ flex: 1, justifyContent: 'space-between', height: '100%' }}>
                 <View>
+                    {/* <AuthLogo /> */}
                     <AuthHeader
                         title='Reset Password?'
                         subTitle='Create a new password for your account'
                     />
                     <View style={{ marginVertical: 25, gap: 7 }}>
                         <InputText
+                            label='New Password'
                             placeholder='New Password'
                             iconName='eye-outline'
                             autoComplete='new-password'
@@ -93,8 +96,10 @@ const ResetPassword = (props: Props) => {
                             keyboardType={'default'}
                             //value={password}
                             error={errorPassword}
+                            backgroundColor={COLORS._background.primary}
                         />
                         <InputText
+                            label='Confirm Password'
                             placeholder='Confirm Password'
                             // iconName='eye-outline'
                             autoComplete='new-password'
@@ -105,6 +110,7 @@ const ResetPassword = (props: Props) => {
                             keyboardType={'default'}
                             //value={password}
                             error={errorConfirmPassword}
+                            backgroundColor={COLORS._background.primary}
                         />
                         {error && <Text style={styles.errorTxt}>Enter valid details</Text>}
                     </View>

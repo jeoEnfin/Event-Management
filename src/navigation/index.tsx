@@ -28,7 +28,7 @@ const RootNavigation = (props: Props) => {
 
     if (loading) {
         return (
-            <View style={{ flex: 1, justifyContent: 'flex-end', paddingBottom: 20 }}>
+            <View style={{ flex: 1, justifyContent: 'flex-end', paddingBottom: 25 }}>
                 <Image source={require('../assets/ci/splash.png')}
                     style={{ width: '100%', height: '100%', position: 'absolute' }}
                 />

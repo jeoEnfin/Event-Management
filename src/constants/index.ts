@@ -30,7 +30,8 @@ export const COLORS = {
         error: '#EF4444',
         disable: '#cbcfd6',
         secondary: 'gray',
-        default: '#333333'
+        default: '#333333',
+        warning: '#2196F3'
     },
     info: {
         main: '#FE6092'

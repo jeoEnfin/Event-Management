@@ -1,20 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react'
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../constants';
+import { Icon } from 'react-native-elements';
 
 import Profile from '../pages/profile';
 import HomeScreen from '../pages/main/HomeScreen';
 import EventScreen from '../pages/main/EventScreen';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import EventDetailsScreen from '../pages/main/EventDetailsScreen';
-import Notification from '../pages/notification/Notification';
-import SearchScreen from '../pages/search/SearchScreen';
-import HomeStack from './HomeStack';
-import EventStack from './EventStack';
 
 type Props = {}
-
 
 const TabNav = (props: Props) => {
 
@@ -25,16 +18,19 @@ const TabNav = (props: Props) => {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: any;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Events') {
-            iconName = focused ? 'list' : 'list-outline';
+          let variant: any;
+          if (route.name === 'Events') {
+            iconName = focused ? 'list' : 'list';
+            variant = 'ionicons'
+          } else if (route.name === 'Registered') {
+            iconName = focused ? 'app-registration' : 'app-registration';
+            variant = 'material'
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
+            variant = 'ionicons'
           }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <Icon name={iconName} size={size} color={color} type={variant}/>;
         },
         tabBarActiveTintColor: COLORS.secondary.main,
         tabBarInactiveTintColor: COLORS._background.secondary,
@@ -44,8 +40,8 @@ const TabNav = (props: Props) => {
       })
     }
     >
-      <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="Events" component={EventStack} />
+      <Tab.Screen name="Events" component={HomeScreen} />
+      <Tab.Screen name="Registered" component={EventScreen} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   )

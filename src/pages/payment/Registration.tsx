@@ -10,12 +10,14 @@ import { generateRandomId } from '../../utils/common';
 import AsyncStorageUtil from '../../utils/services/LocalCache';
 import { OrderAPI } from './api/OrderApi';
 import { useNavigation } from '@react-navigation/native';
+import MobileNumberInput from '../../components/common/CustomMobileNumberInput';
+import { ParticipantApi } from './api/ParticipentApi';
 
 
 interface FormDataItem {
     _id: string;
     pFLabel?: string;
-    pFType?: 'input' | 'select' | 'file'; // Define all possible types here
+    pFType?: 'input' | 'select' | 'file' | 'phoneNumber' | 'date' | 'datetime'; // Define all possible types here
     pFData?: any;
     pFOrder?: number;
     pFUploadParams?: any;
@@ -66,6 +68,13 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     };
 
     const handleSelectChange = (id: string, value: string) => {
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [id]: value,
+        }));
+    };
+
+    const handlePhoneNumberChange = (id: string, value: string) => {
         setFormValues((prevValues) => ({
             ...prevValues,
             [id]: value,
@@ -125,7 +134,25 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
             const response = await OrderAPI({ data });
             if (response.data) {
                 console.log(response.data)
-                navigation.replace('SucessPage', { event: data ,details: event});
+                const markParticipant = {
+                    participants: [{
+                        epUserId: user_id,
+                        epExpoId: event.expId,
+                        epUserDetails: JSON.stringify(formValues),
+                        epOrderid: orderId
+                    }]
+                }
+                try {
+                    const _participentMarked = await ParticipantApi({ data: markParticipant });
+                    console.log(_participentMarked, 'tt')
+                    if (_participentMarked.data) {
+                        navigation.replace('SucessPage', { event: data, details: event });
+                    }
+                } catch (err: any) {
+                    console.log(err.response, err)
+                    navigation.replace('FailPage');
+                }
+
                 setIsLoading(false);
             }
         } catch (err: any) {
@@ -190,6 +217,42 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                             />
                         </View>
                     );
+                case 'phoneNumber':
+                    return (
+                        <View key={field._id} style={{ marginBottom: 10 }}>
+                            <MobileNumberInput
+                                label={field.pFLabel}
+                                placeholder={field.pFPlaceholder || ''}
+                                customErrorText={field.pFHelperText}
+                                value={formValues[field.pFColumName || ''] || ''}
+                                onChangeText={(text) => handlePhoneNumberChange(field.pFColumName || '', text)}
+                            />
+                        </View>
+                    );
+                case 'date':
+                    return (
+                        <View key={field._id} style={{ marginBottom: 10 }}>
+                            {/* <CustomDateField
+                            label={field.pFLabel}
+                            placeholder={field.pFPlaceholder}
+                            customErrorText={field.pFHelperText}
+                            value={formValues[field.pFColumName || ''] || ''}
+                            onChangeText={(text) => handleInputChange(field.pFColumName || '', text)}
+                        /> */}
+                        </View>
+                    );
+                case 'datetime':
+                    return (
+                        <View key={field._id} style={{ marginBottom: 10 }}>
+                            {/* <CustomDateTimeField
+                            label={field.pFLabel}
+                            placeholder={field.pFPlaceholder}
+                            customErrorText={field.pFHelperText}
+                            value={formValues[field.pFColumName || ''] || ''}
+                            onChangeText={(text) => handleInputChange(field.pFColumName || '', text)}
+                        /> */}
+                        </View>
+                    )
                 default:
                     return null;
             }
@@ -197,16 +260,16 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     };
 
     return (
-        <View style={{  justifyContent: 'space-between', height: '100%' }}>
-            <ScrollView showsVerticalScrollIndicator={false} style= {{paddingHorizontal: 25}} >
+        <View style={{ justifyContent: 'space-between', height: '100%' }}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 25 }} >
                 <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: '20%' }}>
                     <Text style={{ fontSize: 32, fontWeight: '600', marginBottom: 6, color: COLORS.text.main }}>Register Event</Text>
                     <Text style={{ fontSize: 14, fontWeight: '400', marginBottom: 28, color: COLORS.text.main }}>Fill the form to Register Event</Text>
                 </View>
                 {renderFormFields()}
             </ScrollView>
-            <View style={{ width: '100%',paddingVertical: 10,backgroundColor: keyboardVisible ? COLORS._background.primary : COLORS._background.main ,paddingHorizontal: 22 }}>
-                <Button label={eventData.expPrice <= 0 ? "Register" : "Checkout"} buttonClick={handleSubmit} loading={isLoading}/>
+            <View style={{ width: '100%', paddingVertical: 10, backgroundColor: keyboardVisible ? COLORS._background.primary : COLORS._background.main, paddingHorizontal: 22 }}>
+                <Button label={eventData.expPrice <= 0 ? "Register" : "Checkout"} buttonClick={handleSubmit} loading={isLoading} />
             </View>
         </View>
     );

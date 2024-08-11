@@ -470,7 +470,7 @@ PODS:
   - RNGoogleSignin (11.0.0):
     - GoogleSignIn (~> 7.0)
     - React-Core
-  - RNPermissions (4.1.1):
+  - RNPermissions (4.1.5):
     - React-Core
   - RNReactNativeHapticFeedback (2.2.0):
     - React-Core
@@ -748,7 +748,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
   RNGestureHandler: 7909c50383a18f0cb10ce1db7262b9a6da504c03
   RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
-  RNPermissions: 250047ffa01a1fa65e870fcae3e2b87786acf0d8
+  RNPermissions: 5a2dafe37c8e0a3fa1d6e0783a1490b1b7fd92d6
   RNReactNativeHapticFeedback: ec56a5f81c3941206fd85625fa669ffc7b4545f9
   RNScreens: 3c5b9f4a9dcde752466854b6109b79c0e205dad3
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
@@ -762,6 +762,6 @@ SPEC CHECKSUMS:
   StripeUICore: 6a5bbea0164d63bd91000f001903e7901859e1a4
   Yoga: 4c3aa327e4a6a23eeacd71f61c81df1bcdf677d5
 
-PODFILE CHECKSUM: 448ad47a239e4c177c1453b19e6d4f3e782b1a6d
+PODFILE CHECKSUM: 6d77b047cb6c6242cb465024a362ecdb5962e3ad
 
 COCOAPODS: 1.15.2

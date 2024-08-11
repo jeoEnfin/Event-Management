@@ -18,6 +18,7 @@ import { getModuleAccessRules } from '../../utils/services/aclLibrary'
 import QRCodeModal from './components/QRCodeModal'
 import { QrCodeAPI } from '../profile/apis/QrCodeAPI'
 import AsyncStorageUtil from '../../utils/services/LocalCache'
+import { ExpoDetailsAPI } from './apis/ExpoDetailsApi'
 
 
 type Props = {
@@ -61,11 +62,14 @@ const EventDetailsScreen = ({ route }: Props) => {
     }, []);
 
     useEffect(() => {
-        if (userRules && isOrder) {
+        if (userRules) {
             //console.log(userRules)
             setIsScanner(userRules?.qrScanner?.permission);
+            if(userRules?.qrScanner?.permission === true) {
+                setIsOrder(true);
+            }
         }
-    }, [userRules, isOrder])
+    }, [userRules])
 
     useEffect(() => {
         if (event) {
@@ -76,7 +80,7 @@ const EventDetailsScreen = ({ route }: Props) => {
     useEffect(() => {
         if (data && order) {
             const _order = checkExpoIdInOrders(data.id, order);
-            console.log('Order', _order)
+            //console.log('Order', _order)
             if (_order) {
                 setIsOrder(_order);
                 getQrCode();
@@ -134,7 +138,7 @@ const EventDetailsScreen = ({ route }: Props) => {
         setIsLoading(true);
         const url = `/${event}`
         try {
-            const response = await ExpoListingAPI({ url });
+            const response = await ExpoDetailsAPI({ url });
             const _data = response?.data?.data;
             // console.log(_data,'resp---------------')
             setData(_data?.expo)

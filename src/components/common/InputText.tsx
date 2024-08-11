@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
-import React, { useState,useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../constants';
 
@@ -10,8 +10,8 @@ type Props = {
     placeholder: string;
     autoComplete: any;
     textSecure: boolean;
-    showText?: ()=>void;
-    hideText?: ()=>void;
+    showText?: () => void;
+    hideText?: () => void;
     inputMode?: any;
     onDataChanged?: (data: any) => void;
     keyboardType?: any;
@@ -20,47 +20,76 @@ type Props = {
     errorTxt?: string;
     defaultValue?: string;
     backgroundColor?: string;
+    onBlur?: () => void;
 }
 
 const InputText = (props: Props) => {
 
     const [text, setText] = useState('');
-    const [isFocused, setIsFocused] = useState(false);
+    const [isFocused, setIsFocused] = useState<boolean>(false);
+    const [isLebal, setIsLebal] = useState<boolean>(false);
+
+    useEffect(() => {
+        const { value, defaultValue } = props;
+        if (value || defaultValue) {
+            setIsLebal(true)
+        }
+    },[props.value,props.defaultValue]);
 
     const handleTextChange = useCallback(
         (newText: string) => {
-          setText(newText);
-          if (props.onDataChanged) {
-            props.onDataChanged(newText);
-          }
+            setText(newText);
+            if (props.onDataChanged) {
+                props.onDataChanged(newText);
+            }
         },
         [props.onDataChanged]
-      );
+    );
+
+    const handleBlur = () => {
+        const { onBlur } = props;
+
+        if (onBlur) {
+            onBlur(); // Call the onBlur function
+        }
+        if(!text){
+            setIsLebal(false)
+        }
+        setIsFocused(false);
+    }
+
+    const handleFocus = () =>{
+        const {label} = props;
+        if(label) {
+            setIsLebal(true)
+        }
+        setIsFocused(true)
+    }
 
     return (
         <View style={styles.txtBody}>
-        <View style={[styles.txtField,props.error ? {borderColor: COLORS.redButton} : {borderColor: COLORS.text.secondary }, isFocused && {borderColor: COLORS.secondary.main} ]}>
-            <TextInput
-                style={[styles.txtFieldText]}
-                placeholder={props.placeholder}
-                placeholderTextColor={COLORS.btnBackground}
-                autoComplete={props.autoComplete}
-                secureTextEntry={props.textSecure}
-                inputMode={props.inputMode}
-                value={props.value}
-                onChangeText={handleTextChange}
-                keyboardType={props.keyboardType}
-                onFocus={() => setIsFocused(true)} 
-                onBlur={() => setIsFocused(false)}
-                defaultValue={props.defaultValue}
-            />
-            {props.iconName &&
-            <TouchableOpacity style={{position: 'absolute',left: '90%',opacity: props.textSecure ?  0.5 : 1}} onPress={props.showText} >
-                <Ionicons name={props.textSecure ? 'eye-off-outline': 'eye-outline'} size={28} color={COLORS.background2} />
-            </TouchableOpacity>}
-        </View>
-        {props.label && <Text style={[styles.label,{backgroundColor: props.backgroundColor}]}>{props.label}</Text>}
-        {props.errorTxt && <Text style={styles.errorTxt}>{props.errorTxt}</Text>}
+            <View style={[styles.txtField, props.error ? { borderColor: COLORS.redButton } : { borderColor: COLORS.text.secondary }, isFocused && { borderColor: COLORS.secondary.main }]}>
+                <TextInput
+                    style={[styles.txtFieldText]}
+                    placeholder={props.placeholder}
+                    placeholderTextColor={COLORS.btnBackground}
+                    autoComplete={props.autoComplete}
+                    secureTextEntry={props.textSecure}
+                    inputMode={props.inputMode}
+                    value={props.value}
+                    onChangeText={handleTextChange}
+                    keyboardType={props.keyboardType}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    defaultValue={props.defaultValue}
+                />
+                {props.iconName &&
+                    <TouchableOpacity style={{ position: 'absolute', left: '90%', opacity: props.textSecure ? 0.5 : 1 }} onPress={props.showText} >
+                        <Ionicons name={props.textSecure ? 'eye-off-outline' : 'eye-outline'} size={28} color={COLORS.background2} />
+                    </TouchableOpacity>}
+            </View>
+            {(props.label && isLebal) && <Text style={[styles.label, { backgroundColor: props.backgroundColor }, props.error ? {color: COLORS.text.error} : {color: COLORS.text.secondary},isFocused && {color: COLORS.secondary.main}]}>{props.label}</Text>}
+            {props.errorTxt && <Text style={styles.errorTxt}>{props.errorTxt}</Text>}
         </View>
     )
 }

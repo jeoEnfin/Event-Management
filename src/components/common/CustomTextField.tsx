@@ -5,7 +5,7 @@ import { COLORS } from '../../constants';
 interface CustomTextFieldProps extends TextInputProps {
   label?: string;
   placeholder?: string;
-  validationType?: 'email' | 'number' | 'url' | 'text'| 'custom' |'required';
+  validationType?: 'email' | 'number' | 'url' | 'text'| 'custom' |'required'| 'any' | 'futureDate' | 'pastDate' ;
   helperText?: string;
   customErrorText?: string;
 }

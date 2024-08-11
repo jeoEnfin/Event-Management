@@ -13,7 +13,7 @@ const CustomIconButton = (props: Props) => {
         style={styles.container}>
             <View  style={{overflow: 'hidden'}} >
                 <Image
-                    source={{ uri: props.imageUrl }} // Replace with your image URL
+                    source={typeof props.imageUrl === 'string' ? { uri: props.imageUrl } : props.imageUrl} // Replace with your image URL
                     style={styles.avatar}
                     alt='no image'
                     resizeMode='contain'

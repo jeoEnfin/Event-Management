@@ -46,7 +46,7 @@ const RoundButton = (props: Props) => {
       onPressOut={onPressOut} >
       <Animated.View style={[styles.container, { transform: [{ scale }], backgroundColor: props.backgroundColor },props.border && {borderColor: COLORS.text.main , borderWidth: 1.5}]}>
         {(props.iconName && !props.imageUrl) && <Icon name={props.iconName} size={props.iconSize} color={props.color} type={props.iconType}/>}
-        {(props.imageUrl && !props.iconName) && <Image source={{ uri: props.imageUrl }}  style={{height: '100%',width: '100%'}} resizeMode='cover'/>}
+        {(props.imageUrl && !props.iconName) && <Image source={typeof props.imageUrl === 'string' ? { uri: props.imageUrl } : props.imageUrl}  style={{height: '100%',width: '100%'}} resizeMode='cover'/>}
       </Animated.View>
       {props.label && <Text style={styles.label}>{props.label}</Text>}
     </TouchableOpacity>

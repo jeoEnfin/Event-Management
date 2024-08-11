@@ -67,10 +67,10 @@ const EventCardList = ({ title, data, isWatched, noDataText }: Props) => {
                         data={item}
                     />
                 }
-                horizontal={true}
+                //horizontal={true}
                 keyExtractor={(item: any) => item.id}
                 style={{ margin: 3 }}
-                showsHorizontalScrollIndicator={false}
+                //showsHorizontalScrollIndicator={false}
 
             /> : <View style={{ height: 70, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{

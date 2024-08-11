@@ -5,7 +5,7 @@ import Button from '../../components/Button'
 import { useNavigation } from '@react-navigation/native';
 import { config } from '../../utils/config';
 import { COLORS } from '../../constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorageUtil from '../../utils/services/LocalCache';
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height
@@ -17,14 +17,16 @@ const Welcome = (props: Props) => {
     const [login,setLogin] = useState(false)
 
     useEffect(()=>{
-        const token:any = AsyncStorage.getItem("token");
+        const authCheck = async () => {
+        const token:any = await AsyncStorageUtil.getData("token");
         if(token !== null){
             setLogin(true);
             setTimeout(()=>{
                 setLogin(false);
-                navigation.replace('HomeTab')
+                navigation.replace('Home')
             },1000)
-        }
+        }}
+        authCheck();
     },[])
 
     return (

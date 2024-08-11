@@ -1,4 +1,4 @@
-import { Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { ReactNode } from 'react'
 import { COLORS } from '../../../constants';
 
@@ -11,11 +11,11 @@ type Props = {
 
 const AuthContainer = ({ children }: Props) => {
     return (
-        <KeyboardAvoidingView style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.body}>
                     {children}
             </View>
-        </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
 
@@ -23,7 +23,7 @@ export default AuthContainer
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS._background.primary,
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     body: {
         backgroundColor: COLORS.baseWhite,
         paddingHorizontal: 20,
-        paddingTop: '20%',
+        paddingTop: '16%',
         height: '100%',
         paddingBottom: '5%'
     },

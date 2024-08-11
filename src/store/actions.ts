@@ -124,3 +124,14 @@ export const Logout = () => {
     })
   }
 }
+
+export const GuestLogin = () => {
+  return async (dispatch: any) => {
+    //await AsyncStorageUtil.clearAllData();
+    dispatch({
+      type: 'AUTH',
+      payload: true
+    })
+  }
+}
+

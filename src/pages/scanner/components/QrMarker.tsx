@@ -1,81 +1,70 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Dimensions } from 'react-native';
+import { COLORS } from '../../../constants';
+
+const { width, height } = Dimensions.get('window');
 
 const QRMarker = () => {
   return (
-    <View style={styles.container}>
-      <View style={styles.overlay}>
-        <View style={styles.markerTop} />
-        <View style={styles.markerLeft} />
-        <View style={styles.markerRight} />
-        <View style={styles.markerBottom} />
-        <Text style={styles.text}>Scan QR Code</Text>
+    <View style={styles.overlay}>
+    <View style={styles.topOverlay} />
+    <View style={styles.middleRow}>
+      <View style={styles.leftOverlay} />
+      <View style={styles.scannerFrame}>
+        <Text style={styles.scanText}>Align QR code inside frame to scan</Text>
       </View>
+      <View style={styles.rightOverlay} />
     </View>
+    <View style={styles.bottomOverlay} />
+  </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  },
   overlay: {
-    width: '80%',
-    height: '50%',
-    borderColor: 'white',
-    borderWidth: 2,
-    borderRadius: 10,
     position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  markerTop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 50,
-    borderTopWidth: 2,
-    borderTopColor: 'white',
+  topOverlay: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  markerLeft: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    width: 50,
-    borderLeftWidth: 2,
-    borderLeftColor: 'white',
+  middleRow: {
+    flexDirection: 'row',
   },
-  markerRight: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    width: 50,
-    borderRightWidth: 2,
-    borderRightColor: 'white',
+  leftOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  markerBottom: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 50,
-    borderBottomWidth: 2,
-    borderBottomColor: 'white',
+  scannerFrame: {
+    width: width * 0.8,
+    height: width * 0.8,
+    borderWidth: 4,
+    borderColor: COLORS.secondary.main,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  text: {
+  rightOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  bottomOverlay: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  scanText: {
     position: 'absolute',
-    bottom: 20,
+    bottom: -30,
     color: 'white',
     fontSize: 18,
-    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

@@ -3,6 +3,7 @@ import React from 'react'
 import ScreenWrapper from '../../../components/ScreenWrapper'
 import CustomTab from '../components/CustomTab';
 import { COLORS } from '../../../constants';
+import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -12,6 +13,7 @@ type Props = {
 
 const Lobby = ({ route }: Props) => {
     const { event, varient } = route.params;
+    const navigation: any = useNavigation();
     const platformName = Platform.OS || 'android';
 
     return (
@@ -19,7 +21,11 @@ const Lobby = ({ route }: Props) => {
             <StatusBar hidden={platformName === 'android' ? true : false} />
             <View style={{ flex: 1, width: '100%', height: '100%' }}>
                 <Image source={require('../../../assets/ci/expo/offlineLobby.png')} style={styles.background} />
-                <CustomTab position='portrait' />
+                <CustomTab
+                    attendeesClick={() => { navigation.navigate('Attendees') }}
+                    chatClick={() => { navigation.navigate('Messages') }}
+                    helpClick={() => { navigation.navigate('Help') }}
+                    position='portrait' />
             </View>
         </ScreenWrapper>
     )

@@ -24,6 +24,7 @@ type Props = {
     scannerPress?: () => void;
     home?: boolean;
     homePress?: () => void;
+    iconImage?: string;
 }
 
 const TopBar = (props: Props) => {
@@ -41,7 +42,7 @@ const TopBar = (props: Props) => {
     const getData = async () => {
         setIsLoading(true)
         try {
-            const _userData = await AsyncStorageUtil.getData('user_details')
+            const _userData = await AsyncStorageUtil.getData('userData')
             if (_userData) {
                 const _data: any = {
                     // name: _userData?.data?.displayName,
@@ -49,6 +50,7 @@ const TopBar = (props: Props) => {
                     uuid: _userData?.uuid,
                     imgUrl: _userData?.data?.userImage
                 }
+                //console.log(_data)
                 setUserData(_data)
             }
             setIsLoading(false)
@@ -72,8 +74,9 @@ const TopBar = (props: Props) => {
                     style: 'cancel',
                 },
                 {
-                    text: 'OK',
+                    text: 'Logout',
                     onPress: () => logout(),
+                    style:'destructive'
                 },
             ],
             { cancelable: false }
@@ -83,6 +86,25 @@ const TopBar = (props: Props) => {
     const logout = () => {
         setIsProfileModal(false);
         dispatch(Logout())
+    };
+
+    const handleProfileButtonClick = async () => {
+        const token = await AsyncStorageUtil.getData('token');
+        if (!token) {
+            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Login',
+                    onPress: () => {dispatch(Logout())},
+                }
+            ]);
+            return;
+        } else {
+            setIsProfileModal(true);
+        }
     };
 
     return (
@@ -100,11 +122,11 @@ const TopBar = (props: Props) => {
                             onPress={() => { navigation.goBack() }}
                         />
                     )}
-                    <Image
-                        source={require('../assets/ci/logo.png')}
+                    {props.iconImage && <Image
+                        source={{uri: props.iconImage}}
                         style={styles.logo}
                         resizeMode='contain'
-                    />
+                    />}
                 </View>
                 <View style={styles.button_container}>
                     {props.search && (
@@ -119,8 +141,7 @@ const TopBar = (props: Props) => {
                         />)}
                     {props.scanner && (
                         <RoundButton
-                            iconName='scan'
-                            iconType='ionicon'
+                            iconName='qr-code-scanner'
                             iconSize={28}
                             color={COLORS.text.main}
                             backgroundColor={COLORS._background.primary}
@@ -158,11 +179,11 @@ const TopBar = (props: Props) => {
                         />)}
                     {props.profile && (
                         <RoundButton
-                            imageUrl={userData?.imgUrl ? userData?.imgUrl : 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg'}
+                            imageUrl={userData?.imgUrl ? userData?.imgUrl : require('../assets/profileIcons/img_avatar1.png')}
                             color={COLORS.lightWhite}
                             backgroundColor={COLORS._background.primary}
                             hapticFeedback={true}
-                            onPress={()=>{setIsProfileModal(true)}}
+                            onPress={()=>{handleProfileButtonClick()}}
                             border
                         />)}
                     {props.menu && (
@@ -196,7 +217,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
-        elevation: 10,
+        elevation: 5,
         width: '100%',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },

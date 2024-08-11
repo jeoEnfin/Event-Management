@@ -8,6 +8,7 @@ import { COLORS } from '../../constants'
 import Button from '../../components/common/Button'
 import { useNavigation } from '@react-navigation/native'
 import { ForgotPasswordAPI } from './apis/ForgotPasswordApi'
+import AuthLogo from './common/AuthLogo'
 
 type Props = {}
 
@@ -103,12 +104,14 @@ const ForgotPassword = (props: Props) => {
         <AuthContainer>
             <View style={{ flex: 1, justifyContent: 'space-between', height: '100%' }}>
                 <View>
+                    {/* <AuthLogo /> */}
                     <AuthHeader
                         title='Forgot Password?'
-                        subTitle='Fill the form to reset your password'
+                        subTitle='Submit your email below.'
                     />
                     <View style={{ marginTop: 15, gap: 6 }}>
                         <InputText
+                            label='Email'
                             placeholder='Email'
                             autoComplete='email'
                             textSecure={false}
@@ -118,6 +121,7 @@ const ForgotPassword = (props: Props) => {
                             //value={email}
                             error={errorEmail}
                             errorTxt={emailErrorMessage}
+                            backgroundColor={COLORS._background.primary}
                         />
                         {error && <Text style={styles.errorTxt}>{errorMessage}</Text>}
                     </View>

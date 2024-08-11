@@ -14,7 +14,8 @@ const ProfileCard = (props: Props) => {
         <View style={styles.container}>
             <View style={styles.imgIcon}>
                 {props.imageUrl ?
-                    <Image resizeMode='cover' source={{uri: props.imageUrl}}
+                    <Image resizeMode='cover' 
+                    source={{uri: props.imageUrl}}
                         style={styles.imgContainer}
                     />
                     :

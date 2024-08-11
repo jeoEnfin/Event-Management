@@ -5,6 +5,8 @@ const googleConfig = () => {
     webClientId:
       '133685928058-f9r6qrhqppsrscgjnbt0fdfjln4mj01a.apps.googleusercontent.com',
     offlineAccess: true,
+    iosClientId:
+      '133685928058-gauebkt615q5t4faanrn6glbl66nkk0r.apps.googleusercontent.com',
   });
 };
 

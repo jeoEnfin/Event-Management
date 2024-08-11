@@ -1,9 +1,9 @@
 import axiosClient from "../../../utils/services/AxiosServices";
 
-export const ExpoListingAPI = async ({url,keyword}:any) => {
+export const ExpoDetailsAPI = async ({url}:any) => {
 	//console.log(url)
 	return axiosClient.request({
-		url: `expo${url}${keyword && `&keyword=${keyword}`}`,
+		url: `expo${url}`,
 		method: 'get',
 	});
 };

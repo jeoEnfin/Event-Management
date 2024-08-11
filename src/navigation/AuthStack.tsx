@@ -7,6 +7,7 @@ import Welcome from '../pages/auth/Welcome';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import ResetPassword from '../pages/auth/ResetPassword';
 import RoleSelector from '../pages/auth/RoleSelector';
+import Signup from '../pages/auth/Signup';
 
 
 type Props = {}
@@ -24,6 +25,7 @@ const AuthStack = (props: Props) => {
         <>
           <Stack.Screen name='Welcome' component={Welcome} />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
         </> :

@@ -1,9 +1,11 @@
 import axiosClient from "../../../utils/services/AxiosServices";
+import AsyncStorageUtil from "../../../utils/services/LocalCache";
 
-export const UpdateProfileAPI = async ({data}:any) => {
+export const UpdateProfileAPI = async ({data, userId}:any) => {
+	console.log('Updating profile', data,userId);
 	return axiosClient.request({
-		url: `/users/bulk`,
-		method: 'put',
-        data: [data]
+		url: `users/${userId}`,
+		method: 'patch',
+        data: data
 	});
 };

@@ -12,6 +12,7 @@ type Props = {
     eventName?: string;
     eventStartDate?: string;
     eventEndDate?: string;
+    isRegistered?: boolean;
 }
 
 const UserSuccessModal = ({
@@ -20,14 +21,15 @@ const UserSuccessModal = ({
     userData,
     eventName,
     eventEndDate,
-    eventStartDate
+    eventStartDate,
+    isRegistered = false
 }: Props) => {
     return (
         <SlideUpModal isVisible={isModalVisible} onClose={toggleModal}>
             <View style={styles.container}>
                 <View style={styles.headerTextContainer}>
-                    <Image source={require('../../../assets/ci/sucessfull.png')} style={{ width: 38, height: 38 }} />
-                    <Text style={styles.headerText}>Attendance successfully marked</Text>
+                           <Image source={isRegistered ? require(`../../../assets/ci/warning.png`) :require(`../../../assets/ci/sucessfull.png`)} style={{ width: 38, height: 38 }} />
+                            <Text style={[styles.headerText, isRegistered && {color: COLORS.text.warning}]}>{isRegistered ? 'Attendance already marked' :'Attendance successfully marked'}</Text> 
                 </View>
                 {userData && <ProfileCard
                     name={`${userData?.firstName} ${userData?.lastName}`}

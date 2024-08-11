@@ -9,7 +9,7 @@ import { isValidEmail, isValidPassword } from '../../utils/validations';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import googleConfig from '../../utils/services/GoogleSigninConfig';
 import { useDispatch } from 'react-redux';
-import { Login, Role } from '../../store/actions';
+import { GuestLogin, Login, Role } from '../../store/actions';
 import Button from '../../components/common/Button';
 import CheckboxWithLabel from '../../components/common/CheckboxWithLabel';
 import InputText from '../../components/common/InputText';
@@ -20,6 +20,7 @@ import { AuthLoginAPI } from './apis/AuthLogin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AsyncStorageUtil from '../../utils/services/LocalCache';
 import { CacheIndex } from '../../utils/services/CacheIndex';
+import AuthLogo from './common/AuthLogo';
 
 
 
@@ -122,6 +123,7 @@ const LoginScreen = (props: Props) => {
                     await AsyncStorageUtil.saveData('token', access_token);
                 }
                 if (tenant) {
+                    //console.log('Tenant', tenant);
                     await AsyncStorageUtil.saveData('tenant_id', tenant)
                 }
                 if (rememberCheck) {
@@ -146,7 +148,9 @@ const LoginScreen = (props: Props) => {
                 setIsLoading(false);
                 if (error?.response?.data?.message) {
                     setError(true)
-                    setErrorTxt(error?.response?.data?.message)
+                    setErrorEmail(true);
+                    setErrorPassword(true)
+                    //setErrorTxt(error?.response?.data?.message)
                 } else {
                     Alert.alert('Some thing went wrong', '', [
                         { text: 'OK', onPress: () => { } },
@@ -179,17 +183,26 @@ const LoginScreen = (props: Props) => {
         navigation.navigate('ForgotPassword');
     }
 
+    const handleLoginAsGuest = () => {
+        dispatch(GuestLogin());
+    }
+
     return (
         <AuthContainer>
             <View style={{ flex: 1, justifyContent: 'space-between', height: '100%' }}>
                 <View>
+                    {/* <AuthLogo /> */}
                     <AuthHeader
                         title='Welcome Back'
-                        subTitle='Login to your Account'
+                        subTitle={`Don't have an account?`}
+                        isLinkButton={true}
+                        linkButtonLabel='Sign up'
+                        linkButtonClick={() => { navigation.navigate('Signup') }}
                     />
                     <ScrollView>
                         <View style={{ marginTop: 10, gap: 10 }}>
                             <InputText
+                                label='Email'
                                 placeholder='Email'
                                 autoComplete='email'
                                 textSecure={false}
@@ -198,8 +211,10 @@ const LoginScreen = (props: Props) => {
                                 onDataChanged={handleEmailChange}
                                 error={errorEmail}
                                 errorTxt={emailErrorTxt}
+                                backgroundColor={COLORS._background.primary}
                             />
                             <InputText
+                                label='Password'
                                 placeholder='Password'
                                 iconName='eye-outline'
                                 autoComplete='new-password'
@@ -210,6 +225,7 @@ const LoginScreen = (props: Props) => {
                                 keyboardType={'default'}
                                 error={errorPassword}
                                 errorTxt={passwordErrorTxt}
+                                backgroundColor={COLORS._background.primary}
                             />
                             {(error && errorTxt) && <Text style={styles.errorTxt}>{errorTxt}</Text>}
                         </View>
@@ -230,19 +246,17 @@ const LoginScreen = (props: Props) => {
                     <View style={styles.signupBody}>
                         <Text style={styles.signupTxt}>or continue with</Text>
                     </View>
+                    <Button label='Login as guest' variant='outline' buttonClick={() => { handleLoginAsGuest() }} />
                     <View style={styles.socialBtn}>
                         <CustomIconButton
-                            imageUrl='https://static.vecteezy.com/system/resources/thumbnails/022/484/503/small_2x/google-lens-icon-logo-symbol-free-png.png'
+                            imageUrl={require('../../assets/ci/google.png')}
                             onClick={() => googleLoginHandler()}
                         />
-                        <CustomIconButton
-                            imageUrl='https://i.pinimg.com/736x/42/75/49/427549f6f22470ff93ca714479d180c2.jpg'
-                        // onClick={() => googleLoginHandler()}
-                        />
-                        <CustomIconButton
-                            imageUrl='https://i.pinimg.com/736x/ca/61/15/ca6115500b30a04913546177d69126f3.jpg'
-                        // onClick={() => googleLoginHandler()}
-                        />
+                        {Platform.OS === 'ios' &&
+                            <CustomIconButton
+                                imageUrl={require('../../assets/ci/apple-logo.png')}
+                            // onClick={() => googleLoginHandler()}
+                            />}
                     </View>
                 </View>
             </View>
@@ -277,8 +291,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: 15,
-        gap: 15
+        marginVertical: 20,
+        gap: 15,
+        paddingHorizontal: 5
     },
     signupBody: {
         alignItems: 'center',

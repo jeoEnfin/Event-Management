@@ -138,14 +138,15 @@ const ProfileEdit = (props: Props) => {
       }
       const { firstName, lastName } = splitName(name)
       const _data = {
-        _id: data.uuid,
         firstName: firstName,
         lastName: lastName,
         email: email,
-        roleIds: [data.roleId]
+        roleIds: [data.roleId],
+        userImage: "default.webp"
       }
       try {
-        const updateData: any = await UpdateProfileAPI({ data: _data });
+        //console.log(_data, 'data--------')
+        const updateData: any = await UpdateProfileAPI({ data: _data ,userId: data.uuid });
         if (updateData) {
           setIsLoading(false);
           const exisitingData = await AsyncStorageUtil.getData('user_details');
@@ -153,7 +154,7 @@ const ProfileEdit = (props: Props) => {
             ...exisitingData,
             data: {
               ...exisitingData.data,
-              displayName:name,
+              displayName: name,
               email,
             },
           };
@@ -164,7 +165,7 @@ const ProfileEdit = (props: Props) => {
           handleSuccess();
         }
       } catch (err: any) {
-        console.log(err.response, 'error');
+        console.log(err, 'error');
         setErrorTxt('Something went wrong')
         Alert.alert('Something went wrong', 'Please try again later', [
           { text: 'OK' },
@@ -173,7 +174,7 @@ const ProfileEdit = (props: Props) => {
       }
     } else {
       Alert.alert('Invalid Credentials', 'name or email is invalid', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
+        { text: 'OK', onPress: () => {} },
       ]);
       setError(true)
     }
@@ -186,17 +187,20 @@ const ProfileEdit = (props: Props) => {
         <View style={{ width: '100%', alignItems: 'center' }}>
           <View style={styles.avatar_container}>
             <View style={styles.avatar}>
-             {image && <Image
-               source={{ 
-                uri: image === 'default.jpg' 
-                  ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg` 
-                  : (image && (image.startsWith('https') || image.startsWith('http')))
-                    ? image
-                    : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${image}` 
-              }}
+              {image ? <Image
+                source={{
+                  uri: image === 'default.jpg'
+                    ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg`
+                    : (image && (image.startsWith('https') || image.startsWith('http')))
+                      ? image
+                      : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${image}`
+                }}
                 style={{ width: '100%', height: '100%', borderRadius: 70 }}
                 resizeMode='cover'
-              />}
+              /> : <Image resizeMode='cover' source={require('../../assets/profileIcons/img_avatar1.png')}
+                style={{ width: '100%', height: '100%', borderRadius: 70 }}
+              />
+              }
               <TouchableOpacity style={styles.editIcon}>
                 <Icon name={'create'} size={26} color={COLORS.secondary.main} />
               </TouchableOpacity>

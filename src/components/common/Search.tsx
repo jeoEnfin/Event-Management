@@ -13,7 +13,7 @@ const Search: React.FC<SearchComponentProps> = ({ placeholder, onChangeText, val
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
-        <Icon name="search" type="font-awesome" color={COLORS._background.secondary} />
+        <Icon name="search" type="font-awesome" color={COLORS.text.secondary} />
       </View>
       <TextInput
         style={styles.input}
@@ -31,14 +31,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#ccc',
-    backgroundColor: COLORS._background.main,
+    backgroundColor: COLORS._background.primary,
     borderRadius: 35,
-    padding: 10,
+    paddingHorizontal: 10,
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    height: 42
   },
   leftContainer: {
     flexDirection: 'row',

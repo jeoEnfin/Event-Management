@@ -21,16 +21,23 @@ const SpeakerCard = (props: Props) => {
             activeOpacity={0.9}
             style={[styles.container]}>
             <View >
-                <Image
-                    source={{
-                        uri: props.avatar === 'default.webp'
-                            ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/speaker/default.webp`
-                            : (props.avatar && (props.avatar.startsWith('https') || props.avatar.startsWith('http')))
-                                ? props.avatar
-                                : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/speaker/${props.avatar}`
-                    }} style={[styles.img_View]}
-                    resizeMode='cover'
-                />
+                {(props.avatar !== null) ?
+                    <Image
+                        source={{
+                            uri: props.avatar === 'default.webp'
+                                ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/speaker/default.webp`
+                                : (props.avatar && (props.avatar.startsWith('https') || props.avatar.startsWith('http')))
+                                    ? props.avatar
+                                    : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/speaker/${props.avatar}`
+                        }} style={[styles.img_View]}
+                        resizeMode='cover'
+                    /> :
+                    <Image
+                        source={require('../../assets/profileIcons/img_avatar1.png')}
+                        style={[styles.img_View]}
+                        resizeMode='cover'
+                    />
+                }
             </View>
             <View style={{ marginVertical: 5, alignItems: 'center', width: '100%' }}>
                 <Animated.Text

@@ -19,11 +19,22 @@ const Profile = (props: Props) => {
     const dispatch: any = useDispatch();
     const [userData, setUserData] = useState<any>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const navigation:any = useNavigation();
+    const navigation: any = useNavigation();
+    const [isToken, setIsToken] = useState<boolean>(true)
 
     useEffect(() => {
         getData();
+        getToken();
     }, [])
+
+    const getToken = async () => {
+        const token = await AsyncStorageUtil.getData('token')
+        if (token) {
+            setIsToken(true)
+        } else {
+            setIsToken(false)
+        }
+    }
 
     const handleLogout = async () => {
         Alert.alert(
@@ -35,8 +46,9 @@ const Profile = (props: Props) => {
                     style: 'cancel',
                 },
                 {
-                    text: 'OK',
+                    text: 'Logout',
                     onPress: () => dispatch(Logout()),
+                    style: 'destructive',
                 },
             ],
             { cancelable: false }
@@ -49,8 +61,9 @@ const Profile = (props: Props) => {
             'Are you sure you want to Delete Account?',
             [
                 {
-                    text: 'OK',
-                    onPress: () => {},
+                    text: 'Delete',
+                    onPress: () => { },
+                    style: 'destructive',
                 },
                 {
                     text: 'Cancel',
@@ -62,6 +75,20 @@ const Profile = (props: Props) => {
     }
 
     const getData = async () => {
+        const token = await AsyncStorageUtil.getData('token');
+        if (!token) {
+            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Login',
+                    onPress: () => { dispatch(Logout()) },
+                }
+            ]);
+            return;
+        }
         setIsLoading(true)
         try {
             const _userData = await AsyncStorageUtil.getData('userData')
@@ -80,9 +107,66 @@ const Profile = (props: Props) => {
         }
     }
 
+    const handleEditProfile = async () => {
+        const token = await AsyncStorageUtil.getData('token');
+        if (!token) {
+            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Login',
+                    onPress: () => { dispatch(Logout()) },
+                }
+            ]);
+            return;
+        } else {
+            navigation.navigate('Edit Profile')
+        }
+    }
+
+    const handleResetPassword = async () => {
+        const token = await AsyncStorageUtil.getData('token');
+        if (!token) {
+            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Login',
+                    onPress: () => { dispatch(Logout()) },
+                }
+            ]);
+            return;
+        } else {
+            navigation.navigate('Reset Password')
+        }
+    }
+
+    const handleFavouriteContacts = async () => {
+        const token = await AsyncStorageUtil.getData('token');
+        if (!token) {
+            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Login',
+                    onPress: () => { dispatch(Logout()) },
+                }
+            ]);
+            return;
+        } else {
+            navigation.navigate('Favorites')
+        }
+    }
+
     return (
         <ScreenWrapper>
-            <TopBar notification />
+            <TopBar notification={isToken ? true : false} />
             <ScrollView
                 refreshControl={
                     <RefreshControl
@@ -93,31 +177,31 @@ const Profile = (props: Props) => {
                 }
                 style={{ width: '100%' }}>
                 <View style={{ alignItems: 'center' }}>
-                    <View style={styles.editIcon}>
-                        <TouchableOpacity onPress={()=>{navigation.navigate('Edit Profile')}}>
+                    {isToken && <View style={styles.editIcon}>
+                        <TouchableOpacity onPress={() => { handleEditProfile() }}>
                             <Icon name='edit' type={'feather'} size={30} color={COLORS.secondary.main} />
                         </TouchableOpacity>
-                    </View>
+                    </View>}
                     <ProfileCard
                         imageUrl={userData ? userData?.imgUrl : ''}
                         email={userData ? userData?.email : ''}
-                        name={userData ? userData?.name: ''}
+                        name={userData ? userData?.name : 'Guest User'}
                     />
-                     <View style={styles.divider}></View>
-                    <View style={styles.fav_Container}>
-                        <TouchableOpacity style={styles.fav_Body} onPress={()=>{navigation.navigate('Favorites')}}>
+                    <View style={styles.divider}></View>
+                    {isToken && <><View style={styles.fav_Container}>
+                        <TouchableOpacity style={styles.fav_Body} onPress={() => { handleFavouriteContacts() }}>
                             <Ionicons name={'star'} size={25} color={'#F7CA69'} />
                             <Text style={styles.fav_Text}>Favourite Contacts</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.divider}></View>
-                    <View style={styles.logout_Container}>
-                        <TouchableOpacity style={styles.fav_Body} onPress={() => {navigation.navigate('Reset Password')}}>
+                        <View style={styles.divider}></View></>}
+                    {isToken && <><View style={styles.logout_Container}>
+                        <TouchableOpacity style={styles.fav_Body} onPress={() => { handleResetPassword() }}>
                             <Icon name={'lock-reset'} size={30} color={COLORS.secondary.main} />
                             <Text style={styles.fav_Text}>Reset password</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.divider}></View>
+                        <View style={styles.divider}></View></>}
                     <View style={styles.logout_Container}>
                         <TouchableOpacity style={styles.fav_Body} onPress={() => handleLogout()}>
                             <Icon name={'logout'} size={30} color={COLORS.secondary.main} />
@@ -125,14 +209,14 @@ const Profile = (props: Props) => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.divider}></View>
-                    {userData && <QRCode data={ userData} />}
+                    {userData && <QRCode data={userData} />}
                     <View style={styles.divider}></View>
-                    <View style={styles.delete_account_Container}>
-                        <TouchableOpacity style={styles.delete_Body} onPress={()=>handleDeleteAccount()}>
+                    {isToken && <View style={styles.delete_account_Container}>
+                        <TouchableOpacity style={styles.delete_Body} onPress={() => handleDeleteAccount()}>
                             <Icon name={'delete-outline'} size={30} color={COLORS.text.error} />
                             <Text style={styles.delete_Text}>Delete Account</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View>}
                 </View>
             </ScrollView>
         </ScreenWrapper>
