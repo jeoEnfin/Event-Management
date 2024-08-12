@@ -4,10 +4,10 @@ import AsyncStorageUtil from "../utils/services/LocalCache";
 import { AuthLoginAPI } from "../pages/auth/apis/AuthLogin";
 import { CacheIndex } from "../utils/services/CacheIndex";
 
-export const Login = (username: string, token: string, tenant: string) => {
+export const Login = (username: string, token: string) => {
   return ({
     type: 'LOGIN',
-    payload: { token, username, tenant }
+    payload: { token, username }
   })
 }
 
@@ -133,5 +133,12 @@ export const GuestLogin = () => {
       payload: true
     })
   }
+}
+
+export const tenant = (tenant: string) => {
+  return ({
+    type: 'TENANT_ID',
+    payload: { tenant }
+  })
 }
 

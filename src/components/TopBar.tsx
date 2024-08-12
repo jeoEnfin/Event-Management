@@ -25,6 +25,7 @@ type Props = {
     home?: boolean;
     homePress?: () => void;
     iconImage?: string;
+    talkToUs?: boolean;
 }
 
 const TopBar = (props: Props) => {
@@ -76,7 +77,7 @@ const TopBar = (props: Props) => {
                 {
                     text: 'Logout',
                     onPress: () => logout(),
-                    style:'destructive'
+                    style: 'destructive'
                 },
             ],
             { cancelable: false }
@@ -91,14 +92,14 @@ const TopBar = (props: Props) => {
     const handleProfileButtonClick = async () => {
         const token = await AsyncStorageUtil.getData('token');
         if (!token) {
-            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+            Alert.alert('Login Required', 'Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.', [
                 {
                     text: 'Cancel',
                     style: 'cancel',
                 },
                 {
                     text: 'Login',
-                    onPress: () => {dispatch(Logout())},
+                    onPress: () => { dispatch(Logout()) },
                 }
             ]);
             return;
@@ -111,7 +112,7 @@ const TopBar = (props: Props) => {
         <>
             <View style={styles.container}>
                 <StatusBar backgroundColor={COLORS._background.primary} barStyle={'dark-content'} />
-                <View style={styles.title_container}>
+                <View style={[styles.title_container, platform === 'ios' && { marginLeft: 8 }]}>
                     {props.back && (
                         <RoundButton
                             iconName={platform === 'ios' ? 'arrow-back-ios' : 'arrow-back'}
@@ -123,7 +124,7 @@ const TopBar = (props: Props) => {
                         />
                     )}
                     {props.iconImage && <Image
-                        source={{uri: props.iconImage}}
+                        source={{ uri: props.iconImage }}
                         style={styles.logo}
                         resizeMode='contain'
                     />}
@@ -167,6 +168,15 @@ const TopBar = (props: Props) => {
                             hapticFeedback={true}
                             onPress={props.onPressShare}
                         />)}
+                    {props.talkToUs && (
+                        <RoundButton
+                            iconName='support-agent'
+                            iconSize={30}
+                            color={COLORS.text.default}
+                            backgroundColor={COLORS._background.primary}
+                            hapticFeedback={true}
+                            onPress={()=>{}}
+                        />)}
                     {props.notification && (
                         <RoundButton
                             iconName="bell"
@@ -183,7 +193,7 @@ const TopBar = (props: Props) => {
                             color={COLORS.lightWhite}
                             backgroundColor={COLORS._background.primary}
                             hapticFeedback={true}
-                            onPress={()=>{handleProfileButtonClick()}}
+                            onPress={() => { handleProfileButtonClick() }}
                             border
                         />)}
                     {props.menu && (
@@ -199,9 +209,9 @@ const TopBar = (props: Props) => {
             </View>
             <ProfileModal
                 isVisible={isProfileModal}
-                onClose={() => {setIsProfileModal(false)}}
-                onProfilePress={()=>{onProfileClick()}}
-                onLogoutPress={()=>onLogoutPress()}
+                onClose={() => { setIsProfileModal(false) }}
+                onProfilePress={() => { onProfileClick() }}
+                onLogoutPress={() => onLogoutPress()}
             />
         </>
     )

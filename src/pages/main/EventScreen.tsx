@@ -47,9 +47,14 @@ const EventScreen = (props: Props) => {
   }, [page]);
 
   useEffect(() => {
-    fetchOrder();
     getToken();
   }, [])
+
+  useEffect(()=>{
+    if(isToken){
+      fetchOrder();
+    }
+  },[isToken])
 
   useEffect(() => {
     filterActiveExpos();
@@ -57,8 +62,8 @@ const EventScreen = (props: Props) => {
 
   useEffect(()=>{
     if(keyword.trim()){
-      setPage(1); 
-      setData([]);
+      // setPage(1); 
+      // setData([]);
       getData({ keyword });
     }
   },[keyword])

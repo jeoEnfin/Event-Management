@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { config } from '../../utils/config';
 import { COLORS } from '../../constants';
 import AsyncStorageUtil from '../../utils/services/LocalCache';
+import { useSelector } from 'react-redux';
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height
@@ -15,11 +16,13 @@ type Props = {}
 const Welcome = (props: Props) => {
     const navigation: any = useNavigation()
     const [login,setLogin] = useState(false)
+    const isAuth = useSelector((state: any) => state.AuthReducers.authentication);
 
     useEffect(()=>{
         const authCheck = async () => {
         const token:any = await AsyncStorageUtil.getData("token");
-        if(token !== null){
+        console.log(token,'token')
+        if(token !== null || isAuth){
             setLogin(true);
             setTimeout(()=>{
                 setLogin(false);

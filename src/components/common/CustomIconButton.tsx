@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 40,
         borderWidth: 1,
-        borderRadius: 25
+        borderRadius: 10
     },
     avatar: {
         width: 25, // Adjust size as needed

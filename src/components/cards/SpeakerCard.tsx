@@ -11,10 +11,10 @@ type Props = {
     lastName?: string;
     designation?: string;
     companyName?: string;
+    tenant?: string;
 }
 
 const SpeakerCard = (props: Props) => {
-
 
     return (
         <TouchableOpacity
@@ -28,7 +28,7 @@ const SpeakerCard = (props: Props) => {
                                 ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/speaker/default.webp`
                                 : (props.avatar && (props.avatar.startsWith('https') || props.avatar.startsWith('http')))
                                     ? props.avatar
-                                    : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/speaker/${props.avatar}`
+                                    : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/user/${props.avatar}`
                         }} style={[styles.img_View]}
                         resizeMode='cover'
                     /> :

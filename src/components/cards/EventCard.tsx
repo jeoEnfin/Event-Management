@@ -10,6 +10,7 @@ type Props = {
     eventStartDate?: string;
     eventEndDate?: string;
     cardClick?: ()=>void;
+    tenantId?: string;
 }
 
 const EventCard = ({
@@ -17,7 +18,8 @@ const EventCard = ({
     title,
     eventStartDate,
     eventEndDate,
-    cardClick
+    cardClick,
+    tenantId
 }: Props) => {
     return (
         <TouchableOpacity style={styles.container} onPress={cardClick} >
@@ -28,7 +30,7 @@ const EventCard = ({
                           ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/expo/default.webp` 
                           : (url && (url.startsWith('https') || url.startsWith('http')))
                             ? url 
-                            : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/expo/${url}` 
+                            : `${config.CLOUD_FRONT_URL}/uploads/ci/${tenantId}/expo/${url}` 
                       }}
                     style={{ width: '100%', height: '100%' }}
                 />
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 10,
         height: '100%',
-        justifyContent: 'space-between',
+        //justifyContent: 'space-between',
         paddingVertical: 3
     },
     titleTxt: {
@@ -84,7 +86,8 @@ const styles = StyleSheet.create({
     dateBody: {
         color: COLORS.text.main,
         fontSize: 12,
-        fontWeight: '400'
+        fontWeight: '400',
+        marginTop: 12
       },
       dateTxt: {
         color: COLORS.text.main,

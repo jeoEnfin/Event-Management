@@ -1,14 +1,13 @@
 import axios from "axios";
 import { config } from "../config";
 import AsyncStorageUtil from "./LocalCache";
-import { CacheIndex } from "./CacheIndex";
 
 const axiosClient = axios.create({
   baseURL: config.SERVER_URL,
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
-    "x-tenant-id": 'dev_tenant_default',
+    "x-tenant-id":'dev_tenant_default',
   },
 });
 
@@ -17,7 +16,6 @@ axiosClient.interceptors.request.use(
     let token = await AsyncStorageUtil.getData("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      config.headers['context'] = 'admin';
     }
     let tenantId = await AsyncStorageUtil.getData("tenant_id");
     if (tenantId) {

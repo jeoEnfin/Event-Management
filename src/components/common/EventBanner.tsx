@@ -22,62 +22,73 @@ type Props = {
     qrCodePress?: () => void;
     isTenant?: boolean;
     isButtonEnabled?: boolean;
+    tenantId?: string;
 }
 
 const screenWidth = Dimensions.get("window").width;
 
 const EventBanner = (props: Props) => {
+    //console.log(props.expRegEnd)
     const isRegisterEnded = isDateNotPassed(props.expRegEnd || '');
     return (
-        <View style={{
-            width: '100%',
-            height: 200,
-            marginTop: 20
-        }}>
-            <View
-                style={{
-                    width: '100%',
-                    borderRadius: 10,
-                    overflow: 'hidden',
-                    height: 200,
-                }}>
-                <Image
-                    style={{ width: '100%', height: '100%', borderRadius: 10 }}
-                    resizeMode='stretch'
-                    source={{
-                        uri: props.imgUrl === 'default.webp'
-                            ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/banner/${props.imgUrl}`
-                            : (props.imgUrl && (props.imgUrl.startsWith('https') || props.imgUrl.startsWith('http')))
-                                ? props.imgUrl
-                                : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/banner/${props.imgUrl}`
-                    }}
-                    alt='No image'
-                />
-                <Image
-                    style={styles.shade}
-                    resizeMode='stretch'
-                    source={require('../../assets/ci/bannerShade2.png')}
-                    alt='No image'
-                />
-                <View style={styles.body}>
-                    <Text style={styles.text1}>{props.title}</Text>
-                    {/* <Text style={styles.text2}>{props.subTitle}</Text> */}
-                    <Text style={styles.dateTxt}>{props.startDate && format(new Date(props.startDate), 'dd MMM yyyy')}-{props.endDate && format(new Date(props.endDate), 'dd MMM yyyy')}</Text>
-                    {!props.isOrder ? isRegisterEnded ? props.buttonLabel && <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
-                        {props.price && <Icon name='euro' color={COLORS.text.primary} size={13} />}
-                        <Text style={styles.btnText}>{props.buttonLabel}</Text>
-                    </TouchableOpacity> : <Text style={[styles.btnText, { color: COLORS.text.error, marginVertical: 5, fontSize: 16}]}>Expo Registration Ended</Text> : <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
-                        <Text style={styles.btnText}>Join</Text>
-                    </TouchableOpacity>}
+        <>
+            <View style={{
+                width: '100%',
+                height: 200,
+                marginTop: 20
+            }}>
+                <View
+                    style={{
+                        width: '100%',
+                        borderRadius: 10,
+                        overflow: 'hidden',
+                        height: 200,
+                    }}>
+                    <Image
+                        style={{ width: '100%', height: '100%', borderRadius: 10 }}
+                        resizeMode='stretch'
+                        source={{
+                            uri: props.imgUrl === 'default.webp'
+                                ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/banner/${props.imgUrl}`
+                                : (props.imgUrl && (props.imgUrl.startsWith('https') || props.imgUrl.startsWith('http')))
+                                    ? props.imgUrl
+                                    : `${config.CLOUD_FRONT_URL}/uploads/ci/${props.tenantId}/banner/${props.imgUrl}`
+                        }}
+                        alt='No image'
+                    />
+                    <Image
+                        style={styles.shade}
+                        resizeMode='stretch'
+                        source={require('../../assets/ci/bannerShade2.png')}
+                        alt='No image'
+                    />
+                    <View style={styles.body}>
+                        <Text numberOfLines={3} style={styles.text1}>{props.title}</Text>
+                        {/* <Text style={styles.text2}>{props.subTitle}</Text> */}
+                        <Text style={styles.dateTxt}>{props.startDate && format(new Date(props.startDate), 'dd MMM yyyy')}-{props.endDate && format(new Date(props.endDate), 'dd MMM yyyy')}</Text>
+                        {!props.isOrder ? isRegisterEnded && props.buttonLabel &&
+                            <>
+                                {props.price && 
+                                <View style={{flexDirection: 'row', alignItems: 'center',marginTop: 5,gap: 3}}>
+                                <Icon name='euro' color={COLORS.text.primary} size={13} />
+                                <Text style={[styles.btnText,{fontWeight: '600'}]}>{props.price} /-</Text>
+                                </View>}
+                                <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
+                                    <Text style={styles.btnText}>{props.buttonLabel}</Text>
+                                </TouchableOpacity></> :
+                            <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
+                                <Text style={styles.btnText}>Join</Text>
+                            </TouchableOpacity>}
 
+                    </View>
+                    {(props.isOrder && !props.isTenant) &&
+                        <TouchableOpacity style={styles.qrContainer} onPress={props.qrCodePress}>
+                            <Icon name='qr-code' color={COLORS.text.primary} size={28} />
+                        </TouchableOpacity>}
                 </View>
-                {(props.isOrder && !props.isTenant) &&
-                    <TouchableOpacity style={styles.qrContainer} onPress={props.qrCodePress}>
-                        <Icon name='qr-code' color={COLORS.text.primary} size={28} />
-                    </TouchableOpacity>}
             </View>
-
-        </View>
+            {!isRegisterEnded && !props.isOrder && <Text style={[styles.btnText, { color: COLORS.text.error, marginVertical: 10, fontSize: 14, marginLeft: 5 }]}>Expo Registration Ended</Text>}
+        </>
     )
 }
 

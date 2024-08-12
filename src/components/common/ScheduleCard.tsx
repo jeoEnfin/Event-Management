@@ -39,7 +39,7 @@ const ScheduleCard = ({
             </View>
             <View style={styles.detailsContainer}>
                 <Text style={styles.timeTxt} numberOfLines={2} ellipsizeMode="tail">{title}</Text>
-                <Text style={styles.speakerTag}>Speakers: <Text style={styles.speakerTxt}>{fitNamesInArea(speaker, 150, measureWidth)}</Text></Text>
+                {speaker && <Text style={styles.speakerTag}>Speakers: <Text style={styles.speakerTxt}>{speaker && fitNamesInArea(speaker, 150, measureWidth)}</Text></Text>}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Text style={styles.speakerTag}>Duration: <Text style={styles.speakerTxt}>{timeDuration}</Text></Text>
                 </View>

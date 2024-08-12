@@ -166,7 +166,7 @@ const Profile = (props: Props) => {
 
     return (
         <ScreenWrapper>
-            <TopBar notification={isToken ? true : false} />
+            <TopBar notification={isToken ? true : false} talkToUs/>
             <ScrollView
                 refreshControl={
                     <RefreshControl
@@ -267,8 +267,9 @@ const styles = StyleSheet.create({
     },
     editIcon: {
         position: 'absolute',
-        right: 0,
-        margin: 15
+        right: 10,
+        margin: 15,
+        top: 5
     },
     divider: {
         width: '85%',

@@ -2,7 +2,7 @@ const initialState = {
     authToken: null,
     authOTP: null,
     authUsername: null,
-    authTenent: null,
+    authTenent: 'dev_tenant_default',
     authRoleId: null,
     authentication: false
 }
@@ -13,14 +13,13 @@ export default (state = initialState, action: any) => {
                 ...state,
                 authToken: action.payload.token,
                 authUsername: action.payload.username,
-                authTenent: action.payload.tenent
             }
         case 'LOGOUT':
             return {
                 authToken: null,
                 authOTP: null,
                 authUsername: null,
-                authTenent: null,
+                authTenent: 'dev_tenant_default',
                 authRoleId: null,
                 authentication: false
             }
@@ -39,7 +38,12 @@ export default (state = initialState, action: any) => {
             return{
                 ...state,
                 authentication: action.payload
-            }       
+            }
+        case 'TENANT_ID':
+            return{
+               ...state,
+                authTenent: action.payload
+            }
         default:
             return state;
     }

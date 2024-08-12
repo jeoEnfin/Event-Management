@@ -124,7 +124,7 @@ const LoginScreen = (props: Props) => {
                 }
                 if (tenant) {
                     //console.log('Tenant', tenant);
-                    await AsyncStorageUtil.saveData('tenant_id', tenant)
+                    await AsyncStorageUtil.saveData('user_tenant_id', tenant)
                 }
                 if (rememberCheck) {
                     await AsyncStorageUtil.saveData('user_credentials', data)
@@ -141,7 +141,7 @@ const LoginScreen = (props: Props) => {
                         //console.log('roles', _user?.roles);
                     }
                 }
-                dispatch(Login(username, access_token, tenant))
+                dispatch(Login(username, access_token))
                 setError(false)
                 setIsLoading(false);
             } catch (error: any) {

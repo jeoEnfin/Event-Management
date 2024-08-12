@@ -6,6 +6,7 @@ import SpeakerCard from '../cards/SpeakerCard';
 type Props = {
     title: string;
     data: any;
+    tenantId?: string
 }
 
 type ItemProps = {
@@ -14,8 +15,8 @@ type ItemProps = {
 }
 
 
-const SpeakerCardList = ({ title, data }: Props) => {
-
+const SpeakerCardList = ({ title, data, tenantId }: Props) => {
+    console.log(data)
     const Item = ({ id, data }: ItemProps) => {
         return (
             <SpeakerCard
@@ -23,6 +24,7 @@ const SpeakerCardList = ({ title, data }: Props) => {
                 avatar={data.userImage}
                 firstName={data.firstName}
                 lastName={data.lastName}
+                tenant={tenantId}
             />
         )
     }

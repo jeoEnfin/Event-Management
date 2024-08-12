@@ -1,7 +1,7 @@
 export const config = {
     QR_PROTOCOL: 'ci_expo',
     URL_HOST: 'stackoverflow.com',
-    SERVER_URL: 'https://qaciapi.enfinlabs.com/',
+    SERVER_URL: 'https://devciapi.enfinlabs.com/',
     USER_NAME: 'jeothankachan98@gmail.com',
     PASSWORD: 'Abcd1234@',
     API_KEY: '47828021',
@@ -11,5 +11,5 @@ export const config = {
     CLOUD_FRONT_URL : 'https://d2rl30tbamkz20.cloudfront.net',
     SERVER_DOMAIN: 'devciapi.enfinlabs.com',
     STRIP_KEY:'pk_test_51P9PAJSDu2auj9JY5UA9eE7pNJpZqafJvJDlOtVW25DfnpcQseWmUW7OHQc2qwssI6nTbN6B4ZhWOZkTmJvOTlQb00sxKU9LwY',
-    DEFAULT_TENANT : ''
+    DEFAULT_TENANT : 'dev_tenant_default'
 }
