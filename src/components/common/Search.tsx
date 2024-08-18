@@ -34,10 +34,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS._background.primary,
     borderRadius: 35,
     paddingHorizontal: 10,
-    elevation: 5,
+    elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.15,
     shadowRadius: 3.84,
     height: 42
   },

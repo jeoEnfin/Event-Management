@@ -28,6 +28,7 @@ const PolicesCard = ({ title, data }: Props) => {
                 <RenderHtml 
                  contentWidth={screenWidth}
                  source={{html: data}}
+                 baseStyle={{color: COLORS.text.main}}
                 />
             </View>
         </View>

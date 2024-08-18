@@ -34,8 +34,8 @@ const ScheduleCard = ({
     return (
         <TouchableOpacity onPress={onPress} style={styles.container}>
             <View style={styles.timeContainer}>
-                <Text style={styles.timeBoxText}>{startTime && format(startTime, 'hh:mm')}</Text>
-                <Text style={styles.timeBoxTextSecondary}>{startTime && format(startTime, 'a')}</Text>
+                <Text style={styles.timeBoxText}>{startTime && format(startTime, 'HH:mm')}</Text>
+                {/* <Text style={styles.timeBoxTextSecondary}>{startTime && format(startTime, 'a')}</Text> */}
             </View>
             <View style={styles.detailsContainer}>
                 <Text style={styles.timeTxt} numberOfLines={2} ellipsizeMode="tail">{title}</Text>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     timeContainer: {
         height: 74,
         width: 86,
-        alignItems: 'flex-end',
+        alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: COLORS.secondary.main,
         borderRadius: 6,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     },
     timeBoxText: {
         fontWeight: '600',
-        fontSize: 24,
+        fontSize: 22,
         color: COLORS.text.primary
     },
     timeBoxTextSecondary: {
@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         justifyContent: 'space-between',
         paddingHorizontal: 12,
-        flex: 1
+        flex: 1,
+        paddingVertical: 2
     },
     joinTxt: {
         color: COLORS.secondary.main,

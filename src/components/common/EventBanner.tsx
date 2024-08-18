@@ -23,6 +23,7 @@ type Props = {
     isTenant?: boolean;
     isButtonEnabled?: boolean;
     tenantId?: string;
+    isRegistration?: boolean;
 }
 
 const screenWidth = Dimensions.get("window").width;
@@ -68,14 +69,14 @@ const EventBanner = (props: Props) => {
                         <Text style={styles.dateTxt}>{props.startDate && format(new Date(props.startDate), 'dd MMM yyyy')}-{props.endDate && format(new Date(props.endDate), 'dd MMM yyyy')}</Text>
                         {!props.isOrder ? isRegisterEnded && props.buttonLabel &&
                             <>
-                                {props.price && 
-                                <View style={{flexDirection: 'row', alignItems: 'center',marginTop: 5,gap: 3}}>
-                                <Icon name='euro' color={COLORS.text.primary} size={13} />
-                                <Text style={[styles.btnText,{fontWeight: '600'}]}>{props.price} /-</Text>
-                                </View>}
-                                <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
+                                {props.price &&
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, gap: 3 }}>
+                                        <Icon name='euro' color={COLORS.text.primary} size={13} />
+                                        <Text style={[styles.btnText, { fontWeight: '600' }]}>{props.price} /-</Text>
+                                    </View>}
+                                {props.isRegistration && <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
                                     <Text style={styles.btnText}>{props.buttonLabel}</Text>
-                                </TouchableOpacity></> :
+                                </TouchableOpacity>}</> :
                             <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
                                 <Text style={styles.btnText}>Join</Text>
                             </TouchableOpacity>}
@@ -87,7 +88,16 @@ const EventBanner = (props: Props) => {
                         </TouchableOpacity>}
                 </View>
             </View>
-            {!isRegisterEnded && !props.isOrder && <Text style={[styles.btnText, { color: COLORS.text.error, marginVertical: 10, fontSize: 14, marginLeft: 5 }]}>Expo Registration Ended</Text>}
+            {!props.isRegistration && !props.isOrder && isRegisterEnded && <View style={styles.warningBody}>
+                <Icon name='info-outline' size={18} color={COLORS.text.alert} />
+                <Text style={styles.warningTxt}>Event registration temporarily closed!</Text>
+            </View>}
+            {!isRegisterEnded && !props.isOrder &&
+                <View style={styles.warningBody}>
+                    <Icon name='info-outline' size={18} color={COLORS.text.error} />
+                    <Text style={[styles.btnText, { color: COLORS.text.error, marginVertical: 10, fontSize: 14, marginLeft: 5 }]}>Event Registration Ended</Text>
+                </View>
+            }
         </>
     )
 }
@@ -148,5 +158,16 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 18,
         top: 18
+    },
+    warningTxt: {
+        color: COLORS.text.alert,
+        fontWeight: '600',
+        fontSize: 13
+    },
+    warningBody: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 3,
+        marginTop: 12
     }
 })

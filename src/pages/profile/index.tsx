@@ -12,19 +12,33 @@ import AsyncStorageUtil from '../../utils/services/LocalCache'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
 import { CacheIndex } from '../../utils/services/CacheIndex'
+import { config } from '../../utils/config'
 
 type Props = {}
 
+export type User = {
+    name: string;
+    email: string;
+    uuid: string;
+    imgUrl?: string;
+}
+
 const Profile = (props: Props) => {
     const dispatch: any = useDispatch();
-    const [userData, setUserData] = useState<any>(null)
+    const [userData, setUserData] = useState<User>({
+        name: '',
+        email: '',
+        uuid: '',
+        imgUrl: ''
+    })
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const navigation: any = useNavigation();
     const [isToken, setIsToken] = useState<boolean>(true)
 
     useEffect(() => {
-        getData();
+        getDatas();
         getToken();
+        setTenant();
     }, [])
 
     const getToken = async () => {
@@ -34,6 +48,10 @@ const Profile = (props: Props) => {
         } else {
             setIsToken(false)
         }
+    }
+
+    const setTenant = async () => {
+        await AsyncStorageUtil.saveData('tenant_id', config.DEFAULT_TENANT)
     }
 
     const handleLogout = async () => {
@@ -74,10 +92,10 @@ const Profile = (props: Props) => {
         );
     }
 
-    const getData = async () => {
+    const getDatas = async () => {
         const token = await AsyncStorageUtil.getData('token');
         if (!token) {
-            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+            Alert.alert('Login Required', 'Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.', [
                 {
                     text: 'Cancel',
                     style: 'cancel',
@@ -93,12 +111,13 @@ const Profile = (props: Props) => {
         try {
             const _userData = await AsyncStorageUtil.getData('userData')
             if (_userData) {
-                const _data = {
+                let _data = {
                     name: _userData?.data?.displayName,
                     email: _userData?.data?.email,
                     uuid: _userData?.uuid,
                     imgUrl: _userData?.data?.userImage
                 }
+                //console.log(_data)
                 setUserData(_data)
             }
             setIsLoading(false)
@@ -110,7 +129,7 @@ const Profile = (props: Props) => {
     const handleEditProfile = async () => {
         const token = await AsyncStorageUtil.getData('token');
         if (!token) {
-            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+            Alert.alert('Login Required', 'Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.', [
                 {
                     text: 'Cancel',
                     style: 'cancel',
@@ -129,7 +148,7 @@ const Profile = (props: Props) => {
     const handleResetPassword = async () => {
         const token = await AsyncStorageUtil.getData('token');
         if (!token) {
-            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+            Alert.alert('Login Required', 'Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.', [
                 {
                     text: 'Cancel',
                     style: 'cancel',
@@ -148,7 +167,7 @@ const Profile = (props: Props) => {
     const handleFavouriteContacts = async () => {
         const token = await AsyncStorageUtil.getData('token');
         if (!token) {
-            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+            Alert.alert('Login Required', 'Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.', [
                 {
                     text: 'Cancel',
                     style: 'cancel',
@@ -164,14 +183,36 @@ const Profile = (props: Props) => {
         }
     }
 
+    const onRefresh = () => {
+        getDatas();
+        setTenant();
+    }
+
+    const handleLogin = () => {
+        Alert.alert('Proceed to Login', 'Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.', [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'Login',
+                onPress: () => { dispatch(Logout()) },
+            }
+        ]);
+    };
+
     return (
         <ScreenWrapper>
-            <TopBar notification={isToken ? true : false} talkToUs/>
+            <TopBar
+                notification={isToken ? true : false}
+                talkToUs
+                talkToUsPress={() => navigation.navigate('Talk to us')}
+            />
             <ScrollView
                 refreshControl={
                     <RefreshControl
                         refreshing={isLoading}
-                        onRefresh={() => getData()}
+                        onRefresh={() => onRefresh()}
                         colors={[COLORS.secondary.main]}
                     />
                 }
@@ -188,6 +229,12 @@ const Profile = (props: Props) => {
                         name={userData ? userData?.name : 'Guest User'}
                     />
                     <View style={styles.divider}></View>
+                    {!isToken && <View style={styles.fav_Container}>
+                        <TouchableOpacity style={styles.fav_Body} onPress={() => handleLogin()}>
+                            <Icon name={'login'} size={30} color={COLORS.secondary.main} />
+                            <Text style={styles.fav_Text}>Login</Text>
+                        </TouchableOpacity>
+                    </View>}
                     {isToken && <><View style={styles.fav_Container}>
                         <TouchableOpacity style={styles.fav_Body} onPress={() => { handleFavouriteContacts() }}>
                             <Ionicons name={'star'} size={25} color={'#F7CA69'} />
@@ -202,14 +249,15 @@ const Profile = (props: Props) => {
                         </TouchableOpacity>
                     </View>
                         <View style={styles.divider}></View></>}
-                    <View style={styles.logout_Container}>
+                    {isToken && <View style={styles.logout_Container}>
                         <TouchableOpacity style={styles.fav_Body} onPress={() => handleLogout()}>
                             <Icon name={'logout'} size={30} color={COLORS.secondary.main} />
                             <Text style={styles.fav_Text}>Logout</Text>
                         </TouchableOpacity>
-                    </View>
-                    <View style={styles.divider}></View>
-                    {userData && <QRCode data={userData} />}
+                    </View>}
+                    { isToken &&<View style={styles.divider}></View>}
+                    {isToken && userData && 
+                        <QRCode data={userData} />}
                     <View style={styles.divider}></View>
                     {isToken && <View style={styles.delete_account_Container}>
                         <TouchableOpacity style={styles.delete_Body} onPress={() => handleDeleteAccount()}>

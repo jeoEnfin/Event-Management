@@ -28,7 +28,7 @@ const SpeakerCard = (props: Props) => {
                                 ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/speaker/default.webp`
                                 : (props.avatar && (props.avatar.startsWith('https') || props.avatar.startsWith('http')))
                                     ? props.avatar
-                                    : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/user/${props.avatar}`
+                                    : `${config.CLOUD_FRONT_URL}/uploads/ci/${props.tenant}/user/${props.avatar}`
                         }} style={[styles.img_View]}
                         resizeMode='cover'
                     /> :

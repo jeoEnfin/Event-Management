@@ -31,7 +31,8 @@ export const COLORS = {
         disable: '#cbcfd6',
         secondary: 'gray',
         default: '#333333',
-        warning: '#2196F3'
+        warning: '#2196F3',
+        alert: '#FB9E13'
     },
     info: {
         main: '#FE6092'

@@ -1,34 +1,35 @@
 type Schedule = {
+    hallid: string; // New property for hallId
     hallName: string;
     schStartDateTime: string; // Assuming the date is stored as a string
     // Add other properties if needed
   };
   
   type GroupedSchedule = {
-    [hallName: string]: Schedule[];
+    hallid: string;
+    hallName: string;
+    schedules: Schedule[];
   };
   
   export function groupWithHallName(schedules: Schedule[]): GroupedSchedule[] {
-    const groupedSchedules = schedules.reduce((acc: GroupedSchedule, schedule: Schedule) => {
-      const { hallName } = schedule;
-      if (!acc[hallName]) {
-        acc[hallName] = [];
-      }
-      acc[hallName].push(schedule);
-      return acc;
-    }, {} as GroupedSchedule);
-    
-    // Transform groupedSchedules into desired structure
-    const transformedSchedules = Object.keys(groupedSchedules).map(hallName => ({
-      [hallName]: groupedSchedules[hallName]
-    }));
+    const groupedSchedules = schedules.reduce((acc: { [hallid: string]: GroupedSchedule }, schedule: Schedule) => {
+      const { hallid, hallName } = schedule;
   
-    const sortedSchedules = transformedSchedules.map(group => {
-      const hallName = Object.keys(group)[0]; // Extract hallName
-      const schedulesArray = group[hallName]; // Get the array of schedules for this hallName
-      schedulesArray.sort((a: Schedule, b: Schedule) => new Date(a.schStartDateTime).getTime() - new Date(b.schStartDateTime).getTime()); // Sort by schStartDateTime
-      return { [hallName]: schedulesArray }; // Return in the desired format
+      if (!acc[hallid]) {
+        acc[hallid] = { hallid, hallName, schedules: [] };
+      }
+  
+      acc[hallid].schedules.push(schedule);
+      return acc;
+    }, {});
+  
+    const sortedSchedules = Object.values(groupedSchedules).map(group => {
+      group.schedules.sort((a: Schedule, b: Schedule) =>
+        new Date(a.schStartDateTime).getTime() - new Date(b.schStartDateTime).getTime()
+      );
+      return group;
     });
-    
+  
     return sortedSchedules;
   }
+  

@@ -11,5 +11,6 @@ export const config = {
     CLOUD_FRONT_URL : 'https://d2rl30tbamkz20.cloudfront.net',
     SERVER_DOMAIN: 'devciapi.enfinlabs.com',
     STRIP_KEY:'pk_test_51P9PAJSDu2auj9JY5UA9eE7pNJpZqafJvJDlOtVW25DfnpcQseWmUW7OHQc2qwssI6nTbN6B4ZhWOZkTmJvOTlQb00sxKU9LwY',
-    DEFAULT_TENANT : 'dev_tenant_default'
+    DEFAULT_TENANT : 'dev_tenant_default',
+    CHAT_URL: 'https://chatservice.enfinlabs.com/?token='
 }

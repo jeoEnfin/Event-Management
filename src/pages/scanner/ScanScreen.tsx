@@ -27,9 +27,12 @@ import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 
-type Props = {}
+type Props = {
+    route?: any
+}
 
-const ScanScreen = (props: Props) => {
+const ScanScreen = ({route}: Props) => {
+    const { eventId } = route.params
     const [url, setUrl] = useState('')
     const [isRetake, setIsRetake] = useState<boolean>(true);
     const navigation: any = useNavigation()
@@ -97,8 +100,8 @@ const ScanScreen = (props: Props) => {
         //console.log(data)
         setIsLoading(true);
         try {
-            const attendance = await UserAttendenceApi({ data: data, platform: platformName })
-            console.log(attendance);
+            const attendance = await UserAttendenceApi({ data: data, platform: platformName , eventId})
+           // console.log(attendance);
             setIsAlreadyRegistered(false);
             if (attendance) {
                 console.log('data', attendance?.data?.data?.user);

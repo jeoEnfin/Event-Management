@@ -72,7 +72,7 @@ const  ScheduleList: React.FC<{ schedules: Schedule[],isJoin?: boolean }> = ({ s
             {Object.keys(groupedSchedules).map((hallName) => (
                 <View key={hallName} style={styles.hallContainer}>
                     <View style={styles.hallbody}>
-                    <Text style={styles.hallNametxt}>{hallName}</Text>
+                    <Text style={styles.hallNametxt}>{hallName === 'defaultLobby' ? 'Lobby': hallName}</Text>
                     <Text style={styles.hallSessionTxt}>{groupedSchedules[hallName].length} Sessions</Text>
                     </View>
                     <FlatList

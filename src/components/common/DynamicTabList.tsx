@@ -13,10 +13,17 @@ interface Tab {
 type TabType = {
     tabs: any[];
     onDateClick?: (data: any) => void;
+    showBottom?: boolean;
+    showCurve?: boolean;
 }
 
 
-const DynamicTabList = ({ tabs, onDateClick }: TabType) => {
+const DynamicTabList = ({
+    tabs,
+    onDateClick,
+    showBottom = false,
+    showCurve = false
+}: TabType) => {
     const flatListRef: any = useRef(null);
     const [selectedTab, setSelectedTab] = useState<string | null>(null);
     const [itemHeights, setItemHeights] = useState<Record<string, number>>({});
@@ -40,18 +47,18 @@ const DynamicTabList = ({ tabs, onDateClick }: TabType) => {
 
     useEffect(() => {
         if (flatListRef.current && Object.keys(itemHeights).length === tabs.length) {
-          let offset = 0;
-          for (let i = 0; i < selectedIndex; i++) {
-            offset += itemHeights[i] || 0;
-          }
-          flatListRef.current.scrollToOffset({ offset, animated: true });
+            let offset = 0;
+            for (let i = 0; i < selectedIndex; i++) {
+                offset += itemHeights[i] || 0;
+            }
+            flatListRef.current.scrollToOffset({ offset, animated: true });
         }
-      }, [itemHeights]);
+    }, [itemHeights]);
 
-      const handleLayout = (event:any, index:any) => {
+    const handleLayout = (event: any, index: any) => {
         const { height } = event.nativeEvent.layout;
         setItemHeights((prevHeights) => ({ ...prevHeights, [index]: height }));
-      };  
+    };
 
     const handleTabPress = (item: Tab) => {
         setSelectedTab(item.id);
@@ -67,7 +74,7 @@ const DynamicTabList = ({ tabs, onDateClick }: TabType) => {
             day={index + 1}
             onPress={handleTabPress}
             isSelected={selectedTab === item.id}
-            onLayout={(event:any) => handleLayout(event, index)}
+            onLayout={(event: any) => handleLayout(event, index)}
         />
     );
 
@@ -80,12 +87,17 @@ const DynamicTabList = ({ tabs, onDateClick }: TabType) => {
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 extraData={selectedTab}
-                style={{
+                style={[{
                     backgroundColor: COLORS._background.primary,
                     marginBottom: 16,
-                    borderRadius: 6,
-                    height: 64
-                }}
+                    height: 64,
+
+                }, showBottom && {
+                    borderBottomWidth: 0.5,
+                    borderColor: COLORS._background.secondary,
+                },
+                showCurve && { borderRadius: 6 }]}
+                showsHorizontalScrollIndicator={false}
             />
         </>
     );

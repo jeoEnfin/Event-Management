@@ -21,7 +21,7 @@ const AddressCard = ({ address,onTextPress }: Props) => {
                 fontSize: 16,
                 color: COLORS.text.main,
                 marginBottom: 5
-            }}>Address</Text>
+            }}>Venue</Text>
             <View style={{
                 flexDirection: 'row',
                 marginTop: 14,
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
         color: COLORS.text.default,
         fontSize: 14,
         fontWeight: '600',
-        lineHeight: 20
+        lineHeight: 20,
+        flex: 1
     }
 })

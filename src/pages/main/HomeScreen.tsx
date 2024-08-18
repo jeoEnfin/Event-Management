@@ -1,9 +1,6 @@
 import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import Banner from '../../components/common/Banner'
-import EventCardList from '../../components/common/EventCardList'
-import { DATA } from '../../constants/demoData'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import TopBar from '../../components/TopBar'
 import { ExpoListingAPI } from './apis/ExpoListApi'
@@ -13,6 +10,7 @@ import { OrderListAPI } from './apis/OrderListApi'
 import AsyncStorageUtil from '../../utils/services/LocalCache'
 import Search from '../../components/common/Search'
 import EventCard from '../../components/cards/EventCard'
+import { config } from '../../utils/config'
 
 
 
@@ -69,6 +67,7 @@ const HomeScreen = (props: Props) => {
   }, [data, order])
 
   useEffect(() => {
+    //console.log(keyword, 'keyword')
     fetchData({ keyword });
   }, [keyword])
 
@@ -82,7 +81,7 @@ const HomeScreen = (props: Props) => {
   }
 
   const setTenant = async () => {
-    await AsyncStorageUtil.saveData('tenant_id', 'dev_tenant_default')
+    await AsyncStorageUtil.saveData('tenant_id', config.DEFAULT_TENANT)
   }
 
   const filterExpos = (orders: any, expos: any) => {
@@ -117,7 +116,7 @@ const HomeScreen = (props: Props) => {
       // Filter expos where expRegistrationStartDate matches current date
       const filteredExpos = _data.filter((expo: any) => {
         //console.log(expo.expRegistrationStartDate,expo.expRegistrationEndDate,'wwww')
-        if(expo.expRegistrationStartDate && expo.expRegistrationEndDate && expo.expStartDate){
+        if(!expo.expRegistrationStartDate || !expo.expRegistrationEndDate || !expo.expStartDate){
           return;
         }
         const currentDate = new Date();
@@ -142,13 +141,20 @@ const HomeScreen = (props: Props) => {
 
   const currentExpo = (data: any) => {
     const currentDate = new Date();
+    
     const _currentExpos = data
-      .filter((expo: any) => isAfter(parseISO(expo.expEndDate), currentDate))
+      .filter((expo: any) => {
+        // Check if both expStartDate and expEndDate are defined
+        const hasValidDates = expo.expStartDate && expo.expEndDate;
+        // Further filter by checking if expEndDate is after the current date
+        return hasValidDates && isAfter(parseISO(expo.expEndDate), currentDate);
+      })
       .sort((a: any, b: any) => compareAsc(parseISO(a.expStartDate), parseISO(b.expStartDate)));
-    if (_currentExpos) {
+    
+    if (_currentExpos.length >= 0) {
       setCurrentExpos(_currentExpos);
     }
-  }
+  };
 
   const onRefresh = async () => {
     fetchData({ keyword });

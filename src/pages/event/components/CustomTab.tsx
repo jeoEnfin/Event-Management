@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 48,
-        left: 0
+        right: 0
     },
     iconContainer: {
         flexDirection: 'column',

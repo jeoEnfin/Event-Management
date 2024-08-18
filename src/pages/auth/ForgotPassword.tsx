@@ -107,7 +107,7 @@ const ForgotPassword = (props: Props) => {
                     {/* <AuthLogo /> */}
                     <AuthHeader
                         title='Forgot Password?'
-                        subTitle='Submit your email below.'
+                        subTitle='Submit your registered email below.'
                     />
                     <View style={{ marginTop: 15, gap: 6 }}>
                         <InputText
@@ -126,7 +126,7 @@ const ForgotPassword = (props: Props) => {
                         {error && <Text style={styles.errorTxt}>{errorMessage}</Text>}
                     </View>
                     <View style={styles.infoTxtBody}>
-                        <Text style={styles.infoTxt}>A link send to your mail to reset password.</Text>
+                        <Text style={styles.infoTxt}>A link will be sent to your email to reset your password.</Text>
                     </View>
                 </View>
                 <View>

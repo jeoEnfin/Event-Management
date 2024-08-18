@@ -26,6 +26,8 @@ type Props = {
     homePress?: () => void;
     iconImage?: string;
     talkToUs?: boolean;
+    talkToUsPress?: () => void;
+    backPress?: () => void;
 }
 
 const TopBar = (props: Props) => {
@@ -120,7 +122,7 @@ const TopBar = (props: Props) => {
                             color={COLORS.text.default}
                             backgroundColor={COLORS._background.primary}
                             hapticFeedback={true}
-                            onPress={() => { navigation.goBack() }}
+                            onPress={props.backPress ? props.backPress : () => { navigation.goBack() }}
                         />
                     )}
                     {props.iconImage && <Image
@@ -175,7 +177,7 @@ const TopBar = (props: Props) => {
                             color={COLORS.text.default}
                             backgroundColor={COLORS._background.primary}
                             hapticFeedback={true}
-                            onPress={()=>{}}
+                            onPress={props.talkToUsPress}
                         />)}
                     {props.notification && (
                         <RoundButton

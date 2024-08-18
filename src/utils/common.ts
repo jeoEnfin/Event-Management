@@ -1,4 +1,4 @@
-import { differenceInDays, differenceInHours, differenceInMinutes, eachDayOfInterval, endOfDay, format, isAfter, isBefore, isEqual, isWithinInterval, parseISO, startOfDay } from 'date-fns';
+import { differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds, eachDayOfInterval, endOfDay, format, isAfter, isBefore, isEqual, isWithinInterval, parseISO, startOfDay } from 'date-fns';
 
 export function CiTruncate(str: string, num_chars: number) {
     // if (str.length > num_chars) {
@@ -7,7 +7,22 @@ export function CiTruncate(str: string, num_chars: number) {
     // return str;
 }
 
+export const breakTextIntoChunksWithTail = (text: string, chunkSize: number = 15, tail: string = "..."): string[] => {
+  const chunks = [];
 
+  for (let i = 0; i < text.length; i += chunkSize) {
+    const chunk = text.slice(i, i + chunkSize);
+
+    // If it's not the last chunk, add the tail
+    if (i + chunkSize < text.length) {
+      chunks.push(chunk + tail);
+    } else {
+      chunks.push(chunk); // Last chunk without the tail
+    }
+  }
+
+  return chunks;
+};
 
 export const calculateTimeDifference = (startDate:any, endDate:any) => {
     const now = new Date();
@@ -104,26 +119,21 @@ export function getDatesInRange(startDate: string, endDate: string): DateWithId[
     }));
 }
 
-export function getTimeDifference(startDate: string, endDate: string) {
-    const start = parseISO(startDate);
+export function getTimeDifference(startDate: string, endDate: string): string {
+  const start = parseISO(startDate);
   const end = parseISO(endDate);
-  
-  const diffInMinutes = differenceInMinutes(end, start);
-  const hours = Math.floor(diffInMinutes / 60);
-  const minutes = diffInMinutes % 60;
 
-  let result = '';
+  const diffInSeconds = differenceInSeconds(end, start);
+  const hours = Math.floor(diffInSeconds / 3600);
+  const minutes = Math.floor((diffInSeconds % 3600) / 60);
+  const seconds = diffInSeconds % 60;
 
-  if (hours > 0) {
-    result += `${hours} hour${hours > 1 ? 's' : ''}`;
-  }
+  // Formatting the hours, minutes, and seconds to always have two digits
+  const formattedHours = String(hours).padStart(2, '0');
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(seconds).padStart(2, '0');
 
-  if (minutes > 0) {
-    if (result) result += ' ';
-    result += `${minutes} minute${minutes > 1 ? 's' : ''}`;
-  }
-
-  return result || '0 minutes';
+  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
 
 export const getCurrentDateSchedules = (schedules:any) => {

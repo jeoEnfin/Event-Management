@@ -37,7 +37,7 @@ const EventCard = ({
             </View>
             <View style={styles.detailsContainer}>
                 <Text numberOfLines={2} ellipsizeMode='tail' style={styles.titleTxt}>{title}</Text>
-                {eventStartDate && eventEndDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{eventStartDate && format(new Date(eventStartDate), 'dd MMM yyyy')}-{eventEndDate && format(new Date(eventEndDate), 'dd MMM yyyy')}</Text></Text>}
+                {eventStartDate && eventEndDate && <Text style={styles.dateBody}>Date : <Text style={styles.dateTxt}>{eventStartDate && format(new Date(eventStartDate), 'dd MMM yyyy')}</Text></Text>}
                 </View>
         </TouchableOpacity>
     )
@@ -53,10 +53,10 @@ const styles = StyleSheet.create({
      padding: 12,
      marginVertical: 9,
      borderRadius: 6,
-     elevation: 5,
+     elevation: 2,
      shadowColor: '#000',
      shadowOffset: { width: 0, height: 2 },
-     shadowOpacity: 0.25,
+     shadowOpacity: 0.15,
      shadowRadius: 3.84,
      flexDirection: 'row',
      alignItems: 'center'

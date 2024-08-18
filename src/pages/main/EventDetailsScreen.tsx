@@ -19,6 +19,7 @@ import AsyncStorageUtil from '../../utils/services/LocalCache'
 import { ExpoDetailsAPI } from './apis/ExpoDetailsApi'
 import { useDispatch } from 'react-redux'
 import { Logout } from '../../store/actions'
+import { config } from '../../utils/config'
 
 
 
@@ -40,6 +41,7 @@ const EventDetailsScreen = ({ route }: Props) => {
     const [isModalVisible, setModalVisible] = useState<boolean>(false);
     const [orderQrCode, setOrderQrCode] = useState<any>(null);
     const dispatch: any = useDispatch();
+    const [isTenant, setIsTenant] = useState<boolean>(false);
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -49,6 +51,11 @@ const EventDetailsScreen = ({ route }: Props) => {
         getTokenCheck();
     }, [])
 
+    useEffect(()=>{
+        if(tenantId){
+            isTenantCheck();
+        }
+    },[tenantId])
 
     useEffect(() => {
         const backAction = () => {
@@ -76,14 +83,14 @@ const EventDetailsScreen = ({ route }: Props) => {
     }, []);
 
     useEffect(() => {
-        if (userRules) {
+        if (userRules && isTenant) {
             //console.log(userRules)
             setIsScanner(userRules?.qrScanner?.permission);
-            if (userRules?.qrScanner?.permission === true) {
+            if (userRules?.qrScanner?.permission === true && isTenant) {
                 setIsOrder(true);
             }
         }
-    }, [userRules])
+    }, [userRules,isTenant])
 
     useEffect(() => {
         if (event && tenantId) {
@@ -103,7 +110,7 @@ const EventDetailsScreen = ({ route }: Props) => {
     }, [data, order])
 
     const backHandle = async () => {
-        AsyncStorageUtil.saveData('tenant_id', 'dev_tenant_default');
+        AsyncStorageUtil.saveData('tenant_id', config.DEFAULT_TENANT);
         navigation.goBack();
     }
 
@@ -111,6 +118,15 @@ const EventDetailsScreen = ({ route }: Props) => {
         const token = await AsyncStorageUtil.getData('token');
         if (token) {
             orderdetails();
+        }
+    }
+
+    const isTenantCheck = async () =>{
+        const _tenantId = await AsyncStorageUtil.getData('user_tenant_id');
+        if (_tenantId === tenantId) {
+            setIsTenant(true);
+        } else {
+            setIsTenant(false);
         }
     }
 
@@ -166,7 +182,7 @@ const EventDetailsScreen = ({ route }: Props) => {
         try {
             const response = await ExpoDetailsAPI({ url, tenant: tenantId });
             const _data = response?.data?.data;
-            //console.log(_data,'resp---------------')
+            console.log(_data,'resp---------------')
             setData(_data?.expo)
             setSpeakers(_data?.speakers)
             setSchedule(_data?.schedules)
@@ -260,12 +276,18 @@ const EventDetailsScreen = ({ route }: Props) => {
                     onPressButtonAfterOrdered={() => { handleJoinExpo() }}
                     isTenant={isScanner}
                     tenantId={data.expTenantId}
+                    isRegistration={data.expIsRegistrationEnabled}
                 />
             );
             ItemData.push(
                 <SubHeader
                     title='About'
                     message={data.expDescription}
+                />
+            );
+            ItemData.push(
+                <AddressCard
+                    address={data.expAddress}
                 />
             );
             ItemData.push(
@@ -281,11 +303,6 @@ const EventDetailsScreen = ({ route }: Props) => {
                     endDate={data.expEndDate}
                     schedules={schedule}
                     isJoin={isOrder}
-                />
-            );
-            ItemData.push(
-                <AddressCard
-                    address={data.expAddress}
                 />
             );
             ItemData.push(
@@ -306,8 +323,9 @@ const EventDetailsScreen = ({ route }: Props) => {
                     // notification
                     back
                     profile
-                    scanner={isScanner || false}
-                    scannerPress={() => { navigation.navigate('Scan') }}
+                    scanner={(isScanner && isTenant) || false}
+                    scannerPress={() => { navigation.navigate('Scan',{eventId : event}) }}
+                    backPress={()=>{backHandle()}}
                 />
                 {!isLoading ?
                     <View style={{ width: '100%' }}>

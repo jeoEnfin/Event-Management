@@ -292,3 +292,16 @@ export const BANNER_DATA = [
         banner_url: 'https://d1csarkz8obe9u.cloudfront.net/posterpreviews/nightclub-dance-party-landscape-flyer-template-f69a412a8dd4e6f0bb393b01e1327395_screen.jpg?ts=1561377260'
     }
 ]
+
+export const dummyData= [
+    { id: '1', name: 'John Doe', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+    { id: '2', name: 'Jane Smith', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+    { id: '3', name: 'Sam Johnson', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+    { id: '4', name: 'Alex Brown', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+    { id: '5', name: 'Emily White', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+    { id: '6', name: 'Michael Green', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+    { id: '7', name: 'Sarah Blue', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+    { id: '8', name: 'David Black', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+    { id: '9', name: 'Laura Grey', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+    { id: '10', name: 'Daniel Pink', avatar: 'https://via.placeholder.com/50', isFavorite: false },
+  ];

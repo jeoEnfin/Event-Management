@@ -16,11 +16,14 @@ type Props = {}
 const Welcome = (props: Props) => {
     const navigation: any = useNavigation()
     const [login,setLogin] = useState(false)
+
     const isAuth = useSelector((state: any) => state.AuthReducers.authentication);
 
     useEffect(()=>{
         const authCheck = async () => {
         const token:any = await AsyncStorageUtil.getData("token");
+        const isStarted: any = await AsyncStorageUtil.getData('isGetStarted')
+        console.log(isStarted,'isGetStarted')
         console.log(token,'token')
         if(token !== null || isAuth){
             setLogin(true);
@@ -28,9 +31,17 @@ const Welcome = (props: Props) => {
                 setLogin(false);
                 navigation.replace('Home')
             },1000)
-        }}
+        } else if(isStarted === true){
+            navigation.replace('Login')
+        }
+    }
         authCheck();
     },[])
+
+    const getStartedMark = async () =>{
+        await AsyncStorageUtil.saveData('isGetStarted', true);
+        navigation.replace('Login');
+    }
 
     return (
         <View style={styles.container}>
@@ -41,7 +52,7 @@ const Welcome = (props: Props) => {
                     style={{ width: screenWidth, height: screenHeight, position: 'absolute'}}
                     source={require('../../assets/ci/splash.png')} />
                 <View></View>
-                {!login ?<TouchableOpacity style={styles.buttonContainer} onPress={()=>{navigation.replace('Login')}}>
+                {!login ?<TouchableOpacity style={styles.buttonContainer} onPress={()=>{getStartedMark()}}>
                     <Text style={styles.text}>Get Start</Text>
                 </TouchableOpacity>:
                 <ActivityIndicator size={'large'} style={{marginBottom: 15}} color={COLORS.secondary.main} />}

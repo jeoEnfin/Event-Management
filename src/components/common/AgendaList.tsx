@@ -67,6 +67,7 @@ const AgendaList = ({
             {_days && <DynamicTabList
                 tabs={_days}
                 onDateClick={(val) => handleShedule(val)}
+                showCurve={true}
             />}
             </View>
             {schedules && 

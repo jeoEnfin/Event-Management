@@ -1,8 +1,10 @@
+import { config } from "../utils/config"
+
 const initialState = {
     authToken: null,
     authOTP: null,
     authUsername: null,
-    authTenent: 'dev_tenant_default',
+    authTenent: config.DEFAULT_TENANT,
     authRoleId: null,
     authentication: false
 }
@@ -19,7 +21,7 @@ export default (state = initialState, action: any) => {
                 authToken: null,
                 authOTP: null,
                 authUsername: null,
-                authTenent: 'dev_tenant_default',
+                authTenent: state.authTenent,
                 authRoleId: null,
                 authentication: false
             }

@@ -1,9 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View, Animated, Image } from 'react-native'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { COLORS, TXT_SIZE } from '../constants';
 import { Icon } from 'react-native-elements';
+import { config } from '../utils/config';
 
 type Props = {
   iconName?: string,
@@ -44,9 +45,17 @@ const RoundButton = (props: Props) => {
       onPress={props.onPress}
       onPressIn={onPressIn}
       onPressOut={onPressOut} >
-      <Animated.View style={[styles.container, { transform: [{ scale }], backgroundColor: props.backgroundColor },props.border && {borderColor: COLORS.text.main , borderWidth: 1.5}]}>
-        {(props.iconName && !props.imageUrl) && <Icon name={props.iconName} size={props.iconSize} color={props.color} type={props.iconType}/>}
-        {(props.imageUrl && !props.iconName) && <Image source={typeof props.imageUrl === 'string' ? { uri: props.imageUrl } : props.imageUrl}  style={{height: '100%',width: '100%'}} resizeMode='cover'/>}
+      <Animated.View style={[styles.container, { transform: [{ scale }], backgroundColor: props.backgroundColor }, props.border && { borderColor: COLORS.text.main, borderWidth: 1.5 }]}>
+        {(props.iconName && !props.imageUrl) && <Icon name={props.iconName} size={props.iconSize} color={props.color} type={props.iconType} />}
+        {(props.imageUrl && !props.iconName) &&
+          <Image source={typeof props.imageUrl === 'string' ?
+            { uri: props.imageUrl === 'default.webp'
+              ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/speaker/default.webp`
+              : (props.imageUrl && (props.imageUrl.startsWith('https') || props.imageUrl.startsWith('http')))
+                  ? props.imageUrl
+                  : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/user/${props.imageUrl}` }
+            : props.imageUrl}
+            style={{ height: '100%', width: '100%' }} resizeMode='cover' />}
       </Animated.View>
       {props.label && <Text style={styles.label}>{props.label}</Text>}
     </TouchableOpacity>

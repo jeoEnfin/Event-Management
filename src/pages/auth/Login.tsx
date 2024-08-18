@@ -21,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AsyncStorageUtil from '../../utils/services/LocalCache';
 import { CacheIndex } from '../../utils/services/CacheIndex';
 import AuthLogo from './common/AuthLogo';
+import { showToast } from '../../store/toast/ToastActions';
 
 
 
@@ -147,20 +148,16 @@ const LoginScreen = (props: Props) => {
             } catch (error: any) {
                 setIsLoading(false);
                 if (error?.response?.data?.message) {
-                    setError(true)
-                    setErrorEmail(true);
-                    setErrorPassword(true)
-                    //setErrorTxt(error?.response?.data?.message)
+                    // setError(true)
+                    // setErrorEmail(true);
+                    // setErrorPassword(true)
+                    dispatch(showToast(error?.response?.data?.message,'error'));
                 } else {
-                    Alert.alert('Some thing went wrong', '', [
-                        { text: 'OK', onPress: () => { } },
-                    ]);
+                    dispatch(showToast('Something went wrong','warning'));
                 }
             }
         } else {
-            // Alert.alert('Invalid Credentials', 'username or password is invalid', [
-            //     { text: 'OK', onPress: () => console.log('OK Pressed') },
-            // ]);
+            dispatch(showToast('Please fill the fields','alert'));
             setError(true)
         }
     }

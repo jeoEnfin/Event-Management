@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { COLORS } from '../../constants'
 import { QrCodeAPI } from './apis/QrCodeAPI'
 import AsyncStorageUtil from '../../utils/services/LocalCache'
+import { User } from '.'
 
 
 type Props = {
-    data?: any
+    data?: User
 }
 
 const QRCode = ({ data }: Props) => {
@@ -32,7 +33,7 @@ const QRCode = ({ data }: Props) => {
         try {
             const qrCode = await QrCodeAPI({ data });
             setQrcode(qrCode.data)
-            await AsyncStorageUtil.saveData(`QrCode_${data.uuid}`, qrCode.data)
+            //await AsyncStorageUtil.saveData(`QrCode_${data.uuid}`, qrCode.data)
         } catch (err) {
             console.log('QRCodeerror', err)
         }

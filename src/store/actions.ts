@@ -66,6 +66,7 @@ export const Init = () => {
         } catch (error) {
           console.log(error)
           await AsyncStorageUtil.clearAllData();
+          await AsyncStorageUtil.saveData('isGetStarted', true)
           dispatch({
             type: 'LOGOUT',
             payload: null
@@ -73,6 +74,7 @@ export const Init = () => {
         }
       } else {
         await AsyncStorageUtil.clearAllData();
+        await AsyncStorageUtil.saveData('isGetStarted', true)
         dispatch({
           type: 'LOGOUT',
           payload: null
@@ -118,6 +120,7 @@ export const Role = (roleId: string) => {
 export const Logout = () => {
   return async (dispatch: any) => {
     await AsyncStorageUtil.clearAllData();
+    await AsyncStorageUtil.saveData('isGetStarted', true)
     dispatch({
       type: 'LOGOUT',
       payload: null
