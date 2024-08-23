@@ -19,6 +19,7 @@ axiosClient.interceptors.request.use(
     }
     let tenantId = await AsyncStorageUtil.getData("tenant_id");
     if (tenantId) {
+     // console.log(tenantId, 'id from service');
       config.headers['x-tenant-id'] = tenantId;
     }
     let roleId = await AsyncStorageUtil.getData('userRoleId');

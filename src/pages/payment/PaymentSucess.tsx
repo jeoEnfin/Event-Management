@@ -17,6 +17,7 @@ const PaymentSucess = ({ route }: Props) => {
   const navigation: any = useNavigation();
   const [data, setData] = useState<any>(null);
   const [qrCode, setQrcode] = useState(null);
+  console.log(details, 'details')
 
   useEffect(() => {
     if (event) {
@@ -57,17 +58,17 @@ const PaymentSucess = ({ route }: Props) => {
             {qrCode && <Image source={{ uri: qrCode }} style={{ width: '100%', height: '100%' }} />}
           </View>
         </View>
-        {details.expName && <View style={styles.eventDetails}>
+        {details.expo && <View style={styles.eventDetails}>
           <Text style={styles.text3}>Event Name:</Text>
-          <Text style={styles.text2}>{details.expName}</Text>
+          <Text style={styles.text2}>{details.expo}</Text>
         </View>}
-        {details.expStartDate && details.expEndDate && <View style={styles.eventDetails}>
+        {details.expoStartDate && details.expoEndDate && <View style={styles.eventDetails}>
           <Text style={styles.text3}>Event Date:</Text>
-          <Text style={styles.text2}>{format(details.expStartDate, 'dd MMMM yyyy')} - {format(details.expEndDate, 'dd MMMM yyyy')}</Text>
+          <Text style={styles.text2}>{format(details.expoStartDate, 'dd MMMM yyyy')} - {format(details.expoEndDate, 'dd MMMM yyyy')}</Text>
         </View>}
       </View>
       <View style={{width: '95%'}}>
-        <Button label='Back to Home' buttonClick={()=>{navigation.goBack()}}/>
+        <Button label='Continue' buttonClick={()=>{navigation.goBack()}}/>
       </View>
     </ScreenWrapper>
   )

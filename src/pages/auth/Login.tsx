@@ -22,6 +22,9 @@ import AsyncStorageUtil from '../../utils/services/LocalCache';
 import { CacheIndex } from '../../utils/services/CacheIndex';
 import AuthLogo from './common/AuthLogo';
 import { showToast } from '../../store/toast/ToastActions';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
+
 
 
 
@@ -38,127 +41,71 @@ const LoginScreen = (props: Props) => {
     const [password, setPassword] = useState('');
     const [isTextSecure, setIsTextSecure] = useState<boolean>(true);
     const [error, setError] = useState<boolean>(false);
-    const [errorEmail, setErrorEmail] = useState<boolean>(false);
-    const [errorPassword, setErrorPassword] = useState<boolean>(false);
     const platformName = Platform.OS;
     const [errorTxt, setErrorTxt] = useState<string>('')
-    const [emailErrorTxt, setEmailErrorTxt] = useState<string>('')
-    const [passwordErrorTxt, setPasswordErrorTxt] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [rememberCheck, setRememberCheck] = useState<boolean>(false);
 
-
+    const validationSchema = Yup.object().shape({
+        email: Yup.string().email('Invalid email')
+        .matches(
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            'Invalid email format'
+          )
+        .required('Email is required'),
+        password: Yup.string()
+            .min(1, 'Password must be at least 1 characters')
+            .required('Password is required')
+    });
 
     useEffect(() => {
         googleConfig();
     }, []);
 
-    const handleEmailChange = (newEmail: string) => {
-        setErrorTxt('')
-        const isEmailValid = isValidEmail(newEmail);
-        if (isEmailValid) {
-            setUsername(newEmail.toLowerCase())
-            setErrorEmail(false)
-            setError(false)
-            setEmailErrorTxt('')
-        } else {
-            setEmailErrorTxt('Enter a valid email address')
-            setErrorEmail(true);
-            setError(true);
-        }
+    const initialValues = {
+        email: '',
+        password: '',
     };
 
-    const handlePasswordChange = (newPassword: string) => {
-        setErrorTxt('')
-        const isPasswordValid = newPassword.length > 0;
-        if (isPasswordValid) {
-            setPassword(newPassword);
-            setErrorPassword(false)
-            setError(false)
-            setPasswordErrorTxt('')
+    const handleLogin = async (data: any) => {
+        setIsLoading(true);
+        const _data = {
+            email: data?.email.toLowerCase(),
+            password: data?.password
         }
-        else {
-            setPasswordErrorTxt('Password must be enter')
-            setErrorPassword(true);
-            setError(true)
-        }
-    };
-
-    const validation = () => {
-        if (username.length === 0 || password.length === 0) {
-            setErrorEmail(true);
-            setErrorPassword(true)
-            setError(true);
-        }
-        else if (username.length === 0) {
-            setErrorEmail(true)
-            setError(true);
-        }
-        else if (password.length === 0) {
-            setErrorPassword(true)
-            setError(true);
-        }
-        else if (errorEmail === true && errorPassword === true) {
-            setError(true)
-        }
-        else {
-            setError(false)
-        }
-    }
-
-    const handleLogin = async () => {
-        validation();
-
-        if (username != '' && password != '') {
-            setIsLoading(true);
-            const data = {
-                email: username,
-                password: password
+        try {
+            const userData = await AuthLoginAPI({ data: _data });
+            const access_token = userData?.data?.data?.access_token;
+            const tenant = userData?.data?.data?.tenant;
+            const _user = userData?.data?.data?.user;
+            if (access_token) {
+                await AsyncStorageUtil.saveData('token', access_token);
             }
-            try {
-                const userData = await AuthLoginAPI({ data });
-                const access_token = userData?.data?.data?.access_token;
-                const tenant = userData?.data?.data?.tenant;
-                const _user = userData?.data?.data?.user;
-                if (access_token) {
-                    await AsyncStorageUtil.saveData('token', access_token);
+            if (tenant) {
+                await AsyncStorageUtil.saveData('user_tenant_id', tenant)
+            }
+            if (rememberCheck) {
+                await AsyncStorageUtil.saveData('user_credentials', data)
+            }
+            if (_user) {
+                await AsyncStorageUtil.saveData('userData', _user)
+                if (_user?.roleId) {
+                    dispatch(Role(_user?.roleId));
                 }
-                if (tenant) {
-                    //console.log('Tenant', tenant);
-                    await AsyncStorageUtil.saveData('user_tenant_id', tenant)
-                }
-                if (rememberCheck) {
-                    await AsyncStorageUtil.saveData('user_credentials', data)
-                }
-                if (_user) {
-                    await AsyncStorageUtil.saveData('userData', _user)
-                    if (_user?.roleId) {
-                        //await AsyncStorageUtil.saveData('userRoleId', _user?.roleId)
-                        //console.log('roleId', _user?.roleId)
-                        dispatch(Role(_user?.roleId));
-                    }
-                    else if (_user?.roles.length > 0) {
-                        await AsyncStorageUtil.saveData('userRoles', _user?.roles);
-                        //console.log('roles', _user?.roles);
-                    }
-                }
-                dispatch(Login(username, access_token))
-                setError(false)
-                setIsLoading(false);
-            } catch (error: any) {
-                setIsLoading(false);
-                if (error?.response?.data?.message) {
-                    // setError(true)
-                    // setErrorEmail(true);
-                    // setErrorPassword(true)
-                    dispatch(showToast(error?.response?.data?.message,'error'));
-                } else {
-                    dispatch(showToast('Something went wrong','warning'));
+                else if (_user?.roles.length > 0) {
+                    await AsyncStorageUtil.saveData('userRoles', _user?.roles);
                 }
             }
-        } else {
-            dispatch(showToast('Please fill the fields','alert'));
-            setError(true)
+            dispatch(Login(username, access_token))
+            setIsLoading(false);
+        } catch (error: any) {
+            setIsLoading(false);
+            console.log(error.response)
+            if (error?.response?.data?.message) {
+                dispatch(showToast(error?.response?.data?.message, 'error'));
+            } else {
+                dispatch(showToast('Something went wrong', 'warning'));
+            }
         }
     }
 
@@ -196,50 +143,70 @@ const LoginScreen = (props: Props) => {
                         linkButtonLabel='Sign up'
                         linkButtonClick={() => { navigation.navigate('Signup') }}
                     />
-                    <ScrollView>
-                        <View style={{ marginTop: 10, gap: 10 }}>
-                            <InputText
-                                label='Email'
-                                placeholder='Email'
-                                autoComplete='email'
-                                textSecure={false}
-                                showText={() => { }}
-                                inputMode={'email'}
-                                onDataChanged={handleEmailChange}
-                                error={errorEmail}
-                                errorTxt={emailErrorTxt}
-                                backgroundColor={COLORS._background.primary}
-                            />
-                            <InputText
-                                label='Password'
-                                placeholder='Password'
-                                iconName='eye-outline'
-                                autoComplete='new-password'
-                                textSecure={isTextSecure}
-                                showText={showPassword}
-                                // hideText={hidePassword}
-                                onDataChanged={handlePasswordChange}
-                                keyboardType={'default'}
-                                error={errorPassword}
-                                errorTxt={passwordErrorTxt}
-                                backgroundColor={COLORS._background.primary}
-                            />
-                            {(error && errorTxt) && <Text style={styles.errorTxt}>{errorTxt}</Text>}
-                        </View>
-                        <View style={styles.forgotBody}>
-                            <CheckboxWithLabel
-                                label='Remember me'
-                                isChecked={rememberCheck}
-                                onPress={() => { setRememberCheck(!rememberCheck) }}
-                            />
-                            <TouchableOpacity onPress={() => { ForgotPasswordRoute() }}>
-                                <Text style={styles.fgtTxt}>Forgot password?</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </ScrollView>
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        validateOnChange={true}
+                        validateOnBlur={true}
+                        onSubmit={(values) => {
+                            handleLogin(values);
+                        }}
+                    >
+                        {({ handleChange, handleBlur, handleSubmit, setFieldTouched, setFieldValue, values, errors, touched ,resetForm}) => (
+                            <>
+                                <ScrollView>
+                                    <View style={{ marginTop: 10, gap: 10 }}>
+                                        <InputText
+                                            label='Email'
+                                            placeholder='Email'
+                                            autoComplete='email'
+                                            textSecure={false}
+                                            showText={() => { }}
+                                            inputMode={'email'}
+                                            onDataChanged={(value) => setFieldValue('email', value)}
+                                            error={!!(errors.email && touched.email)}
+                                            errorTxt={(touched.email && touched.email) ? errors.email : ''}
+                                            value={values.email}
+                                            onFocus={() => setFieldTouched('email', true)}
+                                            onBlur={() => setFieldTouched('email', true)}
+                                            backgroundColor={COLORS._background.primary}
+                                        />
+                                        <InputText
+                                            label='Password'
+                                            placeholder='Password'
+                                            iconName='eye-outline'
+                                            autoComplete='new-password'
+                                            textSecure={isTextSecure}
+                                            showText={showPassword}
+                                            inputMode={'text'}
+                                            onDataChanged={(value) => setFieldValue('password', value)}
+                                            error={!!(errors.password && touched.password)}
+                                            errorTxt={(touched.password && touched.password) ? errors.password : ''}
+                                            value={values.password}
+                                            onFocus={() => setFieldTouched('email', true)}
+                                            onBlur={() => { setFieldTouched('password', true) }}
+                                            backgroundColor={COLORS._background.primary}
+                                        />
+                                    </View>
+                                    <View style={styles.forgotBody}>
+                                        <CheckboxWithLabel
+                                            label='Remember me'
+                                            isChecked={rememberCheck}
+                                            onPress={() => { setRememberCheck(!rememberCheck) }}
+                                        />
+                                        <TouchableOpacity onPress={() => {
+                                            resetForm();
+                                            ForgotPasswordRoute() }}>
+                                            <Text style={styles.fgtTxt}>Forgot password?</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </ScrollView>
+                                <Button label='Login' buttonClick={handleSubmit} loading={isLoading} />
+                            </>
+                        )}</Formik>
                 </View>
                 <View>
-                    <Button label='Login' buttonClick={handleLogin} loading={isLoading} />
+
                     <View style={styles.signupBody}>
                         <Text style={styles.signupTxt}>or continue with</Text>
                     </View>

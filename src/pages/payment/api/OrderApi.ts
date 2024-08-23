@@ -4,6 +4,6 @@ export const OrderAPI = async (data:any) => {
 	return axiosClient.request({
 		url: `order`,
 		method: 'post',
-        data: data?.data
+        data: data?.data,
 	});
 };

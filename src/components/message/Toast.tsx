@@ -39,7 +39,7 @@ const Toast: React.FC = () => {
             case 'error':
                 return '#F44336'; // Red
             case 'alert':
-                return '#FFC107'; // Yellow    
+                return '#FB9E13';  
             default:
                 return '#333'; // Default dark color
         }

@@ -1,4 +1,4 @@
-import { Animated, Image, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, Dimensions, Image, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import ScreenWrapper from '../../../components/ScreenWrapper'
 import CustomTab from '../components/CustomTab';
@@ -20,7 +20,7 @@ type Props = {
 }
 
 const Lobby = ({ route }: Props) => {
-    const { event, varient } = route.params;
+    const { event, varient, tenantId } = route.params;
     const navigation: any = useNavigation();
     const platformName = Platform.OS || 'android';
     const [loading, setLoading] = useState<boolean>(false);
@@ -29,7 +29,23 @@ const Lobby = ({ route }: Props) => {
     const [halls, setHalls] = useState<any[]>([]);
     const [isScheduleView, setIsScheduleView] = useState<boolean>(false);
     const fadeAnim = useRef(new Animated.Value(isScheduleView ? 1 : 0)).current;
-    const [isScheduleViewData, setIsScheduleViewData] = useState<any>(null)
+    const [isScheduleViewData, setIsScheduleViewData] = useState<any>(null);
+    const [orientation, setOrientation] = useState<any>('portrait');
+
+    useEffect(() => {
+      const updateOrientation = () => {
+        const { width, height } = Dimensions.get('window');
+        if (width > height) {
+          setOrientation('landscape');
+        } else {
+          setOrientation('portrait');
+        }
+      };
+      updateOrientation();
+      const subscription = Dimensions.addEventListener('change', updateOrientation);
+      // Cleanup
+      return () => subscription?.remove();
+    }, []);
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -46,10 +62,6 @@ const Lobby = ({ route }: Props) => {
     }, [event])
 
     useEffect(() => {
-        console.log(isScheduleViewData)
-    }, [isScheduleViewData])
-
-    useEffect(() => {
         if (schedule) {
             const _halls = groupWithHallName(schedule);
             setHalls(_halls);
@@ -57,6 +69,7 @@ const Lobby = ({ route }: Props) => {
     }, [schedule])
 
     const getExpo = async () => {
+        await AsyncStorageUtil.saveData('tenant_id', tenantId);
         setLoading(true);
         const url = `/${event}`
         try {
@@ -81,11 +94,19 @@ const Lobby = ({ route }: Props) => {
 
     const handleMessageClick = async () => {
         const userData = await AsyncStorageUtil.getData('userData')
+        //console.log(userData, 'userData')
         const data = {
             expName: expoData.expName,
             email: userData?.data?.email
         }
-        navigation.navigate('Messages',{data,expId: expoData?.id});
+        navigation.navigate('Messages', { data, expId: expoData?.id });
+    };
+
+    const handleSchedulePress = async (data: any) => {
+        //console.log(data, expoData?.expAddress);
+        if (data) {
+            navigation.navigate('Schedule', { data, expAddress: expoData?.expAddress, expVenue: expoData?.expVenue });
+        }
     };
 
     return (
@@ -93,15 +114,15 @@ const Lobby = ({ route }: Props) => {
             <StatusBar hidden={platformName === 'android' ? true : false} />
             <View style={{ flex: 1, width: '100%', height: '100%' }}>
                 <Image source={require('../../../assets/ci/expo/offlineLobby.png')} style={styles.background} />
-                <HallTab data={halls} onPressHall={(val) => { handleScheduleView(val) }} isSelected={isScheduleView} />
+                {halls && <HallTab position={orientation || 'portrait'} data={halls} onPressHall={(val) => { handleScheduleView(val) }} isSelected={isScheduleView} />}
                 <CustomTab
                     attendeesClick={() => { navigation.navigate('Attendees') }}
                     chatClick={handleMessageClick}
                     helpClick={() => { navigation.navigate('Help') }}
-                    position='portrait' />
+                    position={orientation || 'portrait'} />
                 {isScheduleView &&
-                    <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                        <Animated.View style={[styles.scheduleContainer, { opacity: fadeAnim }]}>
+                    <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                        <Animated.View style={[styles.scheduleContainer, { opacity: fadeAnim }, orientation === 'landscape' && {width: '100%', height: '100%', borderRadius: 0}]}>
                             <View style={styles.scheduleCardHeader}>
                                 <Text style={styles.title}> Halls</Text>
                                 <TouchableOpacity onPress={() => { setIsScheduleView(!isScheduleView) }}>
@@ -109,10 +130,12 @@ const Lobby = ({ route }: Props) => {
                                 </TouchableOpacity>
                             </View>
                             {isScheduleViewData && <ScheduleCards
+                                position={orientation || 'portrait'}
                                 schedules={isScheduleViewData?.schedules}
                                 hallName={isScheduleViewData?.hallName}
                                 eventStartDate={expoData?.expStartDate || ''}
                                 eventEndDate={expoData?.expEndDate || ''}
+                                onPress={(val) => { handleSchedulePress(val) }}
                             />}
                         </Animated.View>
                     </View>}

@@ -72,7 +72,7 @@ export const getRoleModules = async (roleType: any) => {
   }
   try {
     const response = await axiosClient.request({
-      url: `/role/modules`,
+      url: `role/modules`,
       method: "get",
       params: { roleType }
     });
@@ -90,7 +90,7 @@ export const getUserSession = async () => {
   const roleId =await AsyncStorageUtil.getData('userRoleId');
   try {
     const response = await axiosClient.request({
-      url: `/users/session`,
+      url: `users/session`,
       method: "get",
       ... ((roleId !== null) ? { params: { roleId: roleId } } : {})
     });

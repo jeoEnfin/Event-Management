@@ -5,9 +5,11 @@ import { COLORS } from '../../constants';
 interface CustomTextFieldProps extends TextInputProps {
   label?: string;
   placeholder?: string;
-  validationType?: 'email' | 'number' | 'url' | 'text'| 'custom' |'required'| 'any' | 'futureDate' | 'pastDate' ;
+  validationType?: 'email' | 'number' | 'url' | 'text' | 'custom' | 'required' | 'any' | 'futureDate' | 'pastDate';
   helperText?: string;
   customErrorText?: string;
+  isRequired?: boolean;
+  regex?: string;
 }
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -18,6 +20,8 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
   onChangeText,
   value,
   customErrorText,
+  isRequired = false,
+  regex,
   ...rest
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -37,11 +41,15 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     if (validationType) {
       if (validationType === 'email' && text && !/^\S+@\S+\.\S+$/.test(text)) {
         errorMessage = customErrorText || 'Invalid email address';
-      } else if (validationType === 'number' && text && !/^\d{10}$/.test(text)) {
-        errorMessage = customErrorText || 'Invalid phone number';
-      } else if (validationType === 'required' && !text) {
+      } else if (validationType === 'number' && text && !/^\d+$/.test(text)) {
+        errorMessage = customErrorText || 'Invalid input, only numbers are allowed';
+      } else if (isRequired && !text) {
         errorMessage = customErrorText || 'This field is required';
       }
+    }
+
+    if (regex && text &&!new RegExp(regex).test(text)) {
+      errorMessage = customErrorText || 'Invalid input, format does not match';
     }
     setError(errorMessage);
   };
@@ -60,8 +68,13 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
         }}
         value={value}
         {...rest}
+        inputMode={validationType === 'text' ? 'text' :
+          validationType === 'number' ? 'numeric' :
+            validationType === 'url' ? 'url' :
+              validationType === 'email' ? 'email' : 'text'
+      }
       />
-      {label && <Text style={[styles.label, isFocused && {color: COLORS.secondary.main}]}>{label}</Text>}
+      {label && <Text style={[styles.label, isFocused && { color: COLORS.secondary.main }]}>{label}</Text>}
       {helperText && !error && <Text style={styles.helperText}>{helperText}</Text>}
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
@@ -101,11 +114,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginTop: 5,
+    marginLeft: 2
   },
   errorText: {
     fontSize: 12,
     color: 'red',
     marginTop: 5,
+    marginLeft: 2
   },
 });
 

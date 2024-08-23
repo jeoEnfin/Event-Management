@@ -22,6 +22,7 @@ import Attendees from '../pages/event/attendees';
 import Messages from '../pages/event/messages';
 import Help from '../pages/event/help';
 import Enquiry from '../pages/enquiry';
+import Schedule from '../pages/event/schedule';
 
 type Props = {}
 
@@ -37,7 +38,7 @@ const MainStack = (props: Props) => {
             <Stack.Screen name='Edit Profile' component={ProfileEdit} options={{headerShown: true}}/>
             <Stack.Screen name='EventDetails' component={EventDetailsScreen} />
             <Stack.Screen name='OfflineLobby' component={OfflineLobby} />
-            <Stack.Screen name='Registration' component={Payment} options={{headerShown: true}}/>
+            <Stack.Screen name='Registration' component={Payment} options={{headerShown: true,orientation: 'portrait'}}/>
             <Stack.Screen name='Reset Password' component={ResetPassword} options={{headerShown: true}}/>
             <Stack.Screen name='SucessPage' component={PaymentSucess} />
             <Stack.Screen name='FailPage' component={PaymentFail} />
@@ -49,7 +50,8 @@ const MainStack = (props: Props) => {
             <Stack.Screen name="Messages" component={Messages} options={{ orientation: 'portrait', headerShown: true}} />
             <Stack.Screen name="Help" component={Help} options={{ orientation: 'portrait', headerShown: true}} />
             <Stack.Screen name="Talk to us" component={Enquiry} options={{ orientation: 'portrait', headerShown: true}} />
-            
+            <Stack.Screen name="Schedule" component={Schedule} options={{ orientation: 'portrait', headerShown: true, headerTitle: ''}} />
+
 
             {/* 
             <Stack.Screen name="Hall_1" component={Hall_1} options={{orientation: 'portrait'}}/> */}

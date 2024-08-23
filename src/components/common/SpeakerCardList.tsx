@@ -16,7 +16,6 @@ type ItemProps = {
 
 
 const SpeakerCardList = ({ title, data, tenantId }: Props) => {
-    console.log(data)
     const Item = ({ id, data }: ItemProps) => {
         return (
             <SpeakerCard
@@ -54,6 +53,7 @@ const SpeakerCardList = ({ title, data, tenantId }: Props) => {
                 keyExtractor={(item: any) => item.id}
                 style={{ margin: 3 }}
                 showsHorizontalScrollIndicator={false}
+                //contentContainerStyle={{alignItems: 'flex-start'}}
             />
         </View>
     )

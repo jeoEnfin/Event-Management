@@ -1,6 +1,6 @@
-import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { BackHandler, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import TopBar from '../../components/TopBar'
 import { ExpoListingAPI } from './apis/ExpoListApi'
@@ -11,6 +11,9 @@ import AsyncStorageUtil from '../../utils/services/LocalCache'
 import Search from '../../components/common/Search'
 import EventCard from '../../components/cards/EventCard'
 import { config } from '../../utils/config'
+import OverlayLoader from '../../components/modals/OverlayLoader'
+import { useDispatch } from 'react-redux'
+import { showToast } from '../../store/toast/ToastActions'
 
 
 
@@ -24,7 +27,8 @@ type ItemProps = {
 }
 
 const HomeScreen = (props: Props) => {
-  const navigation: any = useNavigation()
+  const navigation: any = useNavigation();
+  const dispatch: any = useDispatch();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState(null);
@@ -41,12 +45,7 @@ const HomeScreen = (props: Props) => {
     getToken();
   }, []);
 
-  useEffect(()=>{
-    if(isToken){
-      //fetchOrder();
-    }
-  },[isToken])
-
+  
   useEffect(() => {
     if (data) {
       currentExpo(data)
@@ -67,7 +66,6 @@ const HomeScreen = (props: Props) => {
   }, [data, order])
 
   useEffect(() => {
-    //console.log(keyword, 'keyword')
     fetchData({ keyword });
   }, [keyword])
 
@@ -92,17 +90,6 @@ const HomeScreen = (props: Props) => {
     return expos.filter((expo: any) => expoIds.includes(expo.id));
   };
 
-  const fetchOrder = async () => {
-    if(!isToken) return null;
-    try {
-      const orders = await OrderListAPI();
-      //console.log(orders?.data?.data?.data, "OrderList")
-      setOrder(orders?.data?.data?.data)
-      AsyncStorageUtil.saveData('MyOrders', orders?.data?.data?.data);
-    } catch (err) {
-      console.log('error fetching order-', err)
-    }
-  }
 
   const fetchData = async ({ keyword }: any) => {
     setIsLoading(true);
@@ -116,32 +103,33 @@ const HomeScreen = (props: Props) => {
       // Filter expos where expRegistrationStartDate matches current date
       const filteredExpos = _data.filter((expo: any) => {
         //console.log(expo.expRegistrationStartDate,expo.expRegistrationEndDate,'wwww')
-        if(!expo.expRegistrationStartDate || !expo.expRegistrationEndDate || !expo.expStartDate){
+        if (!expo.expRegistrationStartDate || !expo.expRegistrationEndDate || !expo.expStartDate) {
           return;
         }
         const currentDate = new Date();
         const registrationStartDate = parseISO(expo.expRegistrationStartDate);
         const registrationEndDate = parseISO(expo.expRegistrationEndDate);
         const expoStartDate = parseISO(expo.expStartDate);
-      
+
         return isWithinInterval(currentDate, { start: registrationStartDate, end: registrationEndDate })
           && isAfter(expoStartDate, currentDate);
       });
 
-      if(filteredExpos){
+      if (filteredExpos) {
         setNewExpos(filteredExpos);
       }
-      
+
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
-      console.log(error.response)
+      dispatch(showToast('Something went wrong', 'error'));
+      //console.log(error.response)
     }
   };
 
   const currentExpo = (data: any) => {
     const currentDate = new Date();
-    
+
     const _currentExpos = data
       .filter((expo: any) => {
         // Check if both expStartDate and expEndDate are defined
@@ -150,7 +138,7 @@ const HomeScreen = (props: Props) => {
         return hasValidDates && isAfter(parseISO(expo.expEndDate), currentDate);
       })
       .sort((a: any, b: any) => compareAsc(parseISO(a.expStartDate), parseISO(b.expStartDate)));
-    
+
     if (_currentExpos.length >= 0) {
       setCurrentExpos(_currentExpos);
     }
@@ -158,7 +146,6 @@ const HomeScreen = (props: Props) => {
 
   const onRefresh = async () => {
     fetchData({ keyword });
-    //fetchOrder();
     setTenant();
   };
 
@@ -173,14 +160,12 @@ const HomeScreen = (props: Props) => {
     setSearchTimeout(timeout);
   }
 
-  const handleDetailsPage = async (id: string, tenantId: string)=>{
-    console.log(id,tenantId);
+  const handleDetailsPage = async (id: string, tenantId: string) => {
     await AsyncStorageUtil.saveData('tenant_id', tenantId);
     navigation.navigate('EventDetails', { event: id, tenantId });
   }
 
   const Item = ({ id, data }: ItemProps) => {
-    //console.log(data, 'data')
     return (
       <View style={{ marginHorizontal: 18 }}>
         <EventCard
@@ -189,7 +174,7 @@ const HomeScreen = (props: Props) => {
           title={data.expName}
           eventStartDate={data.expStartDate}
           eventEndDate={data.expEndDate}
-          cardClick={() => {handleDetailsPage(data.expCode, data.expTenantId)}}
+          cardClick={() => { handleDetailsPage(data.expCode, data.expTenantId) }}
           tenantId={data.expTenantId}
         />
       </View>
@@ -201,7 +186,7 @@ const HomeScreen = (props: Props) => {
     <ScreenWrapper>
       <TopBar title='Join '
         profile
-        notification={isToken ? true : false}
+        // notification={isToken ? true : false}
       />
       <View style={{ marginVertical: 20, width: '100%', paddingHorizontal: 18 }}>
         <Search
@@ -244,6 +229,7 @@ const HomeScreen = (props: Props) => {
           </View>
         }
       />
+      {/* <OverlayLoader visible={isLoading} /> */}
     </ScreenWrapper>
   )
 }

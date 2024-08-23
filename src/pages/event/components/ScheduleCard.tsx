@@ -21,9 +21,10 @@ interface ScheduleCardProps {
     hallName?: string;
     eventStartDate?: string
     eventEndDate?: string
+    onPress: (data: any)=>void;
 }
 
-const ScheduleCards: React.FC<ScheduleCardProps> = ({ schedules, hallName, eventStartDate, eventEndDate }) => {
+const ScheduleCards: React.FC<ScheduleCardProps> = ({ schedules, hallName, eventStartDate, eventEndDate ,onPress}) => {
     const [_days, set_Days] = useState<any>([]);
 
     useEffect(() => {
@@ -80,6 +81,8 @@ const ScheduleCards: React.FC<ScheduleCardProps> = ({ schedules, hallName, event
                                     title={item.schName}
                                     speaker={item.speakers}
                                     isJoin={true}
+                                    onPress={() => onPress(item)}
+                                    isStarted={true}
                                 /></View>
                         )}
                     />
@@ -134,9 +137,6 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     dateContainer: {
-        // flexDirection: 'row',
-        //flexWrap: 'wrap',
-        // justifyContent: 'space-between',
         height: 80,
     },
     dateButton: {

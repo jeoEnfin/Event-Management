@@ -8,8 +8,8 @@ export const QrCodeAPI = async ({data}:any) => {
         data: {
             payload: data
         },
-		headers: {
-			'x-tenant-id': config.DEFAULT_TENANT
-		}
+		// headers: {
+		// 	'x-tenant-id': config.DEFAULT_TENANT
+		// }
 	});
 };

@@ -30,8 +30,8 @@ export const Init = () => {
           })
         }
       }
-    } catch (error) {
-      //console.log(error)
+    } catch (error:any) {
+      console.log(error.response, 'error')
       let credentials = await AsyncStorageUtil.getData('user_credentials');
       if (credentials) {
         await AsyncStorageUtil.removeData('token')
@@ -74,7 +74,7 @@ export const Init = () => {
         }
       } else {
         await AsyncStorageUtil.clearAllData();
-        await AsyncStorageUtil.saveData('isGetStarted', true)
+        //await AsyncStorageUtil.saveData('isGetStarted', true)
         dispatch({
           type: 'LOGOUT',
           payload: null
@@ -84,6 +84,7 @@ export const Init = () => {
     }
   }
 }
+
 
 export const Otp = (otp: any) => {
   return async (dispatch: any) => {
@@ -144,4 +145,16 @@ export const tenant = (tenant: string) => {
     payload: { tenant }
   })
 }
+
+export const setState = (value: boolean) => ({
+  type: 'SET_STATE',
+  payload: value,
+});
+
+export const toggleStateAsync = () => {
+  return (dispatch: any, getState: any) => {
+    const currentValue = getState().state.initialUpdate;
+    dispatch(setState(!currentValue));
+  };
+};
 

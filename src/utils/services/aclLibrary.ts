@@ -12,7 +12,7 @@ export const getModuleAccessRules = async (module: string, _access?: string) => 
 
     //fetch feature restriction for the account
     const userData = await getUserSession();
-
+   //console.log(userData,'userData')
     const modules = await getRoleModules(userData.role || 'admin');
     //console.log(modules, "modules")
 

@@ -23,7 +23,8 @@ import ActivityElement from '../../components/common/ActivityElement';
 import { RNCamera } from 'react-native-camera';
 import QRMarker from './components/QrMarker';
 import { Icon } from 'react-native-elements';
-import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+//import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import AsyncStorageUtil from '../../utils/services/LocalCache';
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 
@@ -32,7 +33,7 @@ type Props = {
 }
 
 const ScanScreen = ({route}: Props) => {
-    const { eventId } = route.params
+    const { eventId , tenantId } = route.params;
     const [url, setUrl] = useState('')
     const [isRetake, setIsRetake] = useState<boolean>(true);
     const navigation: any = useNavigation()
@@ -46,42 +47,69 @@ const ScanScreen = ({route}: Props) => {
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
     // useEffect(() => {
-    //     const checkPermission = async () => {
-    //         const permissionType = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
-    //         const status = await check(permissionType);
-
-    //         if (status === RESULTS.GRANTED) {
-    //             setHasPermission(true);
-    //         } else {
-    //             setHasPermission(false);
-    //         }
-    //     };
-
-    //     checkPermission();
-    // }, []);
-
-    // useEffect(() => {
-    //     if (hasPermission === false) {
-    //         requestPermission();
+    //     checkCameraPermission();
+    //   }, []);
+    
+    //   const checkCameraPermission = async () => {
+    //     const permissionType =
+    //       Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+    
+    //     try {
+    //       const status = await check(permissionType);
+    //       handlePermissionStatus(status, permissionType);
+    //     } catch (error) {
+    //       console.error('Failed to check permission:', error);
+    //       setHasPermission(false);
     //     }
-    // }, [hasPermission]);
-
-    // const requestPermission = async () => {
-    //     const permissionType = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
-    //     const status = await request(permissionType);
-
-    //     if (status === RESULTS.GRANTED) {
+    //   };
+    
+    //   const handlePermissionStatus = async (status:any, permissionType:any) => {
+    //     switch (status) {
+    //       case RESULTS.UNAVAILABLE:
+    //         Alert.alert('Camera Not Available', 'Camera is not available on this device.');
+    //         setHasPermission(false);
+    //         break;
+    //       case RESULTS.DENIED:
+    //         try {
+    //           const result = await request(permissionType);
+    //           if (result === RESULTS.GRANTED) {
+    //             setHasPermission(true);
+    //           } else {
+    //             setHasPermission(false);
+    //           }
+    //         } catch (error) {
+    //           console.error('Permission request failed:', error);
+    //           setHasPermission(false);
+    //         }
+    //         break;
+    //       case RESULTS.GRANTED:
     //         setHasPermission(true);
-    //     } else {
+    //         break;
+    //       case RESULTS.BLOCKED:
     //         Alert.alert(
-    //             'Permission Required',
-    //             'Camera permission is required to scan QR codes.',
-    //             [{ text: 'OK', onPress: () => navigation.goBack() }]
+    //           'Permission Blocked',
+    //           'Camera permission is blocked. Please enable it from settings.'
     //         );
     //         setHasPermission(false);
+    //         break;
+    //       default:
+    //         setHasPermission(false);
+    //         break;
     //     }
-    // };
-
+    //   };
+    
+    //   if (hasPermission === null) {
+    //     return <Text>Checking camera permissions...</Text>;
+    //   }
+    
+    //   if (hasPermission === false) {
+    //     return (
+    //       <View>
+    //         <Text>Camera permission denied or unavailable. Please enable it in settings.</Text>
+    //       </View>
+    //     );
+    //   }
+   
     const onSuccess = (e: any) => {
         if (e.data) {
             markAttendence(e.data);
@@ -97,14 +125,12 @@ const ScanScreen = ({route}: Props) => {
     };
 
     const markAttendence = async (data: any) => {
-        //console.log(data)
+        await AsyncStorageUtil.saveData('tenant_id', tenantId);
         setIsLoading(true);
         try {
-            const attendance = await UserAttendenceApi({ data: data, platform: platformName , eventId})
-           // console.log(attendance);
+            const attendance = await UserAttendenceApi({ data: data, platform: platformName , eventId , tenantId});
             setIsAlreadyRegistered(false);
             if (attendance) {
-                console.log('data', attendance?.data?.data?.user);
                 setUserData(attendance?.data?.data?.user);
                 setExpoData(attendance?.data?.data?.expo);
             }
@@ -115,7 +141,6 @@ const ScanScreen = ({route}: Props) => {
                 if (err?.response?.data) {
                     const message = err?.response?.data?.message
                     const _data = err?.response?.data?.data
-                    console.log(message)
                     if (message == 'Attendance already marked') {
                         if (_data) {
                             setUserData(_data?.user);
@@ -151,14 +176,13 @@ const ScanScreen = ({route}: Props) => {
 
     return (
         <ScreenWrapper>
-            <TopBar home back homePress={() => navigation.navigate('HomeTab')} />
+            <TopBar back />
             <QRCodeScanner
                 onRead={onSuccess}
                 showMarker={true}
                 reactivate={true}
                 reactivateTimeout={5000}
                 cameraStyle={{ height: '100%' }}
-                //markerStyle={{ borderColor: COLORS.secondary.main }}
                 cameraTimeout={300000}
                 flashMode={isFlash ? RNCamera.Constants.FlashMode.torch : RNCamera.Constants.FlashMode.off}
                 customMarker={<QRMarker />}

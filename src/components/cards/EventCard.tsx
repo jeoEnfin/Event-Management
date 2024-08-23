@@ -22,7 +22,7 @@ const EventCard = ({
     tenantId
 }: Props) => {
     return (
-        <TouchableOpacity style={styles.container} onPress={cardClick} >
+        <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={cardClick} >
             <View style={styles.logoContainer}>
                 <Image
                     source={{ 
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         height: '100%',
         //justifyContent: 'space-between',
-        paddingVertical: 3
+        paddingVertical: 2
     },
     titleTxt: {
         fontSize: 16,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         color: COLORS.text.main,
         fontSize: 12,
         fontWeight: '400',
-        marginTop: 12
+        marginTop: 10
       },
       dateTxt: {
         color: COLORS.text.main,

@@ -29,7 +29,7 @@ export const COLORS = {
         primary: "#FFFFFF",
         error: '#EF4444',
         disable: '#cbcfd6',
-        secondary: 'gray',
+        secondary: '#333333',
         default: '#333333',
         warning: '#2196F3',
         alert: '#FB9E13'

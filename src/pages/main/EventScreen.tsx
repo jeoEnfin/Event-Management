@@ -101,10 +101,10 @@ const EventScreen = (props: Props) => {
 
   const fetchOrder = async () => {
     try {
-      const orders = await OrderListAPI();
+      //const orders = await OrderListAPI();
       //console.log(orders?.data?.data?.data, "OrderList")
-      setOrder(orders?.data?.data?.data)
-      AsyncStorageUtil.saveData('MyOrders', orders?.data?.data?.data);
+      //setOrder(orders?.data?.data?.data)
+      //AsyncStorageUtil.saveData('MyOrders', orders?.data?.data?.data);
     } catch (err) {
       console.log('error fetching order-', err)
     }
@@ -218,6 +218,21 @@ const EventScreen = (props: Props) => {
           }
           onEndReached={loadMoreData}
           onEndReachedThreshold={0.5}
+          ListEmptyComponent={
+            <View
+              style={{
+                flex: 1,
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+              <Text style={{
+                color: COLORS.text.main,
+                fontWeight: '600',
+                fontSize: 20,
+              }}>No Events to list</Text>
+            </View>
+          }
           ListFooterComponent={isLoading && !isRefreshing ? <ActivityIndicator size="large" color={COLORS.secondary.main} /> : null}
         />
       ) : <View><Text>No events registered</Text></View>}

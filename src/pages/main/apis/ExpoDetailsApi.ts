@@ -1,7 +1,6 @@
 import axiosClient from "../../../utils/services/AxiosServices";
 
 export const ExpoDetailsAPI = async ({url, tenant}:any) => {
-	//console.log(url)
 	return axiosClient.request({
 		url: `expo${url}`,
 		method: 'get',

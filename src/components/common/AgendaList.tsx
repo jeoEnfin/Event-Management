@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLORS, TXT_SIZE } from '../../constants'
-import { getDatesInRange } from '../../utils/common';
+import { getDatesInRange, isDateTimeNotPassed } from '../../utils/common';
 import DynamicTabList from './DynamicTabList';
 import ScheduleList from './ScheduleList';
 import { isSameDay, isWithinInterval, parseISO } from 'date-fns';
@@ -11,6 +11,7 @@ type Props = {
     endDate?: string;
     schedules?: any;
     isJoin?: boolean;
+    onPress: (data: any) => void;
 }
 
 interface Schedule {
@@ -26,7 +27,7 @@ const filterSchedulesByDate = (schedules: Schedule[], date: Date): Schedule[] =>
     return schedules.filter(schedule => {
         const scheduleStartDate = parseISO(schedule.schStartDateTime);
         const scheduleEndDate = parseISO(schedule.schEndDateTime);
-        
+
         // Check if the given date falls within the start and end date of the schedule
         return isWithinInterval(date, { start: scheduleStartDate, end: scheduleEndDate }) || isSameDay(scheduleStartDate, date);
     });
@@ -35,11 +36,12 @@ const AgendaList = ({
     startDate,
     endDate,
     schedules,
-    isJoin
+    isJoin,
+    onPress
 }: Props) => {
 
     const [_days, set_Days] = useState<any>([]);
-    const [_schedules,set_Schedule] = useState<any>([]);
+    const [_schedules, set_Schedule] = useState<any>([]);
 
     useEffect(() => {
         if (startDate && endDate) {
@@ -48,30 +50,35 @@ const AgendaList = ({
         }
     }, [startDate, endDate]);
 
-    const handleShedule = (item: any) =>{
-        const FSchedules =  filterSchedulesByDate(schedules , item)
-        if(FSchedules){
+    const handleShedule = (item: any) => {
+        const FSchedules = filterSchedulesByDate(schedules, item)
+        if (FSchedules) {
             set_Schedule(FSchedules)
         }
     }
 
     return (
-        <View style={{ width: '100%' ,marginTop: 10}}>
+        <View style={{ width: '100%', marginTop: 10 }}>
             <Text style={{
                 fontWeight: '600',
                 fontSize: 16,
                 color: COLORS.text.main,
                 marginBottom: 5
             }}>Agenda</Text>
-            <View style={{marginTop: 14}}>
-            {_days && <DynamicTabList
-                tabs={_days}
-                onDateClick={(val) => handleShedule(val)}
-                showCurve={true}
-            />}
+            <View style={{ marginTop: 14 }}>
+                {_days && <DynamicTabList
+                    tabs={_days}
+                    onDateClick={(val) => handleShedule(val)}
+                    showCurve={true}
+                />}
             </View>
-            {schedules && 
-            <ScheduleList schedules={_schedules ? _schedules : schedules} isJoin={isJoin} />}
+            {schedules &&
+                <ScheduleList
+                    schedules={_schedules ? _schedules : schedules}
+                    isJoin={isJoin}
+                    onPress={(val) => onPress(val)}
+                    isEventStart={ startDate ? !isDateTimeNotPassed(startDate) : false}
+                />}
         </View>
     )
 }

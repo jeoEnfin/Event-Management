@@ -12,6 +12,13 @@ import { OrderAPI } from './api/OrderApi';
 import { useNavigation } from '@react-navigation/native';
 import MobileNumberInput from '../../components/common/CustomMobileNumberInput';
 import { ParticipantApi } from './api/ParticipentApi';
+import { useDispatch } from 'react-redux';
+import { showToast } from '../../store/toast/ToastActions';
+import CustomDateField from '../../components/common/CustomDateField';
+import { FetchPaymentSheetParams } from './api/FetchPaymentSheetParams';
+import { config } from '../../utils/config';
+import { initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
+import { toggleStateAsync } from '../../store/actions';
 
 
 interface FormDataItem {
@@ -43,9 +50,29 @@ interface Props {
 
 const FormData: React.FC<Props> = ({ data, eventData }) => {
     const navigation: any = useNavigation();
+    const dispatch: any = useDispatch();
     const [formValues, setFormValues] = useState<Record<string, any>>({});
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [paymentKeys, setPaymentKeys] = useState<any>(null);
+    const [event, setEvent] = useState<any>(null);
+
+    useEffect(() => {
+        console.log(data,'data---')
+        // if (data.length < 0 && eventData) {
+        //     handleSubmit();
+        // }
+    }, [data])
+
+    useEffect(() => {
+        if (eventData.expPrice > 0) {
+            fetchPaymentSheetParams();
+        }
+    }, [eventData])
+
+    useEffect(() => {
+        createEventData();
+    }, [eventData])
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -82,8 +109,42 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     };
 
     const handleFileUpload = (id: string) => {
-        // Handle file upload logic here if needed
         console.log('File uploaded for field:', id);
+    };
+
+    const handleDateChange = (id: string, value: string) => {
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [id]: value,
+        }));
+    };
+
+    const handleDateTimeChange = (id: string, value: string) => {
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [id]: value,
+        }));
+    };
+
+    const createEventData = async () => {
+        const _event = {
+            expo: eventData.expName,
+            expoCode: eventData.expCode,
+            expoPrice: eventData.expPrice,
+            expoId: eventData.id,
+            expoStartDate: eventData.expStartDate,
+            expoEndDate: eventData.expEndDate,
+            expoType: eventData.expType,
+            expoPaidPrice: eventData.expPrice,
+            expoDescription: eventData.expDescription,
+            expoMode: eventData.expExpoMode,
+            expRegStartType: eventData.expRegistrationStartType,
+            expRegEndType: eventData.expRegistrationEndType,
+            expRegStartDate: eventData.expRegistrationStartBefore,
+            expRegEndDate: eventData.expRegistrationEndBefore,
+            expTenantId: eventData.expTenantId
+        }
+        setEvent(_event);
     };
 
     const validateForm = (data: any, formValues: any) => {
@@ -97,27 +158,115 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     };
 
     const fetchPaymentSheetParams = async () => {
+        const data = {
+            price: eventData.expPrice,
+            successUrl: `${config.SERVER_URL}success`,
+            cancelUrl: `${config.SERVER_URL}cancel`
+        }
         try {
-            const response = await axiosClient.post('/stripe/create-checkout-session', {
-                price: 5,
-            })
+            const response = await FetchPaymentSheetParams({ data })
+            if (response) {
+                setPaymentKeys(response?.data?.data);
+            }
             setIsLoading(false)
-            console.log(response.data)
+            console.log(response?.data?.data)
         } catch (err: any) {
             setIsLoading(false);
             console.log(err.response, 'err-----')
         };
     };
 
+    const initializePaymentSheet = async () => {
+        const user = await AsyncStorageUtil.getData('userData')
+        //console.log(user,'ttt---');
+        if (paymentKeys) {
+            const { error } = await initPaymentSheet({
+                merchantDisplayName: "CI, Inc.",
+                customerId: paymentKeys?.customer,
+                customerEphemeralKeySecret: paymentKeys?.ephemeralKey,
+                paymentIntentClientSecret: paymentKeys?.paymentIntent,
+                // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+                //methods that complete payment after a delay, like SEPA Debit and Sofort.
+                allowsDelayedPaymentMethods: true,
+                defaultBillingDetails: {
+                    name: user?.data?.displayName,
+                }
+            });
+            if (!error) {
+                const paymentResponse = await presentPaymentSheet();
+                if (paymentResponse.error) {
+                    dispatch(showToast(paymentResponse.error.message, 'error'))
+                    setIsLoading(false);
+                    return;
+                } else {
+                    stripCheckout(paymentResponse);
+                    console.log('Payment sheet result:', paymentResponse);
+                }
+                setIsLoading(false);
+            } else {
+                dispatch(showToast('Failed to initialize Payment Sheet', 'error'))
+                setIsLoading(false);
+            }
+        }
+
+    };
+
+    const openPaymentSheet = async () => {
+        initializePaymentSheet();
+    };
+
+    const createOrderDetails = async ({ data, userId, orderId }: any) => {
+        try {
+            const response = await OrderAPI({ data });
+            if (response.data) {
+                //console.log(response.data)
+                if(!userId && !orderId && !event?.expoId) return;
+                let markParticipant = {
+                    participants: [{
+                        epUserId: userId,
+                        epExpoId: event?.expoId,
+                        epUserDetails: JSON.stringify(formValues),
+                        epOrderid: orderId
+                    }]
+                }
+                try {
+                    const _participentMarked = await ParticipantApi({ data: markParticipant });
+                    //console.log(_participentMarked?.data?.data?.data, 'tt')
+                    if (_participentMarked) {
+                        navigation.replace('SucessPage', { event: data, details: event });
+                    }
+                } catch (err: any) {
+                    console.log(err, 'errfrom participant');
+                    navigation.replace('FailPage');
+                }
+                setIsLoading(false);
+            }
+        } catch (err: any) {
+            console.log(err.response, 'err, from order api')
+            setIsLoading(false);
+            navigation.replace('FailPage');
+        }
+    };
+
+    const stripCheckout = async (res: any) => {
+        const orderId = generateRandomId();
+        const user = await AsyncStorageUtil.getData('userData')
+        let user_id = user?.uuid;
+        const data = {
+            eoOrderId: orderId,
+            eoUserId: user_id,
+            eoItemDetails: JSON.stringify(event),
+            eoOrderStatus: "completed",
+            eoTransactionId: "txn_1234567890",
+            eoPaymentResponse: JSON.stringify(res),
+            eoLog: ["Log entry 1", "Log entry 2"],
+            eoPaymentMode: "card"
+        }
+        createOrderDetails({ data, userId: user_id, orderId });
+    };
+
     const freeOrder = async () => {
         const orderId = generateRandomId();
-        const event = {
-            expId: eventData?.id,
-            expName: eventData?.expName,
-            expStartDate: eventData?.expStartDate,
-            expEndDate: eventData?.expEndDate,
-            expType: eventData?.expType
-        }
         const user = await AsyncStorageUtil.getData('userData')
         let user_id = user?.uuid;
         const data = {
@@ -128,51 +277,24 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
             eoTransactionId: "txn_1234567890",
             eoPaymentResponse: "{}",
             eoLog: ["Log entry 1", "Log entry 2"],
-            eoPaymentMode: "invoice"
+            eoPaymentMode: "free"
         }
-        try {
-            const response = await OrderAPI({ data });
-            if (response.data) {
-                console.log(response.data)
-                const markParticipant = {
-                    participants: [{
-                        epUserId: user_id,
-                        epExpoId: event.expId,
-                        epUserDetails: JSON.stringify(formValues),
-                        epOrderid: orderId
-                    }]
-                }
-                try {
-                    const _participentMarked = await ParticipantApi({ data: markParticipant });
-                    console.log(_participentMarked, 'tt')
-                    if (_participentMarked.data) {
-                        navigation.replace('SucessPage', { event: data, details: event });
-                    }
-                } catch (err: any) {
-                    console.log(err.response, err)
-                    navigation.replace('FailPage');
-                }
-
-                setIsLoading(false);
-            }
-        } catch (err: any) {
-            setIsLoading(false);
-            navigation.replace('FailPage');
-        }
+        createOrderDetails({ data, userId: user_id, orderId });
     };
 
     const handleSubmit = () => {
         setIsLoading(true);
         console.log('Form submitted with values:', formValues);
         const isFormValid = validateForm(data, formValues);
+        //console.log(isFormValid, 'isValid');
         if (isFormValid) {
             if (eventData.expPrice > 0) {
-                fetchPaymentSheetParams();
+                openPaymentSheet();
             } else {
                 freeOrder();
             }
         } else {
-            Alert.alert('Form not Completed', 'Please fill all Fields')
+            dispatch(showToast('Please fill the fields', 'alert'))
             setIsLoading(false);
         }
     };
@@ -187,7 +309,10 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                                 label={field.pFLabel}
                                 placeholder={field.pFPlaceholder || ''}
                                 validationType={field?.pFValidation?.type || 'text'}
-                                customErrorText={field.pFHelperText}
+                                regex={field?.pFValidation?.regexPattern || ''}
+                                isRequired={field.pFRequired !== 0}
+                                customErrorText={field?.pFValidation?.errorMessage || ''}
+                                helperText={field?.pFHelperText || ''}
                                 value={formValues[field.pFColumName || ''] || ''}
                                 onChangeText={(text) => handleInputChange(field.pFColumName || '', text)}
                             />
@@ -210,7 +335,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                         <View key={field._id} style={{ marginBottom: 10 }}>
                             <CustomFileUpload
                                 label={field.pFLabel}
-                                onFileSelect={() => { }}
+                                onFileSelect={(val:any) => {handleFileUpload(val)}}
                                 maxSizeInMB={field?.pFUploadParams?.maxFileSize}
                                 allowedTypes={field?.pFUploadParams?.fileType}
                                 multiple={field?.pFUploadParams?.multiFile}
@@ -223,7 +348,8 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                             <MobileNumberInput
                                 label={field.pFLabel}
                                 placeholder={field.pFPlaceholder || ''}
-                                customErrorText={field.pFHelperText}
+                                helperText={field?.pFHelperText || ''}
+                                customErrorText={field.pFValidation?.errorMessage || ''}
                                 value={formValues[field.pFColumName || ''] || ''}
                                 onChangeText={(text) => handlePhoneNumberChange(field.pFColumName || '', text)}
                             />
@@ -232,25 +358,28 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                 case 'date':
                     return (
                         <View key={field._id} style={{ marginBottom: 10 }}>
-                            {/* <CustomDateField
-                            label={field.pFLabel}
-                            placeholder={field.pFPlaceholder}
-                            customErrorText={field.pFHelperText}
-                            value={formValues[field.pFColumName || ''] || ''}
-                            onChangeText={(text) => handleInputChange(field.pFColumName || '', text)}
-                        /> */}
+                            <CustomDateField
+                                label={field.pFLabel}
+                                placeholder={field.pFPlaceholder}
+                                validationType={field?.pFData?.dateTimeSettings || 'any'}
+                                customErrorText={field.pFHelperText}
+                                value={formValues[field.pFColumName || ''] || ''}
+                                onChange={(val:any) => handleDateChange(field.pFColumName || '', val)}
+                            />
                         </View>
                     );
                 case 'datetime':
                     return (
                         <View key={field._id} style={{ marginBottom: 10 }}>
-                            {/* <CustomDateTimeField
-                            label={field.pFLabel}
-                            placeholder={field.pFPlaceholder}
-                            customErrorText={field.pFHelperText}
-                            value={formValues[field.pFColumName || ''] || ''}
-                            onChangeText={(text) => handleInputChange(field.pFColumName || '', text)}
-                        /> */}
+                           <CustomDateField
+                                mode='datetime'
+                                label={field.pFLabel}
+                                placeholder={field.pFPlaceholder}
+                                validationType={field?.pFData?.dateTimeSettings || 'any'}
+                                customErrorText={field.pFHelperText}
+                                value={formValues[field.pFColumName || ''] || ''}
+                                onChange={(val:any) => handleDateTimeChange(field.pFColumName || '', val)}
+                            />
                         </View>
                     )
                 default:
@@ -266,7 +395,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                     <Text style={{ fontSize: 32, fontWeight: '600', marginBottom: 6, color: COLORS.text.main }}>Register Event</Text>
                     <Text style={{ fontSize: 14, fontWeight: '400', marginBottom: 28, color: COLORS.text.main }}>Fill the form to Register Event</Text>
                 </View>
-                {renderFormFields()}
+                {data && renderFormFields()}
             </ScrollView>
             <View style={{ width: '100%', paddingVertical: 10, backgroundColor: keyboardVisible ? COLORS._background.primary : COLORS._background.main, paddingHorizontal: 22 }}>
                 <Button label={eventData.expPrice <= 0 ? "Register" : "Checkout"} buttonClick={handleSubmit} loading={isLoading} />

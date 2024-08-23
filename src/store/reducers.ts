@@ -6,7 +6,8 @@ const initialState = {
     authUsername: null,
     authTenent: config.DEFAULT_TENANT,
     authRoleId: null,
-    authentication: false
+    authentication: false,
+    initialUpdate: false
 }
 export default (state = initialState, action: any) => {
     switch (action.type) {
@@ -35,17 +36,22 @@ export default (state = initialState, action: any) => {
                 ...state,
                 authRoleId: action.payload.roleId,
                 authentication: action.payload.authentication
-            } 
+            }
         case 'AUTH':
-            return{
+            return {
                 ...state,
                 authentication: action.payload
             }
         case 'TENANT_ID':
-            return{
-               ...state,
+            return {
+                ...state,
                 authTenent: action.payload
             }
+        case 'SET_STATE':
+            return {
+                ...state,
+                initialUpdate: action.payload,
+            };
         default:
             return state;
     }

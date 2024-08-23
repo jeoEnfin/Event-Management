@@ -1,4 +1,4 @@
-import { differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds, eachDayOfInterval, endOfDay, format, isAfter, isBefore, isEqual, isWithinInterval, parseISO, startOfDay } from 'date-fns';
+import { addMinutes, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds, eachDayOfInterval, endOfDay, format, isAfter, isBefore, isEqual, isSameDay, isWithinInterval, parseISO, startOfDay, subMinutes } from 'date-fns';
 
 export function CiTruncate(str: string, num_chars: number) {
     // if (str.length > num_chars) {
@@ -106,6 +106,25 @@ export const isDateNotPassed = (date: string) => {
     return !isBefore(new Date(date), now);
 };
 
+export const isDateTimeNotPassed = (date: string): boolean => {
+  const now = new Date();
+  const targetDate = parseISO(date);
+  return !isBefore(targetDate, now);
+};
+
+export const subtract30Minutes = (dateString: string): string => {
+  const date = parseISO(dateString);
+  const newDate = subMinutes(date, 30);
+  return format(newDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+};
+
+export const add30Minutes = (dateString: string): string => {
+  const date = parseISO(dateString);
+  const newDate = addMinutes(date, 30);
+  return format(newDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+};
+
+
 interface DateWithId {
     id: string;
     date: string;
@@ -133,7 +152,7 @@ export function getTimeDifference(startDate: string, endDate: string): string {
   const formattedMinutes = String(minutes).padStart(2, '0');
   const formattedSeconds = String(seconds).padStart(2, '0');
 
-  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+  return `${formattedHours}:${formattedMinutes}`;
 }
 
 export const getCurrentDateSchedules = (schedules:any) => {
@@ -244,4 +263,10 @@ export const generateRandomId = () => {
     return displayNames.join(',');
   };
 
+  export const isDatePassedOrToday = (date :any) => {
+    const now = new Date();
+    const targetDate = new Date(date);
   
+    // Check if the date is before the current date or is today
+    return isBefore(targetDate, now) || isSameDay(targetDate, now);
+  };

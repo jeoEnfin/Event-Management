@@ -1,5 +1,5 @@
 import { Alert, BackHandler, FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import TopBar from '../../components/TopBar'
 import EventBanner from '../../components/common/EventBanner'
@@ -8,7 +8,7 @@ import SubHeader from '../../components/common/SubHeader'
 import SpeakerCardList from '../../components/common/SpeakerCardList'
 import AgendaList from '../../components/common/AgendaList'
 import { COLORS } from '../../constants'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import AddressCard from '../../components/cards/AddressCard'
 import PolicesCard from '../../components/cards/PolicesCard'
 import { OrderListAPI } from './apis/OrderListApi'
@@ -17,9 +17,12 @@ import QRCodeModal from './components/QRCodeModal'
 import { QrCodeAPI } from '../profile/apis/QrCodeAPI'
 import AsyncStorageUtil from '../../utils/services/LocalCache'
 import { ExpoDetailsAPI } from './apis/ExpoDetailsApi'
-import { useDispatch } from 'react-redux'
-import { Logout } from '../../store/actions'
+import { useDispatch, useSelector } from 'react-redux'
+import { Logout, tenant } from '../../store/actions'
 import { config } from '../../utils/config'
+import { isDateTimeNotPassed } from '../../utils/common'
+import { showToast } from '../../store/toast/ToastActions'
+
 
 
 
@@ -42,55 +45,70 @@ const EventDetailsScreen = ({ route }: Props) => {
     const [orderQrCode, setOrderQrCode] = useState<any>(null);
     const dispatch: any = useDispatch();
     const [isTenant, setIsTenant] = useState<boolean>(false);
+    const [isQrCodeView, setIsQrCodeView] = useState<boolean>(false);
+    const isHaveUpdate = useSelector((state: any) => state.AuthReducers.initialUpdate);
+    const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
     };
 
     useEffect(() => {
-        getTokenCheck();
-    }, [])
-
-    useEffect(()=>{
-        if(tenantId){
-            isTenantCheck();
+        if (data) {
+            getTokenCheck();
         }
-    },[tenantId])
+    }, [data])
 
     useEffect(() => {
-        const backAction = () => {
+        if (tenantId) {
+            isTenantCheck();
+        }
+    }, [tenantId])
+
+    useEffect(() => {
+        onRefresh();
+    }, [isHaveUpdate])
+
+    const backAction = () => {
+        if (navigation.isFocused()) {
             backHandle();
             return true;
-        }
-        const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress',
-            backAction,
-        );
+        };
+    }
 
-        return () => backHandler.remove();
-    }, [])
+    useFocusEffect(
+       useCallback(() => {
+            const backHandler = BackHandler.addEventListener(
+                'hardwareBackPress',
+                backAction
+            );
+
+            return () => {
+                backHandler.remove();
+            };
+        }, [])
+    );
 
     useEffect(() => {
         const init = async () => {
             const token = await AsyncStorageUtil.getData('token');
-            if(token) {
-            const userRules: any = await getModuleAccessRules('expo');
-            //console.log('hit here', userRules)
-            setUserRules(userRules?.access);
+            if (token && isTenant) {
+                const userRules: any = await getModuleAccessRules('expo');
+                setUserRules(userRules?.access);
             }
         }
         init();
-    }, []);
+    }, [isTenant]);
 
     useEffect(() => {
         if (userRules && isTenant) {
-            //console.log(userRules)
-            setIsScanner(userRules?.qrScanner?.permission);
-            if (userRules?.qrScanner?.permission === true && isTenant) {
+            if (isTenant) {
                 setIsOrder(true);
+                setIsScanner(userRules?.qrScanner?.permission);
+                setIsQrCodeView(false);
             }
         }
-    }, [userRules,isTenant])
+    }, [userRules, isTenant])
 
     useEffect(() => {
         if (event && tenantId) {
@@ -100,18 +118,23 @@ const EventDetailsScreen = ({ route }: Props) => {
 
     useEffect(() => {
         if (data && order) {
-            const _order = checkExpoIdInOrders(data.id, order);
-            //console.log('Order', _order)
-            if (_order) {
-                setIsOrder(_order);
-                getQrCode();
+            if (order.length !== 0) {
+                setIsOrder(true);
+                if (!isTenant) {
+                    getQrCode();
+                    setIsQrCodeView(true);
+                }
             }
         }
     }, [data, order])
 
     const backHandle = async () => {
-        AsyncStorageUtil.saveData('tenant_id', config.DEFAULT_TENANT);
-        navigation.goBack();
+        if (route.name === 'EventDetails') {
+            await AsyncStorageUtil.saveData('tenant_id', config.DEFAULT_TENANT);
+            navigation.goBack();
+        } else {
+            navigation.goBack();
+        }
     }
 
     const getTokenCheck = async () => {
@@ -121,7 +144,7 @@ const EventDetailsScreen = ({ route }: Props) => {
         }
     }
 
-    const isTenantCheck = async () =>{
+    const isTenantCheck = async () => {
         const _tenantId = await AsyncStorageUtil.getData('user_tenant_id');
         if (_tenantId === tenantId) {
             setIsTenant(true);
@@ -150,13 +173,19 @@ const EventDetailsScreen = ({ route }: Props) => {
     };
 
     const orderdetails = async () => {
+        // const tenant = await AsyncStorageUtil.getData('tenant_id');
+        // if(tenantId !== tenant) return ;
+        if(!data?.id && !tenantId) return ;
+        setIsOrderLoading(true);
         try {
-            const order = await OrderListAPI();
+            const order = await OrderListAPI({ expId: data?.id, tenantId });
             if (order) {
                 setOrder(order?.data?.data?.data);
             }
+            setIsOrderLoading(false);
         } catch (err: any) {
-            console.log(err.response, 'err-----')
+            console.log(err.response, 'order error')
+            setIsOrderLoading(false);
             throw err;
         }
     }
@@ -182,7 +211,6 @@ const EventDetailsScreen = ({ route }: Props) => {
         try {
             const response = await ExpoDetailsAPI({ url, tenant: tenantId });
             const _data = response?.data?.data;
-            console.log(_data,'resp---------------')
             setData(_data?.expo)
             setSpeakers(_data?.speakers)
             setSchedule(_data?.schedules)
@@ -190,13 +218,17 @@ const EventDetailsScreen = ({ route }: Props) => {
         } catch (error: any) {
             setIsLoading(false);
             console.log(error.response.data, 'error-------------------------')
+            //dispatch(showToast('Something went wrong', 'error'));
         }
     };
 
     const onRefresh = async () => {
+        await AsyncStorageUtil.saveData('tenant_id', tenantId);
         if (event) {
             fetchData();
-            orderdetails();
+            if (!isTenant) {
+                orderdetails();
+            }
         }
     };
 
@@ -210,22 +242,23 @@ const EventDetailsScreen = ({ route }: Props) => {
             expEndDate: data.expEndDate
         }
 
-        if(token){
-        if (data.expIsRegistrationEnabled) {
-            navigation.navigate('Registration', { event: eventData ,tenantId })
+        if (token) {
+            if (data.expIsRegistrationEnabled) {
+                navigation.navigate('Registration', { event: data, tenantId })
+            } else {
+                Alert.alert('Registration Closed', 'The registration for this event has temperory closed.', [
+                    { text: 'OK' },
+                ]);
+            }
         } else {
-            Alert.alert('Registration Closed', 'The registration for this event has temperory closed.', [
-                { text: 'OK' },
-            ]);
-        }} else {
-            Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
+            Alert.alert('Login Required', 'Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.', [
                 {
                     text: 'Cancel',
                     style: 'cancel',
                 },
                 {
                     text: 'Login',
-                    onPress: () => {dispatch(Logout())},
+                    onPress: () => { dispatch(Logout()) },
                 }
             ]);
             return;
@@ -238,129 +271,193 @@ const EventDetailsScreen = ({ route }: Props) => {
         const token = await AsyncStorageUtil.getData('token');
         if (token) {
             if (isOrder) {
-                navigation.navigate('Lobby', { event: data.id, varient: data.expType })
-            }
-            } else {
-                Alert.alert('Login Required','Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.',[
-                    {
-                        text: 'Cancel',
-                        style: 'cancel',
-                    },
-                    {
-                        text: 'Login',
-                        onPress: () => {dispatch(Logout())},
+                if (isTenant) {
+                    navigation.navigate('Lobby', { event: data.id, varient: data.expType, tenantId });
+                } else {
+                    if (!isDateTimeNotPassed(data.expStartDate)) {
+                        navigation.navigate('Lobby', { event: data.id, varient: data.expType, tenantId });
+                    } else {
+                        dispatch(showToast('Event not started', 'alert'));
                     }
-                ]);
-                return;
+                }
             }
+        } else {
+            Alert.alert('Login Required', 'Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.', [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Login',
+                    onPress: () => { dispatch(Logout()) },
+                }
+            ]);
+            return;
         }
-
-        const ItemData = []
-
-        if (data) {
-            ItemData.push(
-                <EventBanner
-                    title={data.expName}
-                    imgUrl={data.expBanerImage}
-                    startDate={data.expStartDate}
-                    endDate={data.expEndDate}
-                    expRegEnd={data.expRegistrationEndDate}
-                    price={data.expPrice ? data.expPrice : ''}
-                    buttonLabel={data.expIsRegistrationEnabled ?
-                        (data.expPrice ? `BUY` : 'Register')
-                        : (data.expPrice ? `BUY` : 'Join')}
-                    subTitle={data.expCreator}
-                    onPressButton={handleJoin}
-                    isOrder={isOrder}
-                    qrCodePress={() => { setModalVisible(true) }}
-                    onPressButtonAfterOrdered={() => { handleJoinExpo() }}
-                    isTenant={isScanner}
-                    tenantId={data.expTenantId}
-                    isRegistration={data.expIsRegistrationEnabled}
-                />
-            );
-            ItemData.push(
-                <SubHeader
-                    title='About'
-                    message={data.expDescription}
-                />
-            );
-            ItemData.push(
-                <AddressCard
-                    address={data.expAddress}
-                />
-            );
-            ItemData.push(
-                <SpeakerCardList
-                    title='Speakers'
-                    data={speakers}
-                    tenantId={tenantId}
-                />
-            );
-            ItemData.push(
-                <AgendaList
-                    startDate={data.expStartDate}
-                    endDate={data.expEndDate}
-                    schedules={schedule}
-                    isJoin={isOrder}
-                />
-            );
-            ItemData.push(
-                <PolicesCard
-                    title='Terms & Conditions'
-                    data={data.expTermsConditionIsEnabled ? data.expTermsAndConditions : ''}
-                />
-            );
-        }
-
-        // if(!data){
-        //     return <ActivityElement />
-        // }
-
-        return (
-            <ScreenWrapper>
-                <TopBar
-                    // notification
-                    back
-                    profile
-                    scanner={(isScanner && isTenant) || false}
-                    scannerPress={() => { navigation.navigate('Scan',{eventId : event}) }}
-                    backPress={()=>{backHandle()}}
-                />
-                {!isLoading ?
-                    <View style={{ width: '100%' }}>
-                        {data &&
-                            <FlatList
-                                showsVerticalScrollIndicator={false}
-                                data={ItemData}
-                                renderItem={({ item }) => item}
-                                keyExtractor={(_, index) => index.toString()}
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={isLoading}
-                                        onRefresh={onRefresh}
-                                        colors={[COLORS.secondary.main]}
-                                    />
-                                }
-                                style={{
-                                    marginHorizontal: 18,
-                                    marginBottom: 70
-                                }}
-                            />
-                        }
-                        {data && <QRCodeModal
-                            isModalVisible={isModalVisible}
-                            toggleModal={() => toggleModal()}
-                            eventName={data.expName}
-                            eventStartDate={data.expStartDate}
-                            eventEndDate={data.expEndDate}
-                            url={orderQrCode}
-                        />}
-                    </View> : <ActivityElement />}
-            </ScreenWrapper>
-        )
     }
 
-    export default EventDetailsScreen
+    const handleSchedule = async (_data: any) => {
+        const token = await AsyncStorageUtil.getData('token');
+        if (token) {
+            if (isOrder && isTenant) {
+                navigation.navigate('Schedule', { data: _data, expAddress: data.expAddress, expVenue: data.expVenue })
+            } else if (isOrder) {
+                if (isOrder && !isDateTimeNotPassed(data.expStartDate)) {
+                    navigation.navigate('Schedule', { data: _data, expAddress: data.expAddress, expVenue: data.expVenue })
+                } else {
+                    dispatch(showToast('Event not started', 'alert'))
+                }
+            } else {
+                if (isDateTimeNotPassed(data.expRegistrationEndDate) && data.expIsRegistrationEnabled) {
+                    dispatch(showToast('Please register the event', 'alert'))
+                } else if (data.expIsRegistrationEnabled) {
+                    dispatch(showToast('Event registration ended', 'error'))
+                } else {
+                    dispatch(showToast('Event registration closed', 'alert'))
+                }
 
-    const styles = StyleSheet.create({})
+            }
+        } else {
+            Alert.alert('Login Required', 'Log in or sign up to unlock your personalized journey! Seamlessly view and attend events, both online and offline.', [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Login',
+                    onPress: () => { dispatch(Logout()) },
+                }
+            ]);
+            return;
+        }
+    }
+
+    const ItemData = []
+
+    if (data) {
+        ItemData.push(
+            <EventBanner
+                title={data.expName}
+                imgUrl={data.expBanerImage}
+                startDate={data.expStartDate}
+                endDate={data.expEndDate}
+                expRegStart={data.expRegistrationStartDate}
+                expRegEnd={data.expRegistrationEndDate}
+                price={data.expPrice ? data.expPrice : ''}
+                buttonLabel={data.expIsRegistrationEnabled ?
+                    (data.expPrice ? `BUY` : 'Register')
+                    : (data.expPrice ? `BUY` : 'Join')}
+                subTitle={data.expCreator}
+                onPressButton={handleJoin}
+                isOrder={isOrder}
+                qrCodePress={() => { setModalVisible(true) }}
+                onPressButtonAfterOrdered={() => { handleJoinExpo() }}
+                isTenant={isScanner}
+                tenantId={data.expTenantId}
+                isRegistration={data.expIsRegistrationEnabled}
+                isQrCodeView={isQrCodeView}
+                isLoading={isOrderLoading}
+            />
+        );
+        ItemData.push(
+            <SubHeader
+                title='About'
+                message={data.expDescription}
+            />
+        );
+        ItemData.push(
+            <AddressCard
+                venue={data.expVenue}
+                address={data.expAddress}
+            />
+        );
+        ItemData.push(
+            <SpeakerCardList
+                title='Speakers'
+                data={speakers}
+                tenantId={tenantId}
+            />
+        );
+        ItemData.push(
+            <AgendaList
+                startDate={data.expStartDate}
+                endDate={data.expEndDate}
+                schedules={schedule}
+                isJoin={isOrder}
+                onPress={(val) => { handleSchedule(val) }}
+            />
+        );
+        ItemData.push(
+            <PolicesCard
+                title='Terms & Conditions'
+                data={data.expTermsConditionIsEnabled ? data.expTermsAndConditions : ''}
+            />
+        );
+    }
+
+    // if(!data){
+    //     return <ActivityElement />
+    // }
+
+    return (
+        <ScreenWrapper>
+            <TopBar
+                // notification
+                back
+                profile
+                scanner={(isScanner && isTenant) || false}
+                scannerPress={() => { navigation.navigate('Scan', { eventId: data.id, tenantId }) }}
+                backPress={() => { backHandle() }}
+            />
+            {!isLoading ?
+                <View style={{ width: '100%' }}>
+                    { data ?
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            data={ItemData}
+                            renderItem={({ item }) => item}
+                            keyExtractor={(_, index) => index.toString()}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={isLoading}
+                                    onRefresh={onRefresh}
+                                    colors={[COLORS.secondary.main]}
+                                />
+                            }
+                            style={{
+                                marginHorizontal: 18,
+                                marginBottom: 70
+                            }}
+                        /> : 
+                        <View style={styles.nullContainer}>
+                            <Text style={styles.noDataTxt}>No Data Found</Text>
+                        </View>
+                    }
+                    {data && <QRCodeModal
+                        isModalVisible={isModalVisible}
+                        toggleModal={() => toggleModal()}
+                        eventName={data.expName}
+                        eventStartDate={data.expStartDate}
+                        eventEndDate={data.expEndDate}
+                        url={orderQrCode}
+                    />}
+                </View> : <ActivityElement />}
+        </ScreenWrapper>
+    )
+}
+
+export default EventDetailsScreen
+
+const styles = StyleSheet.create({
+    noDataTxt: {
+        color: COLORS.text.default,
+        fontSize: 20,
+        fontWeight: '500',
+        textAlign: 'center'
+    },
+    nullContainer: {
+        marginTop: '45%',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+})

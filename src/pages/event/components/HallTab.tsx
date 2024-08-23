@@ -9,6 +9,7 @@ type Props = {
     data: any;
     onPressHall:(data:any) => void;
     isSelected?: boolean;
+    position?: 'portrait' | 'landscape';
 }
 
 type hallTyps = {
@@ -20,7 +21,7 @@ type hallTyps = {
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height
 
-const HallTab = ({ data, onPressHall ,isSelected= false}: Props) => {
+const HallTab = ({ data, onPressHall ,isSelected= false, position="portrait"}: Props) => {
     const [isScheduleView, setIsScheduleView] = useState<boolean>(false);
     const fadeAnim = useRef(new Animated.Value(isScheduleView ? 1 : 0)).current;
     const [selectedTab, setSelectedTab] = useState<string | null>(null);
@@ -52,7 +53,7 @@ const HallTab = ({ data, onPressHall ,isSelected= false}: Props) => {
     }
     return (
         <>
-            <View style={styles.container}>
+            <View style={[styles.container, position === 'landscape' && {bottom: 10}]}>
                 <FlatList
                     data={data}
                     renderItem={({ item }) =>

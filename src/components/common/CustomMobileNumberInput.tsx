@@ -15,6 +15,7 @@ interface MobileNumberInputProps {
   customErrorText?: string;
   value?: string;
   onChangeText?: (text: string) => void;
+  isError?: boolean;
 }
 
 const countries: Country[] = [
@@ -47,28 +48,45 @@ const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
   customErrorText,
   value,
   onChangeText,
+  isError = false,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
   const [modalVisible, setModalVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(value || '');
+  const [errorText, setErrorText] = useState<string | null>(null);
+
 
   const handleFocus = () => {
     setIsFocused(true);
   };
 
+  const validatePhoneNumber = (text: string) => {
+    const isValid = /^[0-9]{5,15}$/.test(text); 
+    return isValid ? null : 'Invalid phone number';
+  };
+
   const handleBlur = () => {
     setIsFocused(false);
+    if (validatePhoneNumber) {
+      const error = validatePhoneNumber(phoneNumber);
+      setErrorText(error);
+    }
   };
 
   const handleCountrySelect = (country: Country) => {
     setSelectedCountry(country);
     setModalVisible(false);
+    if (phoneNumber) {
+      const updatedPhoneNumber = phoneNumber.replace(selectedCountry.dial_code, country.dial_code);
+      setPhoneNumber(updatedPhoneNumber);
+      onChangeText && onChangeText(`${country.dial_code}${updatedPhoneNumber}`);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={[styles.inputContainer,isFocused && {borderColor: COLORS.secondary.main}]}>
+      <View style={[styles.inputContainer, isFocused && { borderColor: COLORS.secondary.main }]}>
         <TouchableOpacity style={styles.countrySelector} onPress={() => setModalVisible(true)}>
           <Text style={styles.countryText}>{selectedCountry.dial_code}</Text>
         </TouchableOpacity>
@@ -82,6 +100,10 @@ const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
           onChangeText={(text) => {
             setPhoneNumber(text);
             onChangeText && onChangeText(`${selectedCountry.dial_code}${text}`);
+            if (validatePhoneNumber) {
+              const error = validatePhoneNumber(text);
+              setErrorText(error);
+            }
           }}
           value={phoneNumber}
         />
@@ -92,30 +114,31 @@ const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
         </Text>
       )}
       {helperText && !customErrorText && <Text style={styles.helperText}>{helperText}</Text>}
-      {customErrorText && <Text style={styles.errorText}>{customErrorText}</Text>}
+      {(errorText || isError) && <Text style={styles.errorText}>{errorText || customErrorText}</Text>}
       <Modal
         visible={modalVisible}
         transparent
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}
       >
-        <SafeAreaView style={{flex: 1}}>
-        <View style={styles.modalContainer}>
-          <FlatList
-            data={countries}
-            keyExtractor={(item) => item.code}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.modalItem}
-                onPress={() => handleCountrySelect(item)}
-              >
-                <Text style={styles.modalItemText}>
-                  {item.name} ({item.dial_code})
-                </Text>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.modalContainer}>
+            <FlatList
+              data={countries}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  activeOpacity={0.95}
+                  style={styles.modalItem}
+                  onPress={() => handleCountrySelect(item)}
+                >
+                  <Text style={styles.modalItemText}>
+                    {item.name} ({item.dial_code})
+                  </Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
         </SafeAreaView>
       </Modal>
     </View>
@@ -167,11 +190,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginTop: 5,
+    marginLeft: 2
   },
   errorText: {
     fontSize: 12,
     color: 'red',
     marginTop: 5,
+    marginLeft: 2
   },
   modalContainer: {
     flex: 1,
@@ -180,13 +205,14 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   modalItem: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS._background.primary,
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
   modalItemText: {
     fontSize: 18,
+    color: COLORS.text.main,
   },
 });
 

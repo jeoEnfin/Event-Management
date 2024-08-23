@@ -13,6 +13,7 @@ type Props = {
     onButtonPress?: () => void;
     startTime?: string;
     isJoin?: boolean;
+    isStarted?: boolean;
 }
 
 const ScheduleCard = ({
@@ -22,7 +23,8 @@ const ScheduleCard = ({
     onPress,
     onButtonPress,
     startTime,
-    isJoin
+    isJoin,
+    isStarted = false,
 }: Props) => {
 
     const measureWidth = (text: any) => {
@@ -32,7 +34,7 @@ const ScheduleCard = ({
     };
 
     return (
-        <TouchableOpacity onPress={onPress} style={styles.container}>
+        <TouchableOpacity  activeOpacity={0.9} onPress={onPress} style={styles.container}>
             <View style={styles.timeContainer}>
                 <Text style={styles.timeBoxText}>{startTime && format(startTime, 'HH:mm')}</Text>
                 {/* <Text style={styles.timeBoxTextSecondary}>{startTime && format(startTime, 'a')}</Text> */}
@@ -44,7 +46,7 @@ const ScheduleCard = ({
                     <Text style={styles.speakerTag}>Duration: <Text style={styles.speakerTxt}>{timeDuration}</Text></Text>
                 </View>
             </View>
-            {isJoin && <Text style={styles.joinTxt}>Join</Text>}
+            {isJoin && <Text style={[styles.joinTxt, !isStarted && { color: COLORS.text.disable }]}>Join</Text>}
         </TouchableOpacity>
     )
 }

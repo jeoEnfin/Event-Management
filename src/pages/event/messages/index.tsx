@@ -39,7 +39,7 @@ const Messages = ({ route }: Props) => {
       if (chatToken) {
         console.log('chat token', chatToken?.data)
         setChatToken(chatToken?.data?.data)
-        await AsyncStorageUtil.saveData(`chatToken${expId}`, chatToken?.data?.data)
+        //await AsyncStorageUtil.saveData(`chatToken${expId}`, chatToken?.data?.data)
       }
       setLoading(false);
 
@@ -54,7 +54,7 @@ const Messages = ({ route }: Props) => {
     <View style={styles.container}>
       {chatToken !== null &&
         <WebView
-          source={{ uri: `https://chatservice.enfinlabs.com/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFraGlsLmMrZThAZW5maW50ZWNobm9sb2dpZXMuY29tIiwibmFtZSI6IlRoYW52ZWVyIEFobWVkZSIsImV2ZW50X25hbWUiOiJ2aWN0b3IiLCJpc19hZG1pbiI6ZmFsc2UsImltYWdlIjoiIiwiaWF0IjoxNzIzOTYwMjE0LCJleHAiOjE3MjM5OTYyMTR9.wYerUTgU2icKUaDMdsHrHU8wNAu5UxnDAU70KfpbUBw` }}
+          source={{ uri: `${config.CHAT_URL}${chatToken}` }}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
           style={styles.container}

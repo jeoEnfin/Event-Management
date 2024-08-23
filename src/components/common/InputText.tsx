@@ -21,6 +21,7 @@ type Props = {
     defaultValue?: string;
     backgroundColor?: string;
     onBlur?: () => void;
+    onFocus?: () => void;
 }
 
 const InputText = (props: Props) => {
@@ -59,9 +60,12 @@ const InputText = (props: Props) => {
     }
 
     const handleFocus = () =>{
-        const {label} = props;
+        const {label , onFocus} = props;
         if(label) {
-            setIsLebal(true)
+            setIsLebal(true);
+        }
+        if(onFocus) {
+            onFocus();
         }
         setIsFocused(true)
     }
@@ -82,6 +86,7 @@ const InputText = (props: Props) => {
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     defaultValue={props.defaultValue}
+                    autoCapitalize='none'
                 />
                 {props.iconName &&
                     <TouchableOpacity style={{ position: 'absolute', left: '90%', opacity: props.textSecure ? 0.5 : 1 }} onPress={props.showText} >

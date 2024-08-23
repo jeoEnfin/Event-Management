@@ -15,13 +15,12 @@ type Props = {
 }
 
 const SpeakerCard = (props: Props) => {
-
     return (
         <TouchableOpacity
             activeOpacity={0.9}
             style={[styles.container]}>
             <View >
-                {(props.avatar !== null) ?
+                {(props.avatar !== null && props.avatar !== '') ?
                     <Image
                         source={{
                             uri: props.avatar === 'default.webp'

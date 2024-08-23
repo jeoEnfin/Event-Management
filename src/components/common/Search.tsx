@@ -20,7 +20,6 @@ const Search: React.FC<SearchComponentProps> = ({ placeholder, onChangeText, val
         placeholder={placeholder}
         placeholderTextColor={COLORS.text.disable}
         onChangeText={onChangeText}
-        // value={value}
       />
     </View>
   );

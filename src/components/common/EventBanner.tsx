@@ -1,10 +1,11 @@
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { COLORS } from '../../constants';
 import { format } from 'date-fns';
 import { config } from '../../utils/config';
 import { Icon } from 'react-native-elements';
-import { isDateNotPassed } from '../../utils/common';
+import { isDateInFuture, isDateNotPassed, isDatePassedOrToday } from '../../utils/common';
+import CountdownTimer from '../../pages/event/components/CountdownTimer';
 
 type Props = {
     imgUrl: string;
@@ -24,6 +25,8 @@ type Props = {
     isButtonEnabled?: boolean;
     tenantId?: string;
     isRegistration?: boolean;
+    isQrCodeView?: boolean;
+    isLoading?: boolean;
 }
 
 const screenWidth = Dimensions.get("window").width;
@@ -31,8 +34,15 @@ const screenWidth = Dimensions.get("window").width;
 const EventBanner = (props: Props) => {
     //console.log(props.expRegEnd)
     const isRegisterEnded = isDateNotPassed(props.expRegEnd || '');
+    const isRegisterStarted = isDatePassedOrToday(props.expRegStart || '');
+    const isEventStart = isDateNotPassed(props.startDate || '');
+
     return (
         <>
+            {isEventStart && props.isOrder && <View style={styles.countContainer}>
+                <><Text style={styles.countDownTxt}>Event starts in</Text>
+                    <CountdownTimer endTime={props.startDate || ''} style={{width: '100%'}} /></>
+            </View>}
             <View style={{
                 width: '100%',
                 height: 200,
@@ -64,30 +74,34 @@ const EventBanner = (props: Props) => {
                         alt='No image'
                     />
                     <View style={styles.body}>
-                        <Text numberOfLines={3} style={styles.text1}>{props.title}</Text>
+                        <Text numberOfLines={2} style={styles.text1}>{props.title}</Text>
                         {/* <Text style={styles.text2}>{props.subTitle}</Text> */}
                         <Text style={styles.dateTxt}>{props.startDate && format(new Date(props.startDate), 'dd MMM yyyy')}-{props.endDate && format(new Date(props.endDate), 'dd MMM yyyy')}</Text>
-                        {!props.isOrder ? isRegisterEnded && props.buttonLabel &&
+                        {!props.isOrder ? isRegisterStarted && isRegisterEnded && props.buttonLabel &&
                             <>
                                 {props.price &&
                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, gap: 3 }}>
                                         <Icon name='euro' color={COLORS.text.primary} size={13} />
                                         <Text style={[styles.btnText, { fontWeight: '600' }]}>{props.price} /-</Text>
                                     </View>}
-                                {props.isRegistration && <TouchableOpacity style={styles.btnBody} onPress={props.onPressButton}>
-                                    <Text style={styles.btnText}>{props.buttonLabel}</Text>
+                                {props.isRegistration && <TouchableOpacity disabled={props.isLoading} style={styles.btnBody} onPress={props.onPressButton}>
+                                    {!props.isLoading ? <Text style={styles.btnText}>{props.buttonLabel}</Text> : <ActivityIndicator color={COLORS.text.primary} />}
                                 </TouchableOpacity>}</> :
-                            <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
+                            !isEventStart && <TouchableOpacity style={styles.btnBody} onPress={props.onPressButtonAfterOrdered}>
                                 <Text style={styles.btnText}>Join</Text>
                             </TouchableOpacity>}
 
                     </View>
-                    {(props.isOrder && !props.isTenant) &&
+                    {(props.isOrder && props.isQrCodeView) &&
                         <TouchableOpacity style={styles.qrContainer} onPress={props.qrCodePress}>
                             <Icon name='qr-code' color={COLORS.text.primary} size={28} />
                         </TouchableOpacity>}
                 </View>
             </View>
+            {!isRegisterStarted && !props.isOrder && isRegisterEnded && <View style={styles.warningBody}>
+                <Icon name='info-outline' size={18} color={COLORS.text.alert} />
+                <Text style={styles.warningTxt}>Event registration not started yet!</Text>
+            </View>}
             {!props.isRegistration && !props.isOrder && isRegisterEnded && <View style={styles.warningBody}>
                 <Icon name='info-outline' size={18} color={COLORS.text.alert} />
                 <Text style={styles.warningTxt}>Event registration temporarily closed!</Text>
@@ -111,7 +125,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         margin: 10,
         padding: 15,
-        gap: 4,
+        gap: 8,
         width: '80%'
     },
     text1: {
@@ -169,5 +183,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 3,
         marginTop: 12
+    },
+    countContainer: {
+        paddingVertical: 5,
+        paddingHorizontal: 3,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 18
+    },
+    countDownTxt: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: COLORS.text.main,
+        //marginBottom: 10
     }
 })

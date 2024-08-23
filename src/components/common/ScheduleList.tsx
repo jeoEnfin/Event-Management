@@ -14,7 +14,7 @@ interface Schedule {
     speakers: string;
 }
 
-const  ScheduleList: React.FC<{ schedules: Schedule[],isJoin?: boolean }> = ({ schedules,isJoin }) => {
+const ScheduleList: React.FC<{ schedules: Schedule[], isJoin?: boolean, onPress: (data: any) => void, isEventStart?: boolean; }> = ({ schedules, isJoin, onPress, isEventStart }) => {
     // Function to format time from ISO string
     const formatTime = (dateTime: string): string => {
         const date = parseISO(dateTime);
@@ -38,14 +38,16 @@ const  ScheduleList: React.FC<{ schedules: Schedule[],isJoin?: boolean }> = ({ s
     });
 
     // FlatList renderItem function to render each schedule row
-    const renderScheduleItem = ({ item }: { item: Schedule }) => ( 
+    const renderScheduleItem = ({ item }: { item: Schedule }) => (
         <ScheduleCard
-            key = {item.id}
+            key={item.id}
             startTime={item.schStartDateTime}
             timeDuration={getTimeDifference(item.schStartDateTime, item.schEndDateTime)}
             title={item.schName}
             speaker={item.speakers}
             isJoin={isJoin}
+            onPress={() => { onPress(item) }}
+            isStarted={isEventStart}
         />
     );
 
@@ -72,8 +74,8 @@ const  ScheduleList: React.FC<{ schedules: Schedule[],isJoin?: boolean }> = ({ s
             {Object.keys(groupedSchedules).map((hallName) => (
                 <View key={hallName} style={styles.hallContainer}>
                     <View style={styles.hallbody}>
-                    <Text style={styles.hallNametxt}>{hallName === 'defaultLobby' ? 'Lobby': hallName}</Text>
-                    <Text style={styles.hallSessionTxt}>{groupedSchedules[hallName].length} Sessions</Text>
+                        <Text style={styles.hallNametxt}>{hallName === 'defaultLobby' ? 'Lobby' : hallName}</Text>
+                        <Text style={styles.hallSessionTxt}>{groupedSchedules[hallName].length} Sessions</Text>
                     </View>
                     <FlatList
                         data={groupedSchedules[hallName]}
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
         color: COLORS.text.main
     },
     hallbody: {
-      marginBottom: 18  
+        marginBottom: 18
     },
     hallNametxt: {
         fontSize: 16,
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
     sessionCount: {
         fontSize: 12,
         fontWeight: '600',
-        color: COLORS.text.default 
+        color: COLORS.text.default
     },
     row: {
         flexDirection: 'row',

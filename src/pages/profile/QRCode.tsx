@@ -32,9 +32,10 @@ const QRCode = ({ data }: Props) => {
     const getQrcode = async () => {
         try {
             const qrCode = await QrCodeAPI({ data });
+            //console.log(qrCode, 'QrCode')
             setQrcode(qrCode.data)
             //await AsyncStorageUtil.saveData(`QrCode_${data.uuid}`, qrCode.data)
-        } catch (err) {
+        } catch (err:any) {
             console.log('QRCodeerror', err)
         }
     }
