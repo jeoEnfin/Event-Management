@@ -31,6 +31,7 @@ const Lobby = ({ route }: Props) => {
     const fadeAnim = useRef(new Animated.Value(isScheduleView ? 1 : 0)).current;
     const [isScheduleViewData, setIsScheduleViewData] = useState<any>(null);
     const [orientation, setOrientation] = useState<any>('portrait');
+    const [isTenant, setIsTenant] = useState<boolean>(false);
 
     useEffect(() => {
       const updateOrientation = () => {
@@ -68,6 +69,22 @@ const Lobby = ({ route }: Props) => {
         }
     }, [schedule])
 
+    useEffect(() => {
+        if (tenantId) {
+            isTenantCheck();
+        }
+    }, [tenantId])
+
+    const isTenantCheck = async () => {
+        const _tenantId = await AsyncStorageUtil.getData('user_tenant_id');
+        if (_tenantId === tenantId) {
+            setIsTenant(true);
+        } else {
+            setIsTenant(false);
+        }
+    }
+
+
     const getExpo = async () => {
         await AsyncStorageUtil.saveData('tenant_id', tenantId);
         setLoading(true);
@@ -76,7 +93,6 @@ const Lobby = ({ route }: Props) => {
             const resp = await ExpoDetailsAPI({ url });
             if (resp) {
                 const _data = resp?.data?.data;
-                //console.log(_data?.schedules, 'www')
                 setExpoData(_data?.expo);
                 setLoading(false);
                 setSchedule(_data?.schedules);
@@ -93,17 +109,17 @@ const Lobby = ({ route }: Props) => {
     }
 
     const handleMessageClick = async () => {
-        const userData = await AsyncStorageUtil.getData('userData')
+        const userData = await AsyncStorageUtil.getData('userData');
         //console.log(userData, 'userData')
         const data = {
             expName: expoData.expName,
-            email: userData?.data?.email
+            email: userData?.data?.email,
+            show_announcement: true
         }
         navigation.navigate('Messages', { data, expId: expoData?.id });
     };
 
     const handleSchedulePress = async (data: any) => {
-        //console.log(data, expoData?.expAddress);
         if (data) {
             navigation.navigate('Schedule', { data, expAddress: expoData?.expAddress, expVenue: expoData?.expVenue });
         }

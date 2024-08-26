@@ -19,6 +19,7 @@ import { FetchPaymentSheetParams } from './api/FetchPaymentSheetParams';
 import { config } from '../../utils/config';
 import { initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
 import { toggleStateAsync } from '../../store/actions';
+import OverlayLoader from '../../components/modals/OverlayLoader';
 
 
 interface FormDataItem {
@@ -58,11 +59,19 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     const [event, setEvent] = useState<any>(null);
 
     useEffect(() => {
-        console.log(data,'data---')
-        // if (data.length < 0 && eventData) {
-        //     handleSubmit();
-        // }
-    }, [data])
+        if (data.length <= 0 && eventData && event !== null) {
+            setIsLoading(true);
+            if (eventData?.expPrice > 0) {
+                if(paymentKeys !== null){
+                    handleSubmit(); 
+                    setIsLoading(false);
+                }
+            } else {
+                handleSubmit();
+                setIsLoading(false);
+            }
+        } 
+    }, [eventData, paymentKeys, event])
 
     useEffect(() => {
         if (eventData.expPrice > 0) {
@@ -168,8 +177,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
             if (response) {
                 setPaymentKeys(response?.data?.data);
             }
-            setIsLoading(false)
-            console.log(response?.data?.data)
+            setIsLoading(false);
         } catch (err: any) {
             setIsLoading(false);
             console.log(err.response, 'err-----')
@@ -220,7 +228,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
             const response = await OrderAPI({ data });
             if (response.data) {
                 //console.log(response.data)
-                if(!userId && !orderId && !event?.expoId) return;
+                if (!userId && !orderId && !event?.expoId) return;
                 let markParticipant = {
                     participants: [{
                         epUserId: userId,
@@ -231,10 +239,11 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                 }
                 try {
                     const _participentMarked = await ParticipantApi({ data: markParticipant });
-                    //console.log(_participentMarked?.data?.data?.data, 'tt')
+                    console.log(_participentMarked, 'Participants')
                     if (_participentMarked) {
                         navigation.replace('SucessPage', { event: data, details: event });
                     }
+
                 } catch (err: any) {
                     console.log(err, 'errfrom participant');
                     navigation.replace('FailPage');
@@ -284,7 +293,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
 
     const handleSubmit = () => {
         setIsLoading(true);
-        console.log('Form submitted with values:', formValues);
+        //console.log('Form submitted with values:', formValues);
         const isFormValid = validateForm(data, formValues);
         //console.log(isFormValid, 'isValid');
         if (isFormValid) {
@@ -335,7 +344,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                         <View key={field._id} style={{ marginBottom: 10 }}>
                             <CustomFileUpload
                                 label={field.pFLabel}
-                                onFileSelect={(val:any) => {handleFileUpload(val)}}
+                                onFileSelect={(val: any) => { handleFileUpload(val) }}
                                 maxSizeInMB={field?.pFUploadParams?.maxFileSize}
                                 allowedTypes={field?.pFUploadParams?.fileType}
                                 multiple={field?.pFUploadParams?.multiFile}
@@ -364,21 +373,21 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                                 validationType={field?.pFData?.dateTimeSettings || 'any'}
                                 customErrorText={field.pFHelperText}
                                 value={formValues[field.pFColumName || ''] || ''}
-                                onChange={(val:any) => handleDateChange(field.pFColumName || '', val)}
+                                onChange={(val: any) => handleDateChange(field.pFColumName || '', val)}
                             />
                         </View>
                     );
                 case 'datetime':
                     return (
                         <View key={field._id} style={{ marginBottom: 10 }}>
-                           <CustomDateField
+                            <CustomDateField
                                 mode='datetime'
                                 label={field.pFLabel}
                                 placeholder={field.pFPlaceholder}
                                 validationType={field?.pFData?.dateTimeSettings || 'any'}
                                 customErrorText={field.pFHelperText}
                                 value={formValues[field.pFColumName || ''] || ''}
-                                onChange={(val:any) => handleDateTimeChange(field.pFColumName || '', val)}
+                                onChange={(val: any) => handleDateTimeChange(field.pFColumName || '', val)}
                             />
                         </View>
                     )
@@ -392,8 +401,8 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         <View style={{ justifyContent: 'space-between', height: '100%' }}>
             <ScrollView showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 25 }} >
                 <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: '20%' }}>
-                    <Text style={{ fontSize: 32, fontWeight: '600', marginBottom: 6, color: COLORS.text.main }}>Register Event</Text>
-                    <Text style={{ fontSize: 14, fontWeight: '400', marginBottom: 28, color: COLORS.text.main }}>Fill the form to Register Event</Text>
+                    <Text style={{ fontSize: 32, fontWeight: '600', marginBottom: 6, color: COLORS.text.main }}>{ data.length !== 0 ? 'Register Event' :'Loading...' }</Text>
+                    {data.length !== 0 && <Text style={{ fontSize: 14, fontWeight: '400', marginBottom: 28, color: COLORS.text.main }}>Fill the form to Register Event</Text>}
                 </View>
                 {data && renderFormFields()}
             </ScrollView>

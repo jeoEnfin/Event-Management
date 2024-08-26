@@ -17,7 +17,6 @@ const PaymentSucess = ({ route }: Props) => {
   const navigation: any = useNavigation();
   const [data, setData] = useState<any>(null);
   const [qrCode, setQrcode] = useState(null);
-  console.log(details, 'details')
 
   useEffect(() => {
     if (event) {
@@ -53,7 +52,7 @@ const PaymentSucess = ({ route }: Props) => {
         <Text style={styles.subTxt}>Your registration was sucessful! You will receive an email shortly</Text>
         <View style={styles.qrContainer}>
           <Text style={styles.qrHeader}>Your QR Code</Text>
-          <Text style={styles.qrMessage}>Scan the QR code to attented the event</Text>
+          <Text style={styles.qrMessage}>Scan the QR code to attend the event</Text>
           <View style={styles.qrBody}>
             {qrCode && <Image source={{ uri: qrCode }} style={{ width: '100%', height: '100%' }} />}
           </View>

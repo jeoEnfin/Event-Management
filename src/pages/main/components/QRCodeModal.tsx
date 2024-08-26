@@ -26,7 +26,7 @@ const QRCodeModal = ({
         <SlideUpModal isVisible={isModalVisible} onClose={toggleModal}>
             <View style={styles.container}>
                 <Text style={styles.text1}>Your QR Code</Text>
-                <Text style={styles.text2}>Scan the QR code to share your profile</Text>
+                <Text style={styles.text2}>Scan the QR code to attend the event</Text>
                 <View style={styles.qrcodeContainer}>
                     {url && <Image source={{ uri: url }} style={{ width: '100%', height: '100%' }} resizeMode='contain' />}
                 </View>

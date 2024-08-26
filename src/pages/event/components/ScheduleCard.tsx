@@ -22,9 +22,10 @@ interface ScheduleCardProps {
     eventStartDate?: string
     eventEndDate?: string
     onPress: (data: any)=>void;
+    position?: 'portrait' | 'landscape';
 }
 
-const ScheduleCards: React.FC<ScheduleCardProps> = ({ schedules, hallName, eventStartDate, eventEndDate ,onPress}) => {
+const ScheduleCards: React.FC<ScheduleCardProps> = ({ schedules, hallName, eventStartDate, eventEndDate ,onPress, position = 'portrait'}) => {
     const [_days, set_Days] = useState<any>([]);
 
     useEffect(() => {

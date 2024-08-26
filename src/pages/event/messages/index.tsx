@@ -23,13 +23,7 @@ const Messages = ({ route }: Props) => {
   }, [data, expId])
 
   const checkChatToken = async () => {
-    // const chatTokenLocal = await AsyncStorageUtil.getData(`chatToken${expId}`);
-    // if (chatTokenLocal) {
-    //   setChatToken(chatTokenLocal);
-    // }
-    // else {
       getChatToken();
-    //}
   }
 
   const getChatToken = async () => {
@@ -37,14 +31,12 @@ const Messages = ({ route }: Props) => {
     try {
       const chatToken = await ChatTokenApi({ data });
       if (chatToken) {
-        console.log('chat token', chatToken?.data)
+        //console.log('chat token', chatToken?.data)
         setChatToken(chatToken?.data?.data)
-        //await AsyncStorageUtil.saveData(`chatToken${expId}`, chatToken?.data?.data)
       }
       setLoading(false);
-
     } catch (err: any) {
-      console.log('Chat token error', err)
+      console.log('Chat token error', err.response)
       setLoading(false);
     }
   }

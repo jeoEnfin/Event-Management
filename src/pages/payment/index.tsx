@@ -14,7 +14,8 @@ type Props = {
 const Payment = ({ route }: Props) => {
   const { event } = route.params;
   const [fieldData, setFieldData] = useState([]);
-  const [loading , setLoading] = useState<boolean>(false)
+  const [loading , setLoading] = useState<boolean>(true);
+  const [isFiltered, setIsFiltered] = useState<boolean>(false);
 
   useEffect(() => {
     if (event) {
@@ -23,17 +24,17 @@ const Payment = ({ route }: Props) => {
   }, [event])
 
   const getFields = async () => {
-    setLoading(true);
     await AsyncStorageUtil.saveData('tenant_id', event.expTenantId)
     try {
       const fields = await GetRegistrationFieldsAPI({ expId: event?.id });
-      //console.log(fields?.data?.data?.data,'Registration')
       if (fields?.data?.data?.data) {
-        const filteredFields: any = filterByStatus(fields?.data?.data?.data);
-        console.log(filteredFields, 'filteredFields')
+        const filteredFields: any = await filterByStatus(fields?.data?.data?.data);
         setFieldData(filteredFields)
+        setTimeout(()=>{
+          setIsFiltered(true);
+        },500)
       }
-      setLoading(false);
+      setLoading(false); 
     } catch (err: any) {
       console.log(err, 'er----')
       setLoading(false);
@@ -47,7 +48,7 @@ const Payment = ({ route }: Props) => {
   return (
     <ScreenWrapper>
       <View style={{ width: '100%' }}>
-        {!loading && <FormData data={fieldData} eventData={event} />}
+        {!loading && isFiltered && <FormData data={fieldData || []} eventData={event} />}
       </View>
       <OverlayLoader visible={loading} />
     </ScreenWrapper>
