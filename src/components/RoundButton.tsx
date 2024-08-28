@@ -53,7 +53,7 @@ const RoundButton = (props: Props) => {
               ? `${config.CLOUD_FRONT_URL}/uploads/ci/default/speaker/default.webp`
               : (props.imageUrl && (props.imageUrl.startsWith('https') || props.imageUrl.startsWith('http')))
                   ? props.imageUrl
-                  : `${config.CLOUD_FRONT_URL}/uploads/ci/${config.SERVER_DOMAIN}/user/${props.imageUrl}` }
+                  : `${config.CLOUD_FRONT_URL}/${config.USER_PATH}${props.imageUrl}` }
             : props.imageUrl}
             style={{ height: '100%', width: '100%' }} resizeMode='cover' />}
       </Animated.View>

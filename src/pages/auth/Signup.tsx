@@ -113,13 +113,7 @@ const Signup = (props: Props) => {
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
                 {/* <AuthLogo /> */}
-                <AuthHeader
-                    title='Sign up'
-                    subTitle={`Already have an account?`}
-                    isLinkButton={true}
-                    linkButtonLabel='Login'
-                    linkButtonClick={() => { navigation.navigate('Login') }}
-                />
+
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
@@ -134,6 +128,13 @@ const Signup = (props: Props) => {
                             <ScrollView
                                 showsVerticalScrollIndicator={false}
                                 contentContainerStyle={styles.container}>
+                                <AuthHeader
+                                    title='Sign up'
+                                    subTitle={`Already have an account?`}
+                                    isLinkButton={true}
+                                    linkButtonLabel='Login'
+                                    linkButtonClick={() => { navigation.navigate('Login') }}
+                                />
                                 <View style={{ gap: 10, paddingVertical: 5 }}>
                                     <InputText
                                         label='First Name'

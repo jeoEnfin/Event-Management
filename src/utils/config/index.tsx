@@ -12,5 +12,8 @@ export const config = {
     SERVER_DOMAIN: 'devciapi.enfinlabs.com',
     STRIP_KEY:'pk_test_51P9PAJSDu2auj9JY5UA9eE7pNJpZqafJvJDlOtVW25DfnpcQseWmUW7OHQc2qwssI6nTbN6B4ZhWOZkTmJvOTlQb00sxKU9LwY',
     DEFAULT_TENANT : 'dev_tenant_default',
-    CHAT_URL: 'https://chatservice.enfinlabs.com/?token='
+    CHAT_URL: 'https://chatservice.enfinlabs.com/?token=',
+    SIGNED_URL_GEN_API : "s3-service/signed-url",
+    CUSTOM_PATH: 'uploads/ci/ci_tenant_dev/customFilePath/',
+    USER_PATH: 'uploads/ci/dev_tenant_default/user/'
 }

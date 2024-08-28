@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import TopBar from '../../components/TopBar'
 import ProfileCard from './ProfileCard'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Logout } from '../../store/actions'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../constants'
@@ -25,6 +25,7 @@ export type User = {
 
 const Profile = (props: Props) => {
     const dispatch: any = useDispatch();
+    const toggleState = useSelector((state: any) => state.toggle.value);
     const [userData, setUserData] = useState<User>({
         name: '',
         email: '',
@@ -40,6 +41,10 @@ const Profile = (props: Props) => {
         getToken();
         setTenant();
     }, [])
+
+    useEffect(()=>{
+        onRefresh();
+    },[toggleState])
 
     const getToken = async () => {
         const token = await AsyncStorageUtil.getData('token')
@@ -204,7 +209,7 @@ const Profile = (props: Props) => {
     return (
         <ScreenWrapper>
             <TopBar
-                notification={isToken ? true : false}
+                //notification={isToken ? true : false}
                 talkToUs
                 talkToUsPress={() => navigation.navigate('Talk to us')}
             />
@@ -289,6 +294,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 10,
         alignItems: 'center',
+        width: '100%',
+        justifyContent: 'center'
     },
     logout_Container: {
         width: '85%',
@@ -312,6 +319,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 10,
         alignItems: 'center',
+        width: '100%',
+        justifyContent: 'center'
     },
     editIcon: {
         position: 'absolute',

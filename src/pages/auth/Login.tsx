@@ -38,11 +38,7 @@ const LoginScreen = (props: Props) => {
     const navigation: any = useNavigation()
     const dispatch: any = useDispatch();
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
     const [isTextSecure, setIsTextSecure] = useState<boolean>(true);
-    const [error, setError] = useState<boolean>(false);
-    const platformName = Platform.OS;
-    const [errorTxt, setErrorTxt] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [rememberCheck, setRememberCheck] = useState<boolean>(false);
 

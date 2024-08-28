@@ -33,6 +33,7 @@ type Props = {
 const EventDetailsScreen = ({ route }: Props) => {
     const { event, tenantId } = route.params;
     const navigation: any = useNavigation();
+    const paymentState = useSelector((state: any) => state.payment.value);
     const [data, setData] = useState<any>();
     const [speakers, setSpeakers] = useState<any>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -46,7 +47,6 @@ const EventDetailsScreen = ({ route }: Props) => {
     const dispatch: any = useDispatch();
     const [isTenant, setIsTenant] = useState<boolean>(false);
     const [isQrCodeView, setIsQrCodeView] = useState<boolean>(false);
-    const isHaveUpdate = useSelector((state: any) => state.AuthReducers.initialUpdate);
     const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
 
     const toggleModal = () => {
@@ -67,7 +67,7 @@ const EventDetailsScreen = ({ route }: Props) => {
 
     useEffect(() => {
         onRefresh();
-    }, [isHaveUpdate])
+    }, [paymentState])
 
     const backAction = () => {
         if (navigation.isFocused()) {
@@ -173,8 +173,6 @@ const EventDetailsScreen = ({ route }: Props) => {
     };
 
     const orderdetails = async () => {
-        // const tenant = await AsyncStorageUtil.getData('tenant_id');
-        // if(tenantId !== tenant) return ;
         if(!data?.id && !tenantId) return ;
         setIsOrderLoading(true);
         try {
@@ -217,7 +215,7 @@ const EventDetailsScreen = ({ route }: Props) => {
             setIsLoading(false);
         } catch (error: any) {
             setIsLoading(false);
-            console.log(error.response.data, 'error-------------------------')
+            console.log(error.response.data, 'error---')
             //dispatch(showToast('Something went wrong', 'error'));
         }
     };

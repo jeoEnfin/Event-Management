@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginBottom: 5,
         color: COLORS.text.secondary,
-        fontWeight: '400',
+        fontWeight: '600',
         position: 'absolute',
         top: -11,
         left: 8,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     selector: {
         height: 54,
         borderColor: COLORS.text.secondary,
-        borderWidth: 1,
+        borderWidth: 1.5,
         borderRadius: 4,
         justifyContent: 'center',
         paddingHorizontal: 10,

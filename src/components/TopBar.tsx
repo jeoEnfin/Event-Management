@@ -5,7 +5,7 @@ import RoundButton from './RoundButton'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorageUtil from '../utils/services/LocalCache'
 import ProfileModal from './modals/ProfileModal'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Logout } from '../store/actions'
 
 
@@ -37,10 +37,15 @@ const TopBar = (props: Props) => {
     const platform = Platform.OS;
     const [isProfileModal, setIsProfileModal] = useState<boolean>(false);
     const dispatch: any = useDispatch()
+    const toggleState = useSelector((state: any) => state.toggle.value);
 
     useEffect(() => {
         getData();
     }, [])
+
+    useEffect(()=>{
+        getData();
+    },[toggleState])
 
     const getData = async () => {
         setIsLoading(true)

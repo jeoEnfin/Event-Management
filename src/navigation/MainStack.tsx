@@ -35,13 +35,13 @@ const MainStack = (props: Props) => {
             <Stack.Screen name='Welcome' component={Welcome}/>
             <Stack.Screen name='Home' component={TabNav}  />
             <Stack.Screen name='Favorites' component={FavouriteContacts} options={{headerShown: true}}/>
-            <Stack.Screen name='Edit Profile' component={ProfileEdit} options={{headerShown: true}}/>
+            <Stack.Screen name='Edit Profile' component={ProfileEdit} options={{headerShown: true,orientation: 'portrait'}}/>
             <Stack.Screen name='EventDetails' component={EventDetailsScreen} />
             <Stack.Screen name='OfflineLobby' component={OfflineLobby} />
             <Stack.Screen name='Registration' component={Payment} options={{headerShown: true,orientation: 'portrait'}}/>
-            <Stack.Screen name='Reset Password' component={ResetPassword} options={{headerShown: true}}/>
-            <Stack.Screen name='SucessPage' component={PaymentSucess} />
-            <Stack.Screen name='FailPage' component={PaymentFail} />
+            <Stack.Screen name='Reset Password' component={ResetPassword} options={{headerShown: true ,orientation: 'portrait'}}/>
+            <Stack.Screen name='SucessPage' component={PaymentSucess} options={{orientation: 'portrait'}}/>
+            <Stack.Screen name='FailPage' component={PaymentFail} options={{orientation: 'portrait'}}/>
             <Stack.Screen name='Scan' component={ScanScreen} options={{ orientation: 'portrait' }} />
             <Stack.Screen name='ScanReader' component={ScanReader} options={{ orientation: 'portrait' }} />
             <Stack.Screen name='Lobby' component={Lobby } />

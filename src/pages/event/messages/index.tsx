@@ -54,6 +54,8 @@ const Messages = ({ route }: Props) => {
           allowsFullscreenVideo
           javaScriptEnabled={true}
           domStorageEnabled={true}  // Enable DOM storage
+          allowsInlineMediaPlayback={true}
+          mediaPlaybackRequiresUserAction={false}
           userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" // Set user agent to a desktop browser
         />}
       <OverlayLoader visible={loading} />

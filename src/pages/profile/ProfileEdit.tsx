@@ -1,23 +1,35 @@
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, Image, StyleSheet, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import { Icon } from 'react-native-elements';
 import { COLORS } from '../../constants';
 import InputText from '../../components/common/InputText';
 import Button from '../../components/common/Button';
 import AsyncStorageUtil from '../../utils/services/LocalCache';
-import { isValidEmail } from '../../utils/validations';
 import { splitName } from '../../utils/common';
 import { UpdateProfileAPI } from './apis/UpdateProfileAPI';
 import { useNavigation } from '@react-navigation/native';
-import { CacheIndex } from '../../utils/services/CacheIndex';
 import { config } from '../../utils/config';
+import CustomFileUpload from '../../components/common/CustomFileUpload';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
+import OverlayLoader from '../../components/modals/OverlayLoader';
+import ActivityElement from '../../components/common/ActivityElement';
+import { useDispatch } from 'react-redux';
+import { showToast } from '../../store/toast/ToastActions';
+import { toggle } from '../../store/slice/stateSlice';
 
 type Props = {}
 
 const ProfileEdit = (props: Props) => {
   const navigation: any = useNavigation();
-  const [userData, setUserData] = useState<any>(null)
+  const [userData, setUserData] = useState({
+    uuid: '',
+    name: '',
+    email: '',
+    userImage: '',
+    roleId: null,
+  })
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [data, setData] = useState({
     uuid: '',
@@ -26,19 +38,44 @@ const ProfileEdit = (props: Props) => {
     roleId: null,
     userImage: ''
   })
-  const [error, setError] = useState<boolean>(false);
-  const [errorTxt, setErrorTxt] = useState<string>('')
-  const [emailErrorTxt, setEmailErrorTxt] = useState<string>('')
-  const [errorEmail, setErrorEmail] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>(data.email || '');
-  const [nameErrorTxt, setNameErrorTxt] = useState<string>('')
-  const [errorName, setErrorName] = useState<boolean>(false);
-  const [name, setName] = useState<string>(data.name || '');
+  const dispatch: any = useDispatch();
   const [image, setImage] = useState<string>(data.userImage || '');
+  const [userImagePreview, setUserImagePriview] = useState<any>(null);
+  const formikRef = useRef<any>(null);
+  const [onProgress, setOnProgress] = useState<boolean>(false);
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email')
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        'Invalid email format'
+      )
+      .trim('No leading or trailing spaces allowed')
+      .required('Email is required'),
+    name: Yup.string()
+      .trim('No leading or trailing spaces allowed')
+      .matches(/^\S+(?: \S+)*$/, 'No leading, trailing, or consecutive spaces allowed')
+      .min(1, 'Name must be at least 1 characters')
+      .required('Name is required')
+  });
 
   useEffect(() => {
     getData();
   }, [])
+
+  const initialValues = {
+    name: '',
+    email: '',
+  };
+
+  useEffect(() => {
+    if (userData) {
+      if (formikRef.current) {
+        formikRef.current.setFieldValue('name', userData.name);
+        formikRef.current.setFieldValue('email', userData.email);
+      }
+    }
+  }, [userData])
 
   const getData = async () => {
     setIsLoading(true)
@@ -50,7 +87,8 @@ const ProfileEdit = (props: Props) => {
           name: _userData?.data?.displayName,
           email: _userData?.data?.email,
           uuid: _userData?.uuid,
-          userImage: _userData?.data?.userImage
+          userImage: _userData?.data?.userImage,
+          roleId: _roleId,
         }
         setUserData(_data)
         setData({
@@ -60,63 +98,11 @@ const ProfileEdit = (props: Props) => {
           roleId: _roleId,
           userImage: _userData?.data?.userImage
         })
-        setName(_userData?.data?.displayName)
-        setEmail(_userData?.data?.email)
         setImage(_userData?.data?.userImage)
       }
       setIsLoading(false)
     } catch (err) {
       setIsLoading(false)
-    }
-  }
-
-  const handleEmailChange = (newEmail: string) => {
-    const isEmailValid = isValidEmail(newEmail);
-    if (isEmailValid) {
-      setEmail(newEmail.toLowerCase())
-      setErrorEmail(false)
-      setError(false)
-      setEmailErrorTxt('')
-    } else {
-      setEmailErrorTxt('Enter a valid email address')
-      setErrorEmail(true);
-      setError(true);
-    }
-  };
-
-  const handleNameChange = (newName: string) => {
-    const isNameValid = newName.length > 0;
-    if (isNameValid) {
-      setName(newName)
-      setErrorName(false)
-      setError(false)
-      setNameErrorTxt('')
-    } else {
-      setNameErrorTxt('Enter a valid email address')
-      setErrorName(true);
-      setError(true);
-    }
-  };
-
-  const validation = () => {
-    if (name.length === 0 || email.length === 0) {
-      setErrorEmail(true);
-      setErrorName(true)
-      setError(true);
-    }
-    else if (name.length === 0) {
-      setErrorName(true)
-      setError(true);
-    }
-    else if (email.length === 0) {
-      setErrorEmail(true)
-      setError(true);
-    }
-    else if (errorEmail === true && errorName === true) {
-      setError(true)
-    }
-    else {
-      setError(false)
     }
   }
 
@@ -126,123 +112,168 @@ const ProfileEdit = (props: Props) => {
     }, 1000)
   };
 
-  const handleUpdate = async () => {
-    validation();
-    if (name != '' && email != '') {
-      setIsLoading(true);
-      if (name === data.name && email === data.email) {
-        setIsLoading(false);
-        return Alert.alert('No changes', 'save after change any data', [
-          { text: 'OK', onPress: () => { } },
-        ]);
-      }
-      const { firstName, lastName } = splitName(name)
-      const _data = {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        roleIds: [data.roleId],
-        userImage: "default.webp"
-      }
-      try {
-        //console.log(_data, 'data--------')
-        const updateData: any = await UpdateProfileAPI({ data: _data ,userId: data.uuid });
-        if (updateData) {
-          setIsLoading(false);
-          const exisitingData = await AsyncStorageUtil.getData('user_details');
-          const _updatedData = {
-            ...exisitingData,
-            data: {
-              ...exisitingData.data,
-              displayName: name,
-              email,
-            },
-          };
-          await AsyncStorageUtil.saveData('user_details', _updatedData);
-          Alert.alert('Profile Updated', 'Your profile updated succesfully!', [
-            { text: 'OK' },
-          ]);
-          handleSuccess();
-        }
-      } catch (err: any) {
-        console.log(err, 'error');
-        setErrorTxt('Something went wrong')
-        Alert.alert('Something went wrong', 'Please try again later', [
-          { text: 'OK' },
-        ]);
-        setIsLoading(false);
-      }
-    } else {
-      Alert.alert('Invalid Credentials', 'name or email is invalid', [
-        { text: 'OK', onPress: () => {} },
-      ]);
-      setError(true)
+  const handleUpdate = async (data: any) => {
+    setIsLoading(true);
+    const { firstName, lastName } = splitName(data?.name)
+    const _data = {
+      firstName: firstName,
+      lastName: lastName,
+      email: data?.email.toLowerCase(),
+      roleIds: [userData.roleId],
+      userImage: userImagePreview || userData?.userImage
     }
+    try {
+      const updateData: any = await UpdateProfileAPI({ data: _data, userId: userData.uuid });
+      if (updateData) {
+        setIsLoading(false);
+        const exisitingData = await AsyncStorageUtil.getData('userData');
+        const _updatedData = {
+          ...exisitingData,
+          data: {
+            ...exisitingData.data,
+            displayName: data.name,
+            email: _data.email,
+            userImage: _data.userImage,
+          },
+        };
+        await AsyncStorageUtil.saveData('userData', _updatedData);
+        dispatch(showToast('User details updated successfully', 'success'))
+        dispatch(toggle());
+        handleSuccess();
+      }
+    } catch (err: any) {
+      console.log(err.response, 'error');
+      dispatch(showToast('Something went wrong , Please try again later', 'error'));
+      setIsLoading(false);
+    }
+  }
+
+  const handleUploadComplete = async (result: {
+    status: string;
+    message: string;
+    data: any;
+    id: string;
+  }) => {
+    const _result = await result;
+    if (_result) {
+      if (_result.status === 'success') {
+        setUserImagePriview(_result?.data?.data);
+        setImage(_result?.data?.data);
+      } else if (_result.status == 'error') {
+        dispatch(showToast('Something went wrong , Please try again later', 'error'));
+      }
+    }
+  }
+
+  const handleProgress = ({ id, progress, file }: any) => {
+    if (progress === 100) {
+      setOnProgress(false);
+    }
+  };
+
+  const onImageSelected = () => {
+    setOnProgress(true);
+  }
+
+
+  if (isLoading && !userData) {
+    return <ActivityElement />
   }
 
   return (
     <ScreenWrapper>
-      <View style={{ backgroundColor: COLORS._background.main, flex: 1, width: '100%', justifyContent: 'space-between' }
-      }>
-        <View style={{ width: '100%', alignItems: 'center' }}>
-          <View style={styles.avatar_container}>
-            <View style={styles.avatar}>
-              {image ? <Image
-                source={{
-                  uri: image === 'default.jpg'
-                    ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg`
-                    : (image && (image.startsWith('https') || image.startsWith('http')))
-                      ? image
-                      : `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/${image}`
-                }}
-                style={{ width: '100%', height: '100%', borderRadius: 70 }}
-                resizeMode='cover'
-              /> : <Image resizeMode='cover' source={require('../../assets/profileIcons/img_avatar1.png')}
-                style={{ width: '100%', height: '100%', borderRadius: 70 }}
-              />
-              }
-              <TouchableOpacity style={styles.editIcon}>
-                <Icon name={'create'} size={26} color={COLORS.secondary.main} />
-              </TouchableOpacity>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        validateOnChange={true}
+        validateOnBlur={true}
+        innerRef={formikRef}
+        onSubmit={(values) => {
+          handleUpdate(values);
+        }}
+      >
+        {({ handleSubmit, setFieldTouched, setFieldValue, values, errors, touched }) => (
+
+          <View style={{ backgroundColor: COLORS._background.main, flex: 1, width: '100%', justifyContent: 'space-between' }}>
+            <View style={{ width: '100%', alignItems: 'center' }}>
+              <View style={styles.avatar_container}>
+                <View style={styles.avatar}>
+
+                  {image ? <Image
+                    source={{
+                      uri: image === 'default.jpg'
+                        ? `${config.CLOUD_FRONT_URL}/uploads/${config.SERVER_DOMAIN}/default/expo/default.jpg`
+                        : (image && (image.startsWith('https') || image.startsWith('http')))
+                          ? image
+                          : `${config.CLOUD_FRONT_URL}/${config.USER_PATH}${image}`
+                    }}
+                    style={{ width: '100%', height: '100%', borderRadius: 70 }}
+                    resizeMode='cover'
+                  /> : <Image resizeMode='cover' source={require('../../assets/profileIcons/img_avatar1.png')}
+                    style={{ width: '100%', height: '100%', borderRadius: 70 }}
+                  />
+                  }
+                  <CustomFileUpload
+                    id={'userImage'}
+                    fileName={'userImage'}
+                    maxSizeInMB={5}
+                    allowedTypes={['.jpg', '.png', '.webp']}
+                    multiple={true}
+                    onFileUploadComplete={handleUploadComplete}
+                    uploadPath={config.USER_PATH}
+                    custom={true}
+                    onProgress={handleProgress}
+                    onSelect={onImageSelected}
+                  >
+                    <View style={styles.editIcon}>
+                      <Icon name={'create'} size={26} color={COLORS.secondary.main} />
+                    </View>
+                  </CustomFileUpload>
+                  {onProgress && <ActivityIndicator style={styles.imageLoader} color={COLORS.secondary.main} size={'large'} />}
+                </View>
+              </View>
+              <View style={{ padding: 10, gap: 20, marginTop: 30 }}>
+                <InputText
+                  label='Name'
+                  placeholder='Name'
+                  autoComplete='name'
+                  textSecure={false}
+                  showText={() => { }}
+                  inputMode={'text'}
+                  onDataChanged={(value) => setFieldValue('name', value)}
+                  error={!!(errors.name && touched.name)}
+                  errorTxt={(touched.name && touched.name) ? errors.name : ''}
+                  value={values.name}
+                  onFocus={() => setFieldTouched('name', true)}
+                  onBlur={() => setFieldTouched('name', true)}
+                  backgroundColor={COLORS._background.main}
+                />
+                <InputText
+                  label='Email'
+                  placeholder='Email'
+                  autoComplete='email'
+                  textSecure={false}
+                  showText={() => { }}
+                  inputMode={'email'}
+                  onDataChanged={(value) => setFieldValue('email', value)}
+                  error={!!(errors.email && touched.email)}
+                  errorTxt={(touched.email && touched.email) ? errors.email : ''}
+                  value={values.email}
+                  onFocus={() => setFieldTouched('email', true)}
+                  onBlur={() => setFieldTouched('email', true)}
+                  backgroundColor={COLORS._background.main}
+                />
+              </View>
             </View>
-          </View>
-          <View style={{ padding: 10, gap: 20, marginTop: 30 }}>
-            <InputText
-              label='Name'
-              placeholder='Name'
-              autoComplete='name'
-              textSecure={false}
-              showText={() => { }}
-              inputMode={'text'}
-              defaultValue={data.name || ''}
-              onDataChanged={handleNameChange}
-              error={errorName}
-              errorTxt={nameErrorTxt}
-              backgroundColor={COLORS._background.main}
-            />
-            <InputText
-              label='Email'
-              placeholder='Email'
-              autoComplete='email'
-              textSecure={false}
-              showText={() => { }}
-              inputMode={'email'}
-              defaultValue={data.email || ''}
-              onDataChanged={handleEmailChange}
-              error={errorEmail}
-              errorTxt={emailErrorTxt}
-              backgroundColor={COLORS._background.main}
-            />
-          </View>
-        </View>
-        <View style={{ width: '100%', paddingHorizontal: 10, marginBottom: 20 }}>
-          <Button
-            label='Save'
-            loading={isLoading}
-            buttonClick={handleUpdate}
-          />
-        </View>
-      </View>
+            <View style={{ width: '100%', paddingHorizontal: 10, marginBottom: 20 }}>
+              <Button
+                label='Save'
+                loading={isLoading || onProgress}
+                buttonClick={handleSubmit}
+              />
+            </View>
+          </View>)}</Formik>
+      <OverlayLoader visible={isLoading} />
     </ScreenWrapper>
   )
 }
@@ -259,14 +290,23 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     position: 'absolute',
-    right: 0,
-    bottom: 0,
+    right: -5,
+    bottom: -2,
     margin: 7,
     backgroundColor: COLORS._background.primary,
-    borderRadius: 20,
-    height: 40,
-    width: 40,
+    borderRadius: 25,
+    height: 50,
+    width: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+  },
+  imageLoader: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 70
   }
 })

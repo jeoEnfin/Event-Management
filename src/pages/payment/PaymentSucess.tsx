@@ -33,8 +33,8 @@ const PaymentSucess = ({ route }: Props) => {
   const getQrcode = async () => {
     const _data = {
       epUserId: data.eoUserId,
-      epExpoId: details.expId,
-      attType: details.expType
+      epExpoId: details.expoId,
+      attType: details.expoType
     }
     try {
       const qrCode = await QrCodeAPI({ data: _data });

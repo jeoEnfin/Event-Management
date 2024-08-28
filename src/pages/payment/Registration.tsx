@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Alert, Keyboard } from 'react-native';
+import { View, Text, ScrollView, Alert, Keyboard, ActivityIndicator } from 'react-native';
 import CustomTextField from '../../components/common/CustomTextField';
 import CustomSelector from '../../components/common/CustomSelector';
 import { COLORS } from '../../constants';
@@ -20,6 +20,8 @@ import { config } from '../../utils/config';
 import { initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
 import { toggleStateAsync } from '../../store/actions';
 import OverlayLoader from '../../components/modals/OverlayLoader';
+import { Icon } from 'react-native-elements';
+import { togglePayment } from './paymentSlice';
 
 
 interface FormDataItem {
@@ -57,20 +59,22 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [paymentKeys, setPaymentKeys] = useState<any>(null);
     const [event, setEvent] = useState<any>(null);
+    const [onProgress, setOnProgress] = useState<Record<string, any>>({});
+    
 
     useEffect(() => {
         if (data.length <= 0 && eventData && event !== null) {
             setIsLoading(true);
             if (eventData?.expPrice > 0) {
-                if(paymentKeys !== null){
-                    handleSubmit(); 
+                if (paymentKeys !== null) {
+                    handleSubmit();
                     setIsLoading(false);
                 }
             } else {
                 handleSubmit();
                 setIsLoading(false);
             }
-        } 
+        }
     }, [eventData, paymentKeys, event])
 
     useEffect(() => {
@@ -117,8 +121,11 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         }));
     };
 
-    const handleFileUpload = (id: string) => {
-        console.log('File uploaded for field:', id);
+    const handleFileUpload = (data: any) => {
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [data?.id]: data?.data?.data,
+        }));
     };
 
     const handleDateChange = (id: string, value: string) => {
@@ -227,7 +234,6 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         try {
             const response = await OrderAPI({ data });
             if (response.data) {
-                //console.log(response.data)
                 if (!userId && !orderId && !event?.expoId) return;
                 let markParticipant = {
                     participants: [{
@@ -239,8 +245,9 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                 }
                 try {
                     const _participentMarked = await ParticipantApi({ data: markParticipant });
-                    console.log(_participentMarked, 'Participants')
+                    //console.log(_participentMarked, 'Participants')
                     if (_participentMarked) {
+                        handleSuccess();
                         navigation.replace('SucessPage', { event: data, details: event });
                     }
 
@@ -308,6 +315,31 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         }
     };
 
+    const handleSuccess = () =>{
+        dispatch(togglePayment());
+    }
+
+    const handleUploadComplete = async (result: {
+        status: string;
+        message: string;
+        data: any;
+        id: string;
+    }) => {
+        const _result = await result;
+        if (_result) {
+            if (_result.status === 'success') {
+                handleFileUpload(_result)
+            }
+        }
+    }
+
+    const handleProgress = ({ id, progress, file }: any) => {
+        setOnProgress(prev => ({
+            ...prev,
+            [id]: { progress, file },
+        }));
+    };
+
     const renderFormFields = () => {
         return data.map((field) => {
             switch (field.pFType) {
@@ -344,13 +376,17 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                         <View key={field._id} style={{ marginBottom: 10 }}>
                             <CustomFileUpload
                                 label={field.pFLabel}
-                                onFileSelect={(val: any) => { handleFileUpload(val) }}
+                                id={field?.pFColumName || ''}
+                                fileName={formValues[field.pFColumName || ''] || ''}
                                 maxSizeInMB={field?.pFUploadParams?.maxFileSize}
-                                allowedTypes={field?.pFUploadParams?.fileType}
+                                allowedTypes={field?.pFUploadParams?.fileType[0] === 'any' ? 'all' : field?.pFUploadParams?.fileType}
                                 multiple={field?.pFUploadParams?.multiFile}
+                                onFileUploadComplete={handleUploadComplete}
+                                uploadPath={eventData.expTenantId ? `uploads/ci/${eventData.expTenantId}/customFilePath/` : config.CUSTOM_PATH}
+                                onProgress={handleProgress}
                             />
                         </View>
-                    );
+                    )
                 case 'phoneNumber':
                     return (
                         <View key={field._id} style={{ marginBottom: 10 }}>
@@ -401,7 +437,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         <View style={{ justifyContent: 'space-between', height: '100%' }}>
             <ScrollView showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 25 }} >
                 <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: '20%' }}>
-                    <Text style={{ fontSize: 32, fontWeight: '600', marginBottom: 6, color: COLORS.text.main }}>{ data.length !== 0 ? 'Register Event' :'Loading...' }</Text>
+                    <Text style={{ fontSize: 32, fontWeight: '600', marginBottom: 6, color: COLORS.text.main }}>{data.length !== 0 ? 'Register Event' : 'Loading...'}</Text>
                     {data.length !== 0 && <Text style={{ fontSize: 14, fontWeight: '400', marginBottom: 28, color: COLORS.text.main }}>Fill the form to Register Event</Text>}
                 </View>
                 {data && renderFormFields()}

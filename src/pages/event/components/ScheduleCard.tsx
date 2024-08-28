@@ -176,9 +176,10 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     noScheduleText: {
-        fontSize: 16,
+        fontSize: 14,
         textAlign: 'center',
         marginTop: 20,
+        color: COLORS.text.default
     },
     hallNameText: {
         fontSize: 16,

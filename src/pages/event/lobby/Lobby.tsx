@@ -130,14 +130,14 @@ const Lobby = ({ route }: Props) => {
             <StatusBar hidden={platformName === 'android' ? true : false} />
             <View style={{ flex: 1, width: '100%', height: '100%' }}>
                 <Image source={require('../../../assets/ci/expo/offlineLobby.png')} style={styles.background} />
-                {halls && <HallTab position={orientation || 'portrait'} data={halls} onPressHall={(val) => { handleScheduleView(val) }} isSelected={isScheduleView} />}
+                {halls.length !== 0 && <HallTab position={orientation || 'portrait'} data={halls} onPressHall={(val) => { handleScheduleView(val) }} isSelected={isScheduleView} />}
                 <CustomTab
                     attendeesClick={() => { navigation.navigate('Attendees') }}
                     chatClick={handleMessageClick}
                     helpClick={() => { navigation.navigate('Help') }}
                     position={orientation || 'portrait'} />
                 {isScheduleView &&
-                    <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                    <View style={[{ width: '100%', justifyContent: 'center', alignItems: 'center'},  orientation === 'portrait' && {marginTop: 10}]}>
                         <Animated.View style={[styles.scheduleContainer, { opacity: fadeAnim }, orientation === 'landscape' && {width: '100%', height: '100%', borderRadius: 0}]}>
                             <View style={styles.scheduleCardHeader}>
                                 <Text style={styles.title}> Halls</Text>
