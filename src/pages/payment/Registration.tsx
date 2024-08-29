@@ -60,7 +60,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     const [paymentKeys, setPaymentKeys] = useState<any>(null);
     const [event, setEvent] = useState<any>(null);
     const [onProgress, setOnProgress] = useState<Record<string, any>>({});
-    
+
 
     useEffect(() => {
         if (data.length <= 0 && eventData && event !== null) {
@@ -231,6 +231,11 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
     };
 
     const createOrderDetails = async ({ data, userId, orderId }: any) => {
+        const user = await AsyncStorageUtil.getData('userData')
+        const _user = user?.data;
+        let _formValues = formValues;
+        _formValues['name'] = _user.displayName;
+        _formValues['email'] = _user.email;
         try {
             const response = await OrderAPI({ data });
             if (response.data) {
@@ -239,7 +244,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                     participants: [{
                         epUserId: userId,
                         epExpoId: event?.expoId,
-                        epUserDetails: JSON.stringify(formValues),
+                        epUserDetails: JSON.stringify(_formValues),
                         epOrderid: orderId
                     }]
                 }
@@ -315,7 +320,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         }
     };
 
-    const handleSuccess = () =>{
+    const handleSuccess = () => {
         dispatch(togglePayment());
     }
 
