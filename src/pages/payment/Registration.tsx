@@ -244,7 +244,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
                     participants: [{
                         epUserId: userId,
                         epExpoId: event?.expoId,
-                        epUserDetails: JSON.stringify(_formValues),
+                        epUserDetails: _formValues,
                         epOrderid: orderId
                     }]
                 }
@@ -276,7 +276,7 @@ const FormData: React.FC<Props> = ({ data, eventData }) => {
         const data = {
             eoOrderId: orderId,
             eoUserId: user_id,
-            eoItemDetails: JSON.stringify(event),
+            eoItemDetails: event,
             eoOrderStatus: "completed",
             eoTransactionId: "txn_1234567890",
             eoPaymentResponse: JSON.stringify(res),

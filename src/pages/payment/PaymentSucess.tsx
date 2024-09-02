@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native'
 import { QrCodeAPI } from '../profile/apis/QrCodeAPI'
 import { format } from 'date-fns'
 import Button from '../../components/common/Button'
+import { useDispatch } from 'react-redux'
+import { togglePayment } from './paymentSlice'
 
 
 type Props = {
@@ -14,6 +16,7 @@ type Props = {
 
 const PaymentSucess = ({ route }: Props) => {
   const { event, details } = route.params
+  const dispatch: any = useDispatch();
   const navigation: any = useNavigation();
   const [data, setData] = useState<any>(null);
   const [qrCode, setQrcode] = useState(null);
@@ -44,6 +47,11 @@ const PaymentSucess = ({ route }: Props) => {
     }
   }
 
+  const handleClick = () =>{
+    dispatch(togglePayment());
+    navigation.goBack()
+  }
+
   return (
     <ScreenWrapper>
       <View style={styles.container}>
@@ -67,7 +75,7 @@ const PaymentSucess = ({ route }: Props) => {
         </View>}
       </View>
       <View style={{width: '95%'}}>
-        <Button label='Continue' buttonClick={()=>{navigation.goBack()}}/>
+        <Button label='Continue' buttonClick={handleClick}/>
       </View>
     </ScreenWrapper>
   )
